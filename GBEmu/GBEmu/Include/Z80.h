@@ -19,11 +19,11 @@ public:
 	Clock LoadRegister(Register8bit dest, Register8bit source);
 	// LD r, n
 	Clock LoadRegister(Register8bit dest, uint8_t value);
-	// LD r, (dd)
+	// LD r, (rr')
 	Clock LoadRegisterFromAddress(Register8bit dest, Register16bit source_addr);
-	// LD (dd), r
+	// LD (rr), r'
 	Clock LoadAddressFromRegister(Register16bit dest_addr, Register8bit source);
-	// LD (dd), n
+	// LD (rr), n
 	Clock LoadAddress(Register16bit dest_addr, uint8_t value);
 	// LD r, (nn)
 	Clock LoadRegisterFromAddress(Register8bit dest, uint16_t addr);
@@ -43,13 +43,13 @@ public:
 #pragma endregion
 
 #pragma region GB-specific load instruction group
-	// LDI (dd), r
+	// LDI (rr), r'
 	Clock LoadAddressAndIncrement(Register16bit dest_addr, Register8bit source);
-	// LDD (dd), r
+	// LDD (rr), r'
 	Clock LoadAddressAndDecrement(Register16bit dest_addr, Register8bit source);
-	// LDI r, (dd)
+	// LDI r, (rr)
 	Clock LoadRegisterAndIncrement(Register8bit dest, Register16bit source_addr);
-	// LDD r, (dd)
+	// LDD r, (rr')
 	Clock LoadRegisterAndDecrement(Register8bit dest, Register16bit source_addr);
 #pragma endregion
 
@@ -58,63 +58,129 @@ public:
 	Clock Add(uint8_t value);
 	// ADD A, r
 	Clock Add(Register8bit source);
-	// ADD A, (dd)
+	// ADD A, (rr)
 	Clock Add(Register16bit source_addr);
 	// ADC A, n
 	Clock AddPlusCarry(uint8_t value);
 	// ADC A, r
 	Clock AddPlusCarry(Register8bit source);
-	// ADC A, (dd)
+	// ADC A, (rr)
 	Clock AddPlusCarry(Register16bit source_addr);
 	// SUB A, n
 	Clock Sub(uint8_t value);
 	// SUB A, r
 	Clock Sub(Register8bit source);
-	// SUB A, (dd)
+	// SUB A, (rr)
 	Clock Sub(Register16bit source_addr);
 	// SBC A, n
 	Clock SubMinusCarry(uint8_t value);
 	// SBC A, r
 	Clock SubMinusCarry(Register8bit source);
-	// SBC A, (dd)
+	// SBC A, (rr)
 	Clock SubMinusCarry(Register16bit source_addr);
 	// AND A, n
 	Clock And(uint8_t value);
 	// AND A, r
 	Clock And(Register8bit source);
-	// AND A, (dd)
+	// AND A, (rr)
 	Clock And(Register16bit source_addr);
 	// OR A, n
 	Clock Or(uint8_t value);
 	// OR A, r
 	Clock Or(Register8bit source);
-	// OR A, (dd)
+	// OR A, (rr)
 	Clock Or(Register16bit source_addr);
 	// XOR A, n
 	Clock Xor(uint8_t value);
 	// XOR A, r
 	Clock Xor(Register8bit source);
-	// XOR A, (dd)
+	// XOR A, (rr)
 	Clock Xor(Register16bit source_addr);
 	// CP A, n
 	Clock Compare(uint8_t value);
 	// CP A, r
 	Clock Compare(Register8bit source);
-	// CP A, (dd)
+	// CP A, (rr)
 	Clock Compare(Register16bit source_addr);
 	// INC r
 	Clock Increment(Register8bit reg);
-	// INC (dd)
+	// INC (rr)
 	Clock Increment(Register16bit reg_addr);
 	// DEC r
 	Clock Decrement(Register8bit reg);
-	// DEC (dd)
+	// DEC (rr)
 	Clock Decrement(Register16bit reg_addr);
 #pragma endregion
 
 #pragma region General purpose arithmetic and CPU control groups
 	// DAA
 	Clock DAA();
+	// CPL
+	Clock InvertAccumulator();
+	// CCF
+	Clock InvertCarryFlag();
+	// SCF
+	Clock SetCarryFlag();
+	// NOP
+	Clock NoOperation();
+	// HALT
+	Clock Halt();
+	// DI
+	Clock DisableInterrupts();
+	// EI
+	Clock EnableInterrupts();
+#pragma endregion
+
+#pragma region 16-bit arithmetic group
+	// ADD rr, rr'
+	Clock Add(Register16bit dest, Register16bit source);
+	// ADC rr, rr'
+	Clock AddPlusCarry(Register16bit dest, Register16bit source);
+	// SBC rr, rr'
+	Clock SubtractMinusCarry(Register16bit dest, Register16bit source);
+	// INC rr
+	Clock Increment(Register16bit reg);
+	// DEC rr
+	Clock Decrement(Register16bit reg);
+#pragma endregion
+
+#pragma region Rotate and shift group
+	// RLCA
+	Clock Rlca();
+	// RLA
+	Clock Rla();
+	// RRCA
+	Clock Rrca();
+	// RRA
+	Clock Rra();
+	// RLC r
+	Clock Rlc(Register8bit reg);
+	// RLC (rr)
+	Clock Rlc(Register16bit reg_addr);
+	// RL r
+	Clock Rl(Register8bit reg);
+	// RL (rr)
+	Clock Rl(Register16bit reg_addr);
+	// RRC r
+	Clock Rrc(Register8bit reg);
+	// RRC (rr)
+	Clock Rrc(Register16bit reg_addr);
+	// RR r
+	Clock Rr(Register8bit reg);
+	// RR (rr)
+	Clock Rr(Register16bit reg_addr);
+	// SLA r
+	Clock Sla(Register8bit reg);
+	// SLA (rr)
+	Clock Sla(Register16bit reg_addr);
+	// SRA r
+	Clock Sra(Register8bit reg);
+	// SRA (rr)
+	Clock Sra(Register16bit reg_addr);
+	// SRL r
+	Clock Srl(Register8bit reg);
+	// SRL (rr)
+	Clock Srl(Register16bit reg_addr);
 #pragma endregion
 
 private:
@@ -122,4 +188,12 @@ private:
 	Clock clock;
 	MMU mmu;
 	std::map<uint8_t, std::function<Clock()>> operations_;
+
+	enum class State
+	{
+		Running,
+		Halted
+	} state_{ State::Running };
+
+	bool interrupt_enabled_{ true };
 };

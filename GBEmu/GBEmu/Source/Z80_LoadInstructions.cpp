@@ -15,21 +15,21 @@ Clock Z80::LoadRegister(Register8bit dest, uint8_t value)
 	return Clock(2, 7);
 }
 
-// LD r, (dd)
+// LD r, (rr')
 Clock Z80::LoadRegisterFromAddress(Register8bit dest, Register16bit source_addr)
 {
 	registers.Write(dest, mmu.Read8bitFromMemory(registers.Read(source_addr)));
 	return Clock(2, 7);
 }
 
-// LD (dd), r
+// LD (rr), r'
 Clock Z80::LoadAddressFromRegister(Register16bit dest_addr, Register8bit source)
 {
 	mmu.Write8bitToMemory(registers.Read(dest_addr), registers.Read(source));
 	return Clock(2, 7);
 }
 
-// LD (dd), n
+// LD (rr), n
 Clock Z80::LoadAddress(Register16bit dest_addr, uint8_t value)
 {
 	mmu.Write8bitToMemory(registers.Read(dest_addr), value);
@@ -92,7 +92,7 @@ Clock Z80::PopFromStack(Register16bit dest)
 #pragma endregion
 
 #pragma region GB-specific load instruction group
-// LDI (dd), r
+// LDI (rr), r'
 Clock Z80::LoadAddressAndIncrement(Register16bit dest_addr, Register8bit source)
 {
 	mmu.Write8bitToMemory(registers.Read(dest_addr), registers.Read(source));
@@ -100,7 +100,7 @@ Clock Z80::LoadAddressAndIncrement(Register16bit dest_addr, Register8bit source)
 	return Clock(2, 8);
 }
 
-// LDD (dd), r
+// LDD (rr), r'
 Clock Z80::LoadAddressAndDecrement(Register16bit dest_addr, Register8bit source)
 {
 	mmu.Write8bitToMemory(registers.Read(dest_addr), registers.Read(source));
@@ -108,7 +108,7 @@ Clock Z80::LoadAddressAndDecrement(Register16bit dest_addr, Register8bit source)
 	return Clock(2, 8);
 }
 
-// LDI r, (dd)
+// LDI r, (rr')
 Clock Z80::LoadRegisterAndIncrement(Register8bit dest, Register16bit source_addr)
 {
 	registers.Write(dest, mmu.Read8bitFromMemory(registers.Read(source_addr)));
@@ -116,7 +116,7 @@ Clock Z80::LoadRegisterAndIncrement(Register8bit dest, Register16bit source_addr
 	return Clock(2, 8);
 }
 
-// LDD r, (dd)
+// LDD r, (rr')
 Clock Z80::LoadRegisterAndDecrement(Register8bit dest, Register16bit source_addr)
 {
 	registers.Write(dest, mmu.Read8bitFromMemory(registers.Read(source_addr)));

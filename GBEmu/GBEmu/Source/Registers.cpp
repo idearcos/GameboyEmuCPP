@@ -139,22 +139,20 @@ void Registers::Decrement(Register16bit reg)
 	Write(reg, Read(reg) - 1);
 }
 
-void Registers::SetFlag(Flags flag)
+void Registers::SetFlag(Flags flag, bool bSet)
 {
-	f_ |= static_cast<std::underlying_type_t<Flags>>(flag);
-}
-
-void Registers::ResetFlag(Flags flag)
-{
-	f_ &= !(static_cast<std::underlying_type_t<Flags>>(flag));
+	if (bSet)
+	{
+		f_ |= static_cast<std::underlying_type_t<Flags>>(flag);
+	}
+	else
+	{
+		f_ &= !(static_cast<std::underlying_type_t<Flags>>(flag));
+	}
+	
 }
 
 bool Registers::IsFlagSet(Flags flag) const
 {
 	return f_ & static_cast<std::underlying_type_t<Flags>>(flag);
-}
-
-void Registers::ResetFlags()
-{
-	f_ = 0;
 }

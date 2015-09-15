@@ -46,10 +46,8 @@ public:
 	void Increment(Register16bit reg);
 	void Decrement(Register16bit reg);
 
-	void SetFlag(Flags flag);
-	void ResetFlag(Flags flag);
+	void SetFlag(Flags flag, bool bSet);
 	bool IsFlagSet(Flags flag) const;
-	void ResetFlags();
 
 private:
 	uint8_t a_{ 0 };
