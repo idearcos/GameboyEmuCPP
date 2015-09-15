@@ -108,13 +108,13 @@ Clock Z80::Rl(Register8bit reg)
 {
 	registers.SetFlag(Flags::HalfCarry, false);
 	registers.SetFlag(Flags::Subtract, false);
-	// Z not affected
 
 	const bool bit_7_set = (registers.Read(reg) & 0x80) != 0;
 	const uint8_t rotated_acc = (registers.Read(reg) << 1) | (registers.IsFlagSet(Flags::Carry) ? 1 : 0);
 
 	registers.SetFlag(Flags::Carry, bit_7_set);
 	registers.Write(reg, rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
 
 	return Clock(2, 8);
 }
@@ -125,13 +125,13 @@ Clock Z80::Rl(Register16bit reg_addr)
 {
 	registers.SetFlag(Flags::HalfCarry, false);
 	registers.SetFlag(Flags::Subtract, false);
-	// Z not affected
 
 	const bool bit_7_set = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) & 0x80) != 0;
 	const uint8_t rotated_acc = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) << 1) | (registers.IsFlagSet(Flags::Carry) ? 1 : 0);
 
 	registers.SetFlag(Flags::Carry, bit_7_set);
 	mmu.Write8bitToMemory(registers.Read(reg_addr), rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
 
 	return Clock(4, 15);
 }
@@ -140,68 +140,170 @@ Clock Z80::Rl(Register16bit reg_addr)
 // (Z80 p.222)
 Clock Z80::Rrc(Register8bit reg)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_0_set = (registers.Read(reg) & 1) != 0;
+	const uint8_t rotated_acc = (registers.Read(reg) >> 1) | (bit_0_set ? 0x80 : 0);
+
+	registers.SetFlag(Flags::Carry, bit_0_set);
+	registers.Write(reg, rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(2, 8);
 }
 
 // RRC (rr)
 // (Z80 p.222)
 Clock Z80::Rrc(Register16bit reg_addr)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_0_set = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) & 1) != 0;
+	const uint8_t rotated_acc = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) >> 1) | (bit_0_set ? 0x80 : 0);
+
+	registers.SetFlag(Flags::Carry, bit_0_set);
+	mmu.Write8bitToMemory(registers.Read(reg_addr), rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(4, 15);
 }
 
 // RR r
 // (Z80 p.225)
 Clock Z80::Rr(Register8bit reg)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_0_set = (registers.Read(reg) & 1) != 0;
+	const uint8_t rotated_acc = (registers.Read(reg) >> 1) | (registers.IsFlagSet(Flags::Carry) ? 0x80 : 0);
+
+	registers.SetFlag(Flags::Carry, bit_0_set);
+	registers.Write(reg, rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(2, 8);
 }
 
 // RR (rr)
 // (Z80 p.225)
 Clock Z80::Rr(Register16bit reg_addr)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_0_set = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) & 1) != 0;
+	const uint8_t rotated_acc = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) >> 1) | (registers.IsFlagSet(Flags::Carry) ? 0x80 : 0);
+
+	registers.SetFlag(Flags::Carry, bit_0_set);
+	mmu.Write8bitToMemory(registers.Read(reg_addr), rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(4, 15);
 }
 
 // SLA r
 // (Z80 p.228)
 Clock Z80::Sla(Register8bit reg)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_7_set = (registers.Read(reg) & 0x80) != 0;
+	const uint8_t rotated_acc = registers.Read(reg) << 1;
+
+	registers.SetFlag(Flags::Carry, bit_7_set);
+	registers.Write(reg, rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(2, 8);
 }
 
 // SLA (rr)
 // (Z80 p.228)
 Clock Z80::Sla(Register16bit reg_addr)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_7_set = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) & 0x80) != 0;
+	const uint8_t rotated_acc = mmu.Read8bitFromMemory(registers.Read(reg_addr)) << 1;
+
+	registers.SetFlag(Flags::Carry, bit_7_set);
+	mmu.Write8bitToMemory(registers.Read(reg_addr), rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(4, 15);
 }
 
 // SRA r
 // (Z80 p.231)
 Clock Z80::Sra(Register8bit reg)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_0_set = (registers.Read(reg) & 1) != 0;
+	const bool bit_7_set = (registers.Read(reg) & 0x80) != 0;
+	const uint8_t rotated_acc = (registers.Read(reg) >> 1) | (bit_7_set ? 0x80 : 0);
+
+	registers.SetFlag(Flags::Carry, bit_0_set);
+	registers.Write(reg, rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(2, 8);
 }
 
 // SRA (rr)
 // (Z80 p.231)
 Clock Z80::Sra(Register16bit reg_addr)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_0_set = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) & 1) != 0;
+	const bool bit_7_set = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) & 0x80) != 0;
+	const uint8_t rotated_acc = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) >> 1) | (bit_7_set ? 0x80 : 0);
+
+	registers.SetFlag(Flags::Carry, bit_0_set);
+	mmu.Write8bitToMemory(registers.Read(reg_addr), rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(4, 15);
 }
 
 // SRL r
 // (Z80 p.234)
 Clock Z80::Srl(Register8bit reg)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_0_set = (registers.Read(reg) & 1) != 0;
+	const uint8_t rotated_acc = registers.Read(reg) >> 1;
+
+	registers.SetFlag(Flags::Carry, bit_0_set);
+	registers.Write(reg, rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(2, 8);
 }
 
 // SRL (rr)
 // (Z80 p.234)
 Clock Z80::Srl(Register16bit reg_addr)
 {
+	registers.SetFlag(Flags::HalfCarry, false);
+	registers.SetFlag(Flags::Subtract, false);
 
+	const bool bit_0_set = (mmu.Read8bitFromMemory(registers.Read(reg_addr)) & 1) != 0;
+	const uint8_t rotated_acc = mmu.Read8bitFromMemory(registers.Read(reg_addr)) >> 1;
+
+	registers.SetFlag(Flags::Carry, bit_0_set);
+	mmu.Write8bitToMemory(registers.Read(reg_addr), rotated_acc);
+	registers.SetFlag(Flags::Zero, rotated_acc == 0);
+
+	return Clock(4, 15);
 }
