@@ -23,7 +23,7 @@ enum class Register16bit
 	SP
 };
 
-// Z S HC C X X X X
+// Z S H C X X X X
 enum class Flags : uint8_t
 {
 	Zero = 0x80,

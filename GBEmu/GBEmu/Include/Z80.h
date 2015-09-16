@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <map>
 #include <functional>
+#include <atomic>
 
 #include "Registers.h"
 #include "MMU.h"
@@ -13,6 +14,11 @@ class Z80
 public:
 	Z80();
 	~Z80() = default;
+
+private:
+	void DispatchLoopFunction();
+
+	inline uint8_t FetchByte();
 
 #pragma region 8-bit load group
 	// LD r, r'
@@ -105,11 +111,11 @@ public:
 	// INC r
 	Clock Increment(Register8bit reg);
 	// INC (rr)
-	Clock Increment(Register16bit reg_addr);
+	Clock IncrementInAddress(Register16bit reg_addr);
 	// DEC r
 	Clock Decrement(Register8bit reg);
 	// DEC (rr)
-	Clock Decrement(Register16bit reg_addr);
+	Clock DecrementInAddress(Register16bit reg_addr);
 #pragma endregion
 
 #pragma region General purpose arithmetic and CPU control groups
@@ -183,6 +189,51 @@ public:
 	Clock Srl(Register16bit reg_addr);
 #pragma endregion
 
+#pragma region Bit set, reset and test group
+	// BIT n, r
+	Clock TestBit(uint8_t bit_index, Register8bit reg);
+	// BIT n, *rr
+	Clock TestBit(uint8_t bit_index, Register16bit reg_addr);
+	// SET n, r
+	Clock SetBit(uint8_t bit_index, Register8bit reg);
+	// SET n, *rr
+	Clock SetBit(uint8_t bit_index, Register16bit reg_addr);
+	// RES n, r
+	Clock ResetBit(uint8_t bit_index, Register8bit reg);
+	// RES n, *rr
+	Clock ResetBit(uint8_t bit_index, Register16bit reg_addr);
+#pragma endregion
+
+#pragma region Jump group
+	// JP nn
+	Clock Jump(uint16_t address);
+	// JP cc, nn
+	Clock JumpIf(uint16_t address, Flags flag, bool flag_value);
+	// JR n
+	Clock Jump(int8_t displacement);
+	// JR cc, n
+	Clock JumpIf(int8_t displacement, Flags flag, bool flag_value);
+	// JP *rr
+	Clock Jump(Register16bit reg_addr);
+#pragma endregion
+
+#pragma region Call and return group
+	// CALL nn
+	Clock Call(uint16_t address);
+	// CALL cc, nn
+	Clock CallIf(uint16_t address, Flags flag, bool flag_value);
+	// RET
+	Clock Return();
+	// RET cc
+	Clock ReturnIf(Flags flag, bool flag_value);
+	// RETI
+	Clock ReturnFromInterrupt();
+	// RST p
+	Clock Restart(uint16_t address);
+#pragma endregion
+
+	Clock WrongOpCode();
+
 private:
 	Registers registers;
 	Clock clock;
@@ -196,4 +247,6 @@ private:
 	} state_{ State::Running };
 
 	bool interrupt_enabled_{ true };
+
+	std::atomic<bool> exit_loop_{ false };
 };

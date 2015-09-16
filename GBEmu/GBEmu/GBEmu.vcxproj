@@ -82,7 +82,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)Include</AdditionalIncludeDirectories>
@@ -96,7 +96,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)Include</AdditionalIncludeDirectories>
@@ -108,7 +108,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
@@ -126,7 +126,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
@@ -155,12 +155,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GBEmu.cpp" />
+    <ClCompile Include="Source\Z80_CallAndReturn.cpp" />
+    <ClCompile Include="Source\Z80_Jump.cpp" />
     <ClCompile Include="Source\MMU.cpp" />
     <ClCompile Include="Source\Registers.cpp" />
     <ClCompile Include="Source\stdafx.cpp" />
     <ClCompile Include="Source\Z80.cpp" />
     <ClCompile Include="Source\Z80_16bitArithmetic.cpp" />
     <ClCompile Include="Source\Z80_8bitArithmetic.cpp" />
+    <ClCompile Include="Source\Z80_BitOperations.cpp" />
     <ClCompile Include="Source\Z80_GeneralArithmeticAndCpuControl.cpp" />
     <ClCompile Include="Source\Z80_LoadInstructions.cpp" />
     <ClCompile Include="Source\Z80_RotateAndShift.cpp" />

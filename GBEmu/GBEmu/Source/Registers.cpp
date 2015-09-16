@@ -5,7 +5,7 @@
 
 uint8_t Registers::Read(Register8bit reg) const
 {
-	uint16_t value{ 0 };
+	uint8_t value{ 0 };
 	switch (reg)
 	{
 	case Register8bit::A:
@@ -154,5 +154,5 @@ void Registers::SetFlag(Flags flag, bool bSet)
 
 bool Registers::IsFlagSet(Flags flag) const
 {
-	return f_ & static_cast<std::underlying_type_t<Flags>>(flag);
+	return (f_ & static_cast<std::underlying_type_t<Flags>>(flag)) != 0;
 }

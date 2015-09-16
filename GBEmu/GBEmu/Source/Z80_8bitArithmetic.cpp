@@ -1,6 +1,7 @@
 #include "Z80.h"
 
 // ADD A, n
+// (Z80 p.145)
 Clock Z80::Add(uint8_t value)
 {
 	registers.SetFlag(Flags::Subtract, false);
@@ -18,6 +19,7 @@ Clock Z80::Add(uint8_t value)
 }
 
 // ADD A, r
+// (Z80 p.143)
 Clock Z80::Add(Register8bit reg)
 {
 	Add(registers.Read(reg));
@@ -25,6 +27,7 @@ Clock Z80::Add(Register8bit reg)
 }
 
 // ADD A, (rr)
+// (Z80 p.146)
 Clock Z80::Add(Register16bit source_addr)
 {
 	Add(mmu.Read8bitFromMemory(registers.Read(source_addr)));
@@ -32,6 +35,7 @@ Clock Z80::Add(Register16bit source_addr)
 }
 
 // ADC A, n
+// (Z80 p.149)
 Clock Z80::AddPlusCarry(uint8_t value)
 {
 	registers.SetFlag(Flags::Subtract, false);
@@ -50,6 +54,7 @@ Clock Z80::AddPlusCarry(uint8_t value)
 }
 
 // ADC A, r
+// (Z80 p.149)
 Clock Z80::AddPlusCarry(Register8bit reg)
 {
 	AddPlusCarry(registers.Read(reg));
@@ -57,6 +62,7 @@ Clock Z80::AddPlusCarry(Register8bit reg)
 }
 
 // ADC A, (rr)
+// (Z80 p.149)
 Clock Z80::AddPlusCarry(Register16bit source_addr)
 {
 	AddPlusCarry(mmu.Read8bitFromMemory(registers.Read(source_addr)));
@@ -64,6 +70,7 @@ Clock Z80::AddPlusCarry(Register16bit source_addr)
 }
 
 // SUB A, n
+// (Z80 p.151)
 Clock Z80::Sub(uint8_t value)
 {
 	registers.SetFlag(Flags::Subtract, true);
@@ -81,6 +88,7 @@ Clock Z80::Sub(uint8_t value)
 }
 
 // SUB A, r
+// (Z80 p.151)
 Clock Z80::Sub(Register8bit reg)
 {
 	Sub(registers.Read(reg));
@@ -88,6 +96,7 @@ Clock Z80::Sub(Register8bit reg)
 }
 
 // SUB A, (rr)
+// (Z80 p.151)
 Clock Z80::Sub(Register16bit source_addr)
 {
 	Sub(mmu.Read8bitFromMemory(registers.Read(source_addr)));
@@ -95,6 +104,7 @@ Clock Z80::Sub(Register16bit source_addr)
 }
 
 // SBC A, n
+// (Z80 p.153)
 Clock Z80::SubMinusCarry(uint8_t value)
 {
 	registers.SetFlag(Flags::Subtract, true);
@@ -113,6 +123,7 @@ Clock Z80::SubMinusCarry(uint8_t value)
 }
 
 // SBC A, r
+// (Z80 p.153)
 Clock Z80::SubMinusCarry(Register8bit reg)
 {
 	SubMinusCarry(registers.Read(reg));
@@ -120,13 +131,15 @@ Clock Z80::SubMinusCarry(Register8bit reg)
 }
 
 // SBC A, (rr)
+// (Z80 p.153)
 Clock Z80::SubMinusCarry(Register16bit source_addr)
 {
 	SubMinusCarry(mmu.Read8bitFromMemory(registers.Read(source_addr)));
 	return Clock(2, 7);
 }
 
-// AND A, n
+// AND n
+// (Z80 p.155)
 Clock Z80::And(uint8_t value)
 {
 	registers.SetFlag(Flags::Carry, false);
@@ -141,21 +154,24 @@ Clock Z80::And(uint8_t value)
 	return Clock(2, 7);
 }
 
-// AND A, r
+// AND r
+// (Z80 p.155)
 Clock Z80::And(Register8bit reg)
 {
 	And(registers.Read(reg));
 	return Clock(1, 4);
 }
 
-// AND A, (rr)
+// AND (rr)
+// (Z80 p.155)
 Clock Z80::And(Register16bit source_addr)
 {
 	And(mmu.Read8bitFromMemory(registers.Read(source_addr)));
 	return Clock(2, 7);
 }
 
-// OR A, n
+// OR n
+// (Z80 p.157)
 Clock Z80::Or(uint8_t value)
 {
 	registers.SetFlag(Flags::Carry, false);
@@ -170,21 +186,24 @@ Clock Z80::Or(uint8_t value)
 	return Clock(2, 7);
 }
 
-// OR A, r
+// OR r
+// (Z80 p.157)
 Clock Z80::Or(Register8bit reg)
 {
 	Or(registers.Read(reg));
 	return Clock(1, 4);
 }
 
-// OR A, (rr)
+// OR (rr)
+// (Z80 p.157)
 Clock Z80::Or(Register16bit source_addr)
 {
 	Or(mmu.Read8bitFromMemory(registers.Read(source_addr)));
 	return Clock(2, 7);
 }
 
-// XOR A, n
+// XOR n
+// (Z80 p.159)
 Clock Z80::Xor(uint8_t value)
 {
 	registers.SetFlag(Flags::Carry, false);
@@ -199,21 +218,24 @@ Clock Z80::Xor(uint8_t value)
 	return Clock(2, 7);
 }
 
-// XOR A, r
+// XOR r
+// (Z80 p.159)
 Clock Z80::Xor(Register8bit reg)
 {
 	Xor(registers.Read(reg));
 	return Clock(1, 4);
 }
 
-// XOR A, (rr)
+// XOR (rr)
+// (Z80 p.159)
 Clock Z80::Xor(Register16bit source_addr)
 {
 	Xor(mmu.Read8bitFromMemory(registers.Read(source_addr)));
 	return Clock(2, 7);
 }
 
-// CP A, n
+// CP n
+// (Z80 p.161)
 Clock Z80::Compare(uint8_t value)
 {
 	registers.SetFlag(Flags::Subtract, true);
@@ -228,14 +250,16 @@ Clock Z80::Compare(uint8_t value)
 	return Clock(2, 7);
 }
 
-// CP A, r
+// CP r
+// (Z80 p.161)
 Clock Z80::Compare(Register8bit reg)
 {
 	Compare(registers.Read(reg));
 	return Clock(1, 4);
 }
 
-// CP A, (rr)
+// CP (rr)
+// (Z80 p.161)
 Clock Z80::Compare(Register16bit source_addr)
 {
 	Compare(mmu.Read8bitFromMemory(registers.Read(source_addr)));
@@ -261,7 +285,7 @@ Clock Z80::Increment(Register8bit reg)
 
 // INC (rr)
 // (Z80 p.165)
-Clock Z80::Increment(Register16bit reg_addr)
+Clock Z80::IncrementInAddress(Register16bit reg_addr)
 {
 	registers.SetFlag(Flags::Subtract, false);
 	// Carry is unaffected
@@ -297,7 +321,7 @@ Clock Z80::Decrement(Register8bit reg)
 
 // DEC (rr)
 // (Z80 p.168)
-Clock Z80::Decrement(Register16bit reg_addr)
+Clock Z80::DecrementInAddress(Register16bit reg_addr)
 {
 	registers.SetFlag(Flags::Subtract, true);
 	// Carry is unaffected
