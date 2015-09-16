@@ -14,22 +14,31 @@ Z80::Z80()
 		return this->LoadRegister(Register16bit::BC, value); };
 	// LD (BC), A
 	operations_[0x02] = [this](){ return this->LoadAddressFromRegister(Register16bit::BC, Register8bit::A); };
-	operations_[0x03] = [this](){ return this->WrongOpCode(); };
-	operations_[0x04] = [this](){ return this->WrongOpCode(); };
-	operations_[0x05] = [this](){ return this->WrongOpCode(); };
+	// INC BC
+	operations_[0x03] = [this](){ return this->Increment(Register16bit::BC); };
+	// INC B
+	operations_[0x04] = [this](){ return this->Increment(Register8bit::B); };
+	// DEC B
+	operations_[0x05] = [this](){ return this->Decrement(Register8bit::B); };
 	// LD B, n
 	operations_[0x06] = [this](){ return this->LoadRegister(Register8bit::B, this->FetchByte()); };
-	operations_[0x07] = [this](){ return this->WrongOpCode(); };
+	// RLCA
+	operations_[0x07] = [this](){ return this->Rlca(); };
 	operations_[0x08] = [this](){ return this->WrongOpCode(); };
-	operations_[0x09] = [this](){ return this->WrongOpCode(); };
+	// ADD HL, BC
+	operations_[0x09] = [this](){ return this->Add(Register16bit::HL, Register16bit::BC); };
 	// LD A, (BC)
 	operations_[0x0A] = [this](){ return this->LoadRegisterFromAddress(Register8bit::A, Register16bit::BC); };
-	operations_[0x0B] = [this](){ return this->WrongOpCode(); };
-	operations_[0x0C] = [this](){ return this->WrongOpCode(); };
-	operations_[0x0D] = [this](){ return this->WrongOpCode(); };
+	// DEC BC
+	operations_[0x0B] = [this](){ return this->Decrement(Register16bit::BC); };
+	// INC C
+	operations_[0x0C] = [this](){ return this->Increment(Register8bit::C); };
+	// DEC C
+	operations_[0x0D] = [this](){ return this->Decrement(Register8bit::C); };
 	// LD C, n
 	operations_[0x0E] = [this](){ return this->LoadRegister(Register8bit::C, this->FetchByte()); };
-	operations_[0x0F] = [this](){ return this->WrongOpCode(); };
+	// RRCA
+	operations_[0x0F] = [this](){ return this->Rrca(); };
 #pragma endregion
 
 #pragma region 0x10 - 0x1F
@@ -41,51 +50,77 @@ Z80::Z80()
 		return this->LoadRegister(Register16bit::DE, value); };
 	// LD (DE), A
 	operations_[0x12] = [this](){ return this->LoadAddressFromRegister(Register16bit::DE, Register8bit::A); };
-	operations_[0x13] = [this](){ return this->WrongOpCode(); };
-	operations_[0x14] = [this](){ return this->WrongOpCode(); };
-	operations_[0x15] = [this](){ return this->WrongOpCode(); };
+	// INC DE
+	operations_[0x13] = [this](){ return this->Increment(Register16bit::DE); };
+	// INC D
+	operations_[0x14] = [this](){ return this->Increment(Register8bit::D); };
+	// DEC D
+	operations_[0x15] = [this](){ return this->Decrement(Register8bit::D); };
 	// LD D, n
 	operations_[0x16] = [this](){ return this->LoadRegister(Register8bit::D, this->FetchByte()); };
-	operations_[0x17] = [this](){ return this->WrongOpCode(); };
-	operations_[0x18] = [this](){ return this->WrongOpCode(); };
-	operations_[0x19] = [this](){ return this->WrongOpCode(); };
+	// RLA
+	operations_[0x17] = [this](){ return this->Rla(); };
+	// JR n
+	operations_[0x18] = [this](){
+		return this->Jump(static_cast<int8_t>(this->FetchByte())); };
+	// ADD HL, DE
+	operations_[0x19] = [this](){ return this->Add(Register16bit::HL, Register16bit::DE); };
 	// LD A, (DE)
 	operations_[0x1A] = [this](){ return this->LoadRegisterFromAddress(Register8bit::A, Register16bit::DE); };
-	operations_[0x1B] = [this](){ return this->WrongOpCode(); };
-	operations_[0x1C] = [this](){ return this->WrongOpCode(); };
-	operations_[0x1D] = [this](){ return this->WrongOpCode(); };
+	// DEC DE
+	operations_[0x1B] = [this](){ return this->Decrement(Register16bit::DE); };
+	// INC E
+	operations_[0x1C] = [this](){ return this->Increment(Register8bit::E); };
+	// DEC E
+	operations_[0x1D] = [this](){ return this->Decrement(Register8bit::E); };
 	// LD E, n
 	operations_[0x1E] = [this](){ return this->LoadRegister(Register8bit::E, this->FetchByte()); };
-	operations_[0x1F] = [this](){ return this->WrongOpCode(); };
+	// RRA
+	operations_[0x1F] = [this](){ return this->Rra(); };
 #pragma endregion
 
 #pragma region 0x20 - 0x2F
-	operations_[0x20] = [this](){ return this->WrongOpCode(); };
+	// JR NZ, n
+	operations_[0x20] = [this](){
+		return this->JumpIf(static_cast<int8_t>(this->FetchByte()), Flags::Zero, false); };
 	// LD HL, nn
 	operations_[0x21] = [this](){
 		uint16_t value{ this->FetchByte() };
 		value += static_cast<uint16_t>(this->FetchByte()) << 8;
 		return this->LoadRegister(Register16bit::HL, value); };
 	operations_[0x22] = [this](){ return this->WrongOpCode(); };
-	operations_[0x23] = [this](){ return this->WrongOpCode(); };
-	operations_[0x24] = [this](){ return this->WrongOpCode(); };
-	operations_[0x25] = [this](){ return this->WrongOpCode(); };
+	// INC HL
+	operations_[0x23] = [this](){ return this->Increment(Register16bit::HL); };
+	// INC H
+	operations_[0x24] = [this](){ return this->Increment(Register8bit::H); };
+	// DEC H
+	operations_[0x25] = [this](){ return this->Decrement(Register8bit::H); };
 	// LD H, n
 	operations_[0x26] = [this](){ return this->LoadRegister(Register8bit::H, this->FetchByte()); };
-	operations_[0x27] = [this](){ return this->WrongOpCode(); };
-	operations_[0x28] = [this](){ return this->WrongOpCode(); };
-	operations_[0x29] = [this](){ return this->WrongOpCode(); };
+	// DAA
+	operations_[0x27] = [this](){ return this->DAA(); };
+	// JR Z, n
+	operations_[0x28] = [this](){
+		return this->JumpIf(static_cast<int8_t>(this->FetchByte()), Flags::Zero, true); };
+	// ADD HL, HL
+	operations_[0x29] = [this](){ return this->Add(Register16bit::HL, Register16bit::HL); };
 	operations_[0x2A] = [this](){ return this->WrongOpCode(); };
-	operations_[0x2B] = [this](){ return this->WrongOpCode(); };
-	operations_[0x2C] = [this](){ return this->WrongOpCode(); };
-	operations_[0x2D] = [this](){ return this->WrongOpCode(); };
+	// DEC HL
+	operations_[0x2B] = [this](){ return this->Decrement(Register16bit::HL); };
+	// INC L
+	operations_[0x2C] = [this](){ return this->Increment(Register8bit::L); };
+	// DEC L
+	operations_[0x2D] = [this](){ return this->Decrement(Register8bit::L); };
 	// LD L, n
 	operations_[0x2E] = [this](){ return this->LoadRegister(Register8bit::L, this->FetchByte()); };
-	operations_[0x2F] = [this](){ return this->WrongOpCode(); };
+	// CPL
+	operations_[0x2F] = [this](){ return this->InvertAccumulator(); };
 #pragma endregion
 
 #pragma region 0x30 - 0x3F
-	operations_[0x30] = [this](){ return this->WrongOpCode(); };
+	// JR NC, n
+	operations_[0x30] = [this](){
+		return this->JumpIf(static_cast<int8_t>(this->FetchByte()), Flags::Carry, false); };
 	// LD SP, nn
 	operations_[0x31] = [this](){
 		uint16_t value{ this->FetchByte() };
@@ -96,25 +131,36 @@ Z80::Z80()
 		uint16_t address{ this->FetchByte() };
 		address += static_cast<uint16_t>(this->FetchByte()) << 8;
 		return this->LoadAddressFromRegister(address, Register8bit::A); };
-	operations_[0x33] = [this](){ return this->WrongOpCode(); };
-	operations_[0x34] = [this](){ return this->WrongOpCode(); };
-	operations_[0x35] = [this](){ return this->WrongOpCode(); };
+	// INC SP
+	operations_[0x33] = [this](){ return this->Increment(Register16bit::SP); };
+	// INC (HL)
+	operations_[0x34] = [this](){ return this->IncrementInAddress(Register16bit::HL); };
+	// DEC (HL)
+	operations_[0x35] = [this](){ return this->DecrementInAddress(Register16bit::HL); };
 	// LD (HL), n
 	operations_[0x36] = [this](){ return this->LoadAddress(Register16bit::HL, this->FetchByte()); };
-	operations_[0x37] = [this](){ return this->WrongOpCode(); };
-	operations_[0x38] = [this](){ return this->WrongOpCode(); };
-	operations_[0x39] = [this](){ return this->WrongOpCode(); };
+	// SCF
+	operations_[0x37] = [this](){ return this->SetCarryFlag(); };
+	// JR C, n
+	operations_[0x38] = [this](){
+		return this->JumpIf(static_cast<int8_t>(this->FetchByte()), Flags::Carry, true); };
+	// ADD HL, SP
+	operations_[0x39] = [this](){ return this->Add(Register16bit::HL, Register16bit::SP); };
 	// LD A, (nn)
 	operations_[0x3A] = [this](){
 		uint16_t address{ this->FetchByte() };
 		address += static_cast<uint16_t>(this->FetchByte()) << 8;
 		return this->LoadRegisterFromAddress(Register8bit::A, address); };
-	operations_[0x3B] = [this](){ return this->WrongOpCode(); };
-	operations_[0x3C] = [this](){ return this->WrongOpCode(); };
-	operations_[0x3D] = [this](){ return this->WrongOpCode(); };
+	// DEC SP
+	operations_[0x3B] = [this](){ return this->Decrement(Register16bit::SP); };
+	// INC A
+	operations_[0x3C] = [this](){ return this->Increment(Register8bit::A); };
+	// DEC A
+	operations_[0x3D] = [this](){ return this->Decrement(Register8bit::A); };
 	// LD A, n
 	operations_[0x3E] = [this](){ return this->LoadRegister(Register8bit::A, this->FetchByte()); };
-	operations_[0x3F] = [this](){ return this->WrongOpCode(); };
+	// CCF
+	operations_[0x3F] = [this](){ return this->InvertCarryFlag(); };
 #pragma endregion
 
 #pragma region 0x40 - 0x4F
@@ -235,7 +281,8 @@ Z80::Z80()
 	operations_[0x74] = [this](){ return this->LoadAddressFromRegister(Register16bit::HL, Register8bit::H); };
 	// LD (HC), L
 	operations_[0x75] = [this](){ return this->LoadAddressFromRegister(Register16bit::HL, Register8bit::L); };
-	operations_[0x76] = [this](){ return this->WrongOpCode(); };
+	// HALT
+	operations_[0x76] = [this](){ return this->Halt(); };
 	// LD (HC), A
 	operations_[0x77] = [this](){ return this->LoadAddressFromRegister(Register16bit::HL, Register8bit::A); };
 	// LD A, B
@@ -270,7 +317,7 @@ Z80::Z80()
 	// ADD A, L
 	operations_[0x85] = [this](){ return this->Add(Register8bit::L); };
 	// ADD A, (HL)
-	operations_[0x86] = [this](){ return this->Add(Register8bit::); };
+	operations_[0x86] = [this](){ return this->Add(Register16bit::HL); };
 	// ADD A, A
 	operations_[0x87] = [this](){ return this->Add(Register8bit::A); };
 	// ADC A, B
@@ -286,7 +333,7 @@ Z80::Z80()
 	// ADC A, L
 	operations_[0x8D] = [this](){ return this->AddPlusCarry(Register8bit::L); };
 	// ADC A, (HL)
-	operations_[0x8E] = [this](){ return this->AddPlusCarry(Register8bit::); };
+	operations_[0x8E] = [this](){ return this->AddPlusCarry(Register16bit::HL); };
 	// ADC A, A
 	operations_[0x8F] = [this](){ return this->AddPlusCarry(Register8bit::A); };
 #pragma endregion
@@ -305,7 +352,7 @@ Z80::Z80()
 	// SUB A, L
 	operations_[0x95] = [this](){ return this->Sub(Register8bit::L); };
 	// SUB A, (HL)
-	operations_[0x96] = [this](){ return this->Sub(Register8bit::); };
+	operations_[0x96] = [this](){ return this->Sub(Register16bit::HL); };
 	// SUB A, A
 	operations_[0x97] = [this](){ return this->Sub(Register8bit::A); };
 	// SBC A, B
@@ -321,7 +368,7 @@ Z80::Z80()
 	// SBC A, L
 	operations_[0x9D] = [this](){ return this->SubMinusCarry(Register8bit::L); };
 	// SBC A, (HL)
-	operations_[0x9E] = [this](){ return this->SubMinusCarry(Register8bit::); };
+	operations_[0x9E] = [this](){ return this->SubMinusCarry(Register16bit::HL); };
 	// SBC A, A
 	operations_[0x9F] = [this](){ return this->SubMinusCarry(Register8bit::A); };
 #pragma endregion
@@ -340,7 +387,7 @@ Z80::Z80()
 	// AND L
 	operations_[0xA5] = [this](){ return this->And(Register8bit::L); };
 	// AND (HL)
-	operations_[0xA6] = [this](){ return this->And(Register8bit::); };
+	operations_[0xA6] = [this](){ return this->And(Register16bit::HL); };
 	// AND A
 	operations_[0xA7] = [this](){ return this->And(Register8bit::A); };
 	// XOR B
@@ -356,7 +403,7 @@ Z80::Z80()
 	// XOR L
 	operations_[0xAD] = [this](){ return this->Xor(Register8bit::L); };
 	// XOR (HL)
-	operations_[0xAE] = [this](){ return this->Xor(Register8bit::); };
+	operations_[0xAE] = [this](){ return this->Xor(Register16bit::HL); };
 	// XOR A
 	operations_[0xAF] = [this](){ return this->Xor(Register8bit::A); };
 #pragma endregion
@@ -375,7 +422,7 @@ Z80::Z80()
 	// OR L
 	operations_[0xB5] = [this](){ return this->Or(Register8bit::L); };
 	// OR (HL)
-	operations_[0xB6] = [this](){ return this->Or(Register8bit::); };
+	operations_[0xB6] = [this](){ return this->Or(Register16bit::HL); };
 	// OR A
 	operations_[0xB7] = [this](){ return this->Or(Register8bit::A); };
 	// CP B
@@ -391,7 +438,7 @@ Z80::Z80()
 	// CP L
 	operations_[0xBD] = [this](){ return this->Compare(Register8bit::L); };
 	// CP (HL)
-	operations_[0xBE] = [this](){ return this->Compare(Register8bit::); };
+	operations_[0xBE] = [this](){ return this->Compare(Register16bit::HL); };
 	// CP A
 	operations_[0xBF] = [this](){ return this->Compare(Register8bit::A); };
 #pragma endregion
@@ -400,22 +447,35 @@ Z80::Z80()
 	operations_[0xC0] = [this](){ return this->WrongOpCode(); };
 	// POP BC
 	operations_[0xC1] = [this](){ return this->PopFromStack(Register16bit::BC); };
-	operations_[0xC2] = [this](){ return this->WrongOpCode(); };
-	operations_[0xC3] = [this](){ return this->WrongOpCode(); };
+	// JP NZ, nn
+	operations_[0xC2] = [this](){
+		uint16_t address{ this->FetchByte() };
+		address += static_cast<uint16_t>(this->FetchByte()) << 8;
+		return this->JumpIf(address, Flags::Zero, false); };
+	// JP nn
+	operations_[0xC3] = [this](){
+		uint16_t address{ this->FetchByte() };
+		address += static_cast<uint16_t>(this->FetchByte()) << 8;
+		return this->Jump(address); };
 	operations_[0xC4] = [this](){ return this->WrongOpCode(); };
 	// PUSH BC
 	operations_[0xC5] = [this](){ return this->PushToStack(Register16bit::BC); };
 	// ADD A, n
-	operations_[0xC6] = [this](){ return this->WrongOpCode(); };
+	operations_[0xC6] = [this](){ return this->Add(this->FetchByte()); };
 	operations_[0xC7] = [this](){ return this->WrongOpCode(); };
 	operations_[0xC8] = [this](){ return this->WrongOpCode(); };
 	operations_[0xC9] = [this](){ return this->WrongOpCode(); };
-	operations_[0xCA] = [this](){ return this->WrongOpCode(); };
+	// JP Z, nn
+	operations_[0xCA] = [this](){
+		uint16_t address{ this->FetchByte() };
+		address += static_cast<uint16_t>(this->FetchByte()) << 8;
+		return this->JumpIf(address, Flags::Zero, true); };
+	// RLC
 	operations_[0xCB] = [this](){ return this->WrongOpCode(); };
 	operations_[0xCC] = [this](){ return this->WrongOpCode(); };
 	operations_[0xCD] = [this](){ return this->WrongOpCode(); };
 	// ADC A, n
-	operations_[0xCE] = [this](){ return this->WrongOpCode(); };
+	operations_[0xCE] = [this](){ return this->AddPlusCarry(this->FetchByte()); };
 	operations_[0xCF] = [this](){ return this->WrongOpCode(); };
 #pragma endregion
 
@@ -423,22 +483,30 @@ Z80::Z80()
 	operations_[0xD0] = [this](){ return this->WrongOpCode(); };
 	// POP DE
 	operations_[0xD1] = [this](){ return this->PopFromStack(Register16bit::DE); };
-	operations_[0xD2] = [this](){ return this->WrongOpCode(); };
+	// JP NC, nn
+	operations_[0xD2] = [this](){
+		uint16_t address{ this->FetchByte() };
+		address += static_cast<uint16_t>(this->FetchByte()) << 8;
+		return this->JumpIf(address, Flags::Carry, false); };
 	operations_[0xD3] = [this](){ return this->WrongOpCode(); };
 	operations_[0xD4] = [this](){ return this->WrongOpCode(); };
 	// PUSH DE
 	operations_[0xD5] = [this](){ return this->PushToStack(Register16bit::DE); };
 	// SUB A, n
-	operations_[0xD6] = [this](){ return this->WrongOpCode(); };
+	operations_[0xD6] = [this](){ return this->Sub(this->FetchByte()); };
 	operations_[0xD7] = [this](){ return this->WrongOpCode(); };
 	operations_[0xD8] = [this](){ return this->WrongOpCode(); };
 	operations_[0xD9] = [this](){ return this->WrongOpCode(); };
-	operations_[0xDA] = [this](){ return this->WrongOpCode(); };
+	// JP C, nn
+	operations_[0xDA] = [this](){
+		uint16_t address{ this->FetchByte() };
+		address += static_cast<uint16_t>(this->FetchByte()) << 8;
+		return this->JumpIf(address, Flags::Carry, true); };
 	operations_[0xDB] = [this](){ return this->WrongOpCode(); };
 	operations_[0xDC] = [this](){ return this->WrongOpCode(); };
 	operations_[0xDD] = [this](){ return this->WrongOpCode(); };
 	// SBC A, n
-	operations_[0xDE] = [this](){ return this->WrongOpCode(); };
+	operations_[0xDE] = [this](){ return this->SubMinusCarry(this->FetchByte()); };
 	operations_[0xDF] = [this](){ return this->WrongOpCode(); };
 #pragma endregion
 
@@ -452,16 +520,17 @@ Z80::Z80()
 	// PUSH HL
 	operations_[0xE5] = [this](){ return this->PushToStack(Register16bit::HL); };
 	// AND n
-	operations_[0xE6] = [this](){ return this->WrongOpCode(); };
+	operations_[0xE6] = [this](){ return this->And(this->FetchByte()); };
 	operations_[0xE7] = [this](){ return this->WrongOpCode(); };
 	operations_[0xE8] = [this](){ return this->WrongOpCode(); };
-	operations_[0xE9] = [this](){ return this->WrongOpCode(); };
+	// JP (HL)
+	operations_[0xE9] = [this](){ return this->Jump(Register16bit::HL); };
 	operations_[0xEA] = [this](){ return this->WrongOpCode(); };
 	operations_[0xEB] = [this](){ return this->WrongOpCode(); };
 	operations_[0xEC] = [this](){ return this->WrongOpCode(); };
 	operations_[0xED] = [this](){ return this->WrongOpCode(); };
 	// XOR n
-	operations_[0xEE] = [this](){ return this->WrongOpCode(); };
+	operations_[0xEE] = [this](){ return this->Xor(this->FetchByte()); };
 	operations_[0xEF] = [this](){ return this->WrongOpCode(); };
 #pragma endregion
 
@@ -470,22 +539,24 @@ Z80::Z80()
 	// POP AF
 	operations_[0xF1] = [this](){ return this->PopFromStack(Register16bit::AF); };
 	operations_[0xF2] = [this](){ return this->WrongOpCode(); };
-	operations_[0xF3] = [this](){ return this->WrongOpCode(); };
+	// DI
+	operations_[0xF3] = [this](){ return this->DisableInterrupts(); };
 	operations_[0xF4] = [this](){ return this->WrongOpCode(); };
 	// PUSH AF
 	operations_[0xF5] = [this](){ return this->PushToStack(Register16bit::AF); };
 	// OR n
-	operations_[0xF6] = [this](){ return this->WrongOpCode(); };
+	operations_[0xF6] = [this](){ return this->Or(this->FetchByte()); };
 	operations_[0xF7] = [this](){ return this->WrongOpCode(); };
 	operations_[0xF8] = [this](){ return this->WrongOpCode(); };
 	// LD SP, HL
 	operations_[0xF9] = [this](){ return this->LoadRegister(Register16bit::SP, Register16bit::HL); };
 	operations_[0xFA] = [this](){ return this->WrongOpCode(); };
-	operations_[0xFB] = [this](){ return this->WrongOpCode(); };
+	// EI
+	operations_[0xFB] = [this](){ return this->EnableInterrupts(); };
 	operations_[0xFC] = [this](){ return this->WrongOpCode(); };
 	operations_[0xFD] = [this](){ return this->WrongOpCode(); };
 	// CP n
-	operations_[0xFE] = [this](){ return this->WrongOpCode(); };
+	operations_[0xFE] = [this](){ return this->Compare(this->FetchByte()); };
 	operations_[0xFF] = [this](){ return this->WrongOpCode(); };
 #pragma endregion
 }

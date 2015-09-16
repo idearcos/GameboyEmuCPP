@@ -2,15 +2,15 @@
 
 #include <cstdint>
 
-enum class Register8bit
-{
-	A,
-	B,
-	C,
-	D,
-	E,
-	H,
-	L
+enum class Register8bit : uint8_t
+{	
+	B = 0,
+	C = 1,
+	D = 2,
+	E = 3,
+	H = 4,
+	L = 5,
+	A = 7
 };
 
 enum class Register16bit
