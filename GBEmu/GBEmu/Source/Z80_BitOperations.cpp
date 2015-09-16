@@ -9,11 +9,11 @@ Clock Z80::TestBit(uint8_t bit_index, Register8bit reg)
 		throw std::logic_error("TestBit called with invalid bit index");
 	}
 
-	registers.SetFlag(Flags::HalfCarry, true);
-	registers.SetFlag(Flags::Subtract, false);
+	registers_.SetFlag(Flags::HalfCarry, true);
+	registers_.SetFlag(Flags::Subtract, false);
 	// C is not affected
 
-	registers.SetFlag(Flags::Zero, (registers.Read(reg) & (1 << bit_index)) == 0);
+	registers_.SetFlag(Flags::Zero, (registers_.Read(reg) & (1 << bit_index)) == 0);
 
 	return Clock(2, 8);
 }
@@ -27,11 +27,11 @@ Clock Z80::TestBit(uint8_t bit_index, Register16bit reg_addr)
 		throw std::logic_error("TestBit called with invalid bit index");
 	}
 
-	registers.SetFlag(Flags::HalfCarry, true);
-	registers.SetFlag(Flags::Subtract, false);
+	registers_.SetFlag(Flags::HalfCarry, true);
+	registers_.SetFlag(Flags::Subtract, false);
 	// C is not affected
 
-	registers.SetFlag(Flags::Zero, (mmu.Read8bitFromMemory(registers.Read(reg_addr)) & (1 << bit_index)) == 0);
+	registers_.SetFlag(Flags::Zero, (mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) & (1 << bit_index)) == 0);
 
 	return Clock(3, 12);
 }
@@ -47,7 +47,7 @@ Clock Z80::SetBit(uint8_t bit_index, Register8bit reg)
 
 	// Flags not affected
 
-	registers.Write(reg, registers.Read(reg) | (1 << bit_index));
+	registers_.Write(reg, registers_.Read(reg) | (1 << bit_index));
 
 	return Clock(2, 8);
 }
@@ -63,7 +63,7 @@ Clock Z80::SetBit(uint8_t bit_index, Register16bit reg_addr)
 
 	// Flags not affected
 
-	mmu.Write8bitToMemory(registers.Read(reg_addr), mmu.Read8bitFromMemory(registers.Read(reg_addr)) | (1 << bit_index));
+	mmu_.Write8bitToMemory(registers_.Read(reg_addr), mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) | (1 << bit_index));
 
 	return Clock(4, 15);
 }
@@ -79,7 +79,7 @@ Clock Z80::ResetBit(uint8_t bit_index, Register8bit reg)
 
 	// Flags not affected
 
-	registers.Write(reg, registers.Read(reg) & ~(1 << bit_index));
+	registers_.Write(reg, registers_.Read(reg) & ~(1 << bit_index));
 
 	return Clock(2, 8);
 }
@@ -95,7 +95,7 @@ Clock Z80::ResetBit(uint8_t bit_index, Register16bit reg_addr)
 
 	// Flags not affected
 
-	mmu.Write8bitToMemory(registers.Read(reg_addr), mmu.Read8bitFromMemory(registers.Read(reg_addr)) & ~(1 << bit_index));
+	mmu_.Write8bitToMemory(registers_.Read(reg_addr), mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) & ~(1 << bit_index));
 
 	return Clock(4, 15);
 }

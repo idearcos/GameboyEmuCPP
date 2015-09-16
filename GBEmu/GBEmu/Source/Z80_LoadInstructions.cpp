@@ -6,7 +6,7 @@
 Clock Z80::LoadRegister(Register8bit dest, Register8bit source)
 {
 	// Flags not affected
-	registers.Write(dest, registers.Read(source));
+	registers_.Write(dest, registers_.Read(source));
 	return Clock(1, 4);
 }
 
@@ -15,7 +15,7 @@ Clock Z80::LoadRegister(Register8bit dest, Register8bit source)
 Clock Z80::LoadRegister(Register8bit dest, uint8_t value)
 {
 	// Flags not affected
-	registers.Write(dest, value);
+	registers_.Write(dest, value);
 	return Clock(2, 7);
 }
 
@@ -24,7 +24,7 @@ Clock Z80::LoadRegister(Register8bit dest, uint8_t value)
 Clock Z80::LoadRegisterFromAddress(Register8bit dest, Register16bit source_addr)
 {
 	// Flags not affected
-	registers.Write(dest, mmu.Read8bitFromMemory(registers.Read(source_addr)));
+	registers_.Write(dest, mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
 	return Clock(2, 7);
 }
 
@@ -33,7 +33,7 @@ Clock Z80::LoadRegisterFromAddress(Register8bit dest, Register16bit source_addr)
 Clock Z80::LoadAddressFromRegister(Register16bit dest_addr, Register8bit source)
 {
 	// Flags not affected
-	mmu.Write8bitToMemory(registers.Read(dest_addr), registers.Read(source));
+	mmu_.Write8bitToMemory(registers_.Read(dest_addr), registers_.Read(source));
 	return Clock(2, 7);
 }
 
@@ -42,7 +42,7 @@ Clock Z80::LoadAddressFromRegister(Register16bit dest_addr, Register8bit source)
 Clock Z80::LoadAddress(Register16bit dest_addr, uint8_t value)
 {
 	// Flags not affected
-	mmu.Write8bitToMemory(registers.Read(dest_addr), value);
+	mmu_.Write8bitToMemory(registers_.Read(dest_addr), value);
 	return Clock(3, 10);
 }
 
@@ -51,7 +51,7 @@ Clock Z80::LoadAddress(Register16bit dest_addr, uint8_t value)
 Clock Z80::LoadRegisterFromAddress(Register8bit dest, uint16_t addr)
 {
 	// Flags not affected
-	registers.Write(dest, mmu.Read8bitFromMemory(addr));
+	registers_.Write(dest, mmu_.Read8bitFromMemory(addr));
 	return Clock(4, 13);
 }
 
@@ -59,7 +59,7 @@ Clock Z80::LoadRegisterFromAddress(Register8bit dest, uint16_t addr)
 // (Z80 p.91)
 Clock Z80::LoadAddressFromRegister(uint16_t addr, Register8bit source)
 {
-	mmu.Write8bitToMemory(addr, registers.Read(source));
+	mmu_.Write8bitToMemory(addr, registers_.Read(source));
 	return Clock(4, 13);
 }
 #pragma endregion
@@ -70,7 +70,7 @@ Clock Z80::LoadAddressFromRegister(uint16_t addr, Register8bit source)
 Clock Z80::LoadRegister(Register16bit dest, uint16_t value)
 {
 	// Flags not affected
-	registers.Write(dest, value);
+	registers_.Write(dest, value);
 	return Clock(2, 10);
 }
 
@@ -79,7 +79,7 @@ Clock Z80::LoadRegister(Register16bit dest, uint16_t value)
 Clock Z80::LoadRegister(Register16bit dest, Register16bit source)
 {
 	// Flags not affected
-	registers.Write(dest, registers.Read(source));
+	registers_.Write(dest, registers_.Read(source));
 	return Clock(1, 6);
 }
 
@@ -88,10 +88,10 @@ Clock Z80::LoadRegister(Register16bit dest, Register16bit source)
 Clock Z80::PushToStack(Register16bit source)
 {
 	// Flags not affected
-	registers.Decrement(Register16bit::SP);
-	mmu.Write8bitToMemory(registers.Read(Register16bit::SP), (registers.Read(source) >> 8) & 0xFF);
-	registers.Decrement(Register16bit::SP);
-	mmu.Write8bitToMemory(registers.Read(Register16bit::SP), (registers.Read(source) & 0xFF));
+	registers_.Decrement(Register16bit::SP);
+	mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(source) >> 8) & 0xFF);
+	registers_.Decrement(Register16bit::SP);
+	mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(source) & 0xFF));
 
 	return Clock(3, 11);
 }
@@ -102,11 +102,11 @@ Clock Z80::PopFromStack(Register16bit dest)
 {
 	// Flags not affected
 	uint16_t value{ 0 };
-	value += static_cast<uint16_t>(mmu.Read8bitFromMemory(registers.Read(Register16bit::SP))) << 8;
-	registers.Increment(Register16bit::SP);
-	value += mmu.Read8bitFromMemory(registers.Read(Register16bit::SP));
-	registers.Increment(Register16bit::SP);
-	registers.Write(dest, value);
+	value += static_cast<uint16_t>(mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP))) << 8;
+	registers_.Increment(Register16bit::SP);
+	value += mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP));
+	registers_.Increment(Register16bit::SP);
+	registers_.Write(dest, value);
 
 	return Clock(3, 10);
 }
@@ -116,32 +116,32 @@ Clock Z80::PopFromStack(Register16bit dest)
 // LDI (rr), r'
 Clock Z80::LoadAddressAndIncrement(Register16bit dest_addr, Register8bit source)
 {
-	mmu.Write8bitToMemory(registers.Read(dest_addr), registers.Read(source));
-	registers.Write(dest_addr, registers.Read(dest_addr) + 1);
+	mmu_.Write8bitToMemory(registers_.Read(dest_addr), registers_.Read(source));
+	registers_.Write(dest_addr, registers_.Read(dest_addr) + 1);
 	return Clock(2, 8);
 }
 
 // LDD (rr), r'
 Clock Z80::LoadAddressAndDecrement(Register16bit dest_addr, Register8bit source)
 {
-	mmu.Write8bitToMemory(registers.Read(dest_addr), registers.Read(source));
-	registers.Write(dest_addr, registers.Read(dest_addr) - 1);
+	mmu_.Write8bitToMemory(registers_.Read(dest_addr), registers_.Read(source));
+	registers_.Write(dest_addr, registers_.Read(dest_addr) - 1);
 	return Clock(2, 8);
 }
 
 // LDI r, (rr')
 Clock Z80::LoadRegisterAndIncrement(Register8bit dest, Register16bit source_addr)
 {
-	registers.Write(dest, mmu.Read8bitFromMemory(registers.Read(source_addr)));
-	registers.Write(source_addr, registers.Read(source_addr) + 1);
+	registers_.Write(dest, mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
+	registers_.Write(source_addr, registers_.Read(source_addr) + 1);
 	return Clock(2, 8);
 }
 
 // LDD r, (rr')
 Clock Z80::LoadRegisterAndDecrement(Register8bit dest, Register16bit source_addr)
 {
-	registers.Write(dest, mmu.Read8bitFromMemory(registers.Read(source_addr)));
-	registers.Write(source_addr, registers.Read(source_addr) - 1);
+	registers_.Write(dest, mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
+	registers_.Write(source_addr, registers_.Read(source_addr) - 1);
 	return Clock(2, 8);
 }
 #pragma endregion

@@ -7,29 +7,29 @@
 Clock Z80::DAA()
 {
 	uint8_t correction_factor{ 0 };
-	const uint8_t original_value{ registers.Read(Register8bit::A) };
+	const uint8_t original_value{ registers_.Read(Register8bit::A) };
 
 	// Correct the high nibble first
-	if ((original_value > 0x99) || registers.IsFlagSet(Flags::Carry))
+	if ((original_value > 0x99) || registers_.IsFlagSet(Flags::Carry))
 	{
 		correction_factor |= 0x60;
 	}
-	registers.SetFlag(Flags::Carry, correction_factor != 0);
+	registers_.SetFlag(Flags::Carry, correction_factor != 0);
 
 	// Correct the low nibble
-	if (((original_value & 0x0F) > 9) || registers.IsFlagSet(Flags::HalfCarry))
+	if (((original_value & 0x0F) > 9) || registers_.IsFlagSet(Flags::HalfCarry))
 	{
 		correction_factor |= 0x06;
 	}
 
-	{const uint8_t result = registers.IsFlagSet(Flags::Subtract) ? original_value - correction_factor :
+	{const uint8_t result = registers_.IsFlagSet(Flags::Subtract) ? original_value - correction_factor :
 		original_value + correction_factor;
 
 	// If borrow/carry from bit 3 to 4 has been caused because of the operation, set half carry flag
-	registers.SetFlag(Flags::HalfCarry, (~(original_value & result) & 0x10) != 0);
-	registers.SetFlag(Flags::Zero, result == 0);
+	registers_.SetFlag(Flags::HalfCarry, (~(original_value & result) & 0x10) != 0);
+	registers_.SetFlag(Flags::Zero, result == 0);
 
-	registers.Write(Register8bit::A, result); }
+	registers_.Write(Register8bit::A, result); }
 
 	return Clock(1, 4);
 }
@@ -38,10 +38,10 @@ Clock Z80::DAA()
 // (Z80 p.173)
 Clock Z80::InvertAccumulator()
 {
-	registers.SetFlag(Flags::HalfCarry, true);
-	registers.SetFlag(Flags::Subtract, true);
+	registers_.SetFlag(Flags::HalfCarry, true);
+	registers_.SetFlag(Flags::Subtract, true);
 
-	registers.Write(Register8bit::A, ~registers.Read(Register8bit::A));
+	registers_.Write(Register8bit::A, ~registers_.Read(Register8bit::A));
 
 	return Clock(1, 4);
 }
@@ -50,9 +50,9 @@ Clock Z80::InvertAccumulator()
 // (Z80 p.176)
 Clock Z80::InvertCarryFlag()
 {
-	registers.SetFlag(Flags::Subtract, false);
-	registers.SetFlag(Flags::HalfCarry, registers.IsFlagSet(Flags::Carry));
-	registers.SetFlag(Flags::Carry, !registers.IsFlagSet(Flags::Carry));
+	registers_.SetFlag(Flags::Subtract, false);
+	registers_.SetFlag(Flags::HalfCarry, registers_.IsFlagSet(Flags::Carry));
+	registers_.SetFlag(Flags::Carry, !registers_.IsFlagSet(Flags::Carry));
 
 	return Clock(1, 4);
 }
@@ -61,9 +61,9 @@ Clock Z80::InvertCarryFlag()
 // (Z80 p.177)
 Clock Z80::SetCarryFlag()
 {
-	registers.SetFlag(Flags::Subtract, false);
-	registers.SetFlag(Flags::HalfCarry, false);
-	registers.SetFlag(Flags::Carry, true);
+	registers_.SetFlag(Flags::Subtract, false);
+	registers_.SetFlag(Flags::HalfCarry, false);
+	registers_.SetFlag(Flags::Carry, true);
 
 	return Clock(1, 4);
 }

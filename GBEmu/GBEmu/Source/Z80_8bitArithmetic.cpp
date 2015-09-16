@@ -4,16 +4,16 @@
 // (Z80 p.145)
 Clock Z80::Add(uint8_t value)
 {
-	registers.SetFlag(Flags::Subtract, false);
-	{const uint8_t low_nibble_result = (registers.Read(Register8bit::A) & 0x0F) + (value & 0x0F);
-	registers.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
+	registers_.SetFlag(Flags::Subtract, false);
+	{const uint8_t low_nibble_result = (registers_.Read(Register8bit::A) & 0x0F) + (value & 0x0F);
+	registers_.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
 	
-	const uint16_t result = registers.Read(Register8bit::A) + value;
+	const uint16_t result = registers_.Read(Register8bit::A) + value;
 
-	registers.SetFlag(Flags::Carry, (result & 0x0100) != 0);
-	registers.SetFlag(Flags::Zero, (result & 0xFF) == 0);
+	registers_.SetFlag(Flags::Carry, (result & 0x0100) != 0);
+	registers_.SetFlag(Flags::Zero, (result & 0xFF) == 0);
 
-	registers.Write(Register8bit::A, static_cast<uint8_t>(result & 0xFF));
+	registers_.Write(Register8bit::A, static_cast<uint8_t>(result & 0xFF));
 
 	return Clock(2, 7);
 }
@@ -22,7 +22,7 @@ Clock Z80::Add(uint8_t value)
 // (Z80 p.143)
 Clock Z80::Add(Register8bit reg)
 {
-	Add(registers.Read(reg));
+	Add(registers_.Read(reg));
 	return Clock(1, 4);
 }
 
@@ -30,7 +30,7 @@ Clock Z80::Add(Register8bit reg)
 // (Z80 p.146)
 Clock Z80::Add(Register16bit source_addr)
 {
-	Add(mmu.Read8bitFromMemory(registers.Read(source_addr)));
+	Add(mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
 	return Clock(2, 7);
 }
 
@@ -38,17 +38,17 @@ Clock Z80::Add(Register16bit source_addr)
 // (Z80 p.149)
 Clock Z80::AddPlusCarry(uint8_t value)
 {
-	registers.SetFlag(Flags::Subtract, false);
-	{const uint8_t low_nibble_result = (registers.Read(Register8bit::A) & 0x0F) + (value & 0x0F)
-		+ (registers.IsFlagSet(Flags::Carry) ? 1 : 0);
-	registers.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
+	registers_.SetFlag(Flags::Subtract, false);
+	{const uint8_t low_nibble_result = (registers_.Read(Register8bit::A) & 0x0F) + (value & 0x0F)
+		+ (registers_.IsFlagSet(Flags::Carry) ? 1 : 0);
+	registers_.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
 	
-	const uint16_t result = registers.Read(Register8bit::A) + value + (registers.IsFlagSet(Flags::Carry) ? 1 : 0);
+	const uint16_t result = registers_.Read(Register8bit::A) + value + (registers_.IsFlagSet(Flags::Carry) ? 1 : 0);
 
-	registers.SetFlag(Flags::Carry, (result & 0x0100) != 0);
-	registers.SetFlag(Flags::Zero, (result & 0xFF) == 0);
+	registers_.SetFlag(Flags::Carry, (result & 0x0100) != 0);
+	registers_.SetFlag(Flags::Zero, (result & 0xFF) == 0);
 
-	registers.Write(Register8bit::A, static_cast<uint8_t>(result & 0xFF));
+	registers_.Write(Register8bit::A, static_cast<uint8_t>(result & 0xFF));
 
 	return Clock(2, 7);
 }
@@ -57,7 +57,7 @@ Clock Z80::AddPlusCarry(uint8_t value)
 // (Z80 p.149)
 Clock Z80::AddPlusCarry(Register8bit reg)
 {
-	AddPlusCarry(registers.Read(reg));
+	AddPlusCarry(registers_.Read(reg));
 	return Clock(1, 4);
 }
 
@@ -65,7 +65,7 @@ Clock Z80::AddPlusCarry(Register8bit reg)
 // (Z80 p.149)
 Clock Z80::AddPlusCarry(Register16bit source_addr)
 {
-	AddPlusCarry(mmu.Read8bitFromMemory(registers.Read(source_addr)));
+	AddPlusCarry(mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
 	return Clock(2, 7);
 }
 
@@ -73,16 +73,16 @@ Clock Z80::AddPlusCarry(Register16bit source_addr)
 // (Z80 p.151)
 Clock Z80::Sub(uint8_t value)
 {
-	registers.SetFlag(Flags::Subtract, true);
-	{const uint8_t low_nibble_result = (registers.Read(Register8bit::A) & 0x0F) - (value & 0x0F);
-	registers.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
+	registers_.SetFlag(Flags::Subtract, true);
+	{const uint8_t low_nibble_result = (registers_.Read(Register8bit::A) & 0x0F) - (value & 0x0F);
+	registers_.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
 	
-	const uint16_t result = registers.Read(Register8bit::A) - value;
+	const uint16_t result = registers_.Read(Register8bit::A) - value;
 
-	registers.SetFlag(Flags::Carry, (result & 0x0100) != 0);
-	registers.SetFlag(Flags::Zero, (result & 0xFF) == 0);
+	registers_.SetFlag(Flags::Carry, (result & 0x0100) != 0);
+	registers_.SetFlag(Flags::Zero, (result & 0xFF) == 0);
 
-	registers.Write(Register8bit::A, static_cast<uint8_t>(result & 0xFF));
+	registers_.Write(Register8bit::A, static_cast<uint8_t>(result & 0xFF));
 
 	return Clock(2, 7);
 }
@@ -91,7 +91,7 @@ Clock Z80::Sub(uint8_t value)
 // (Z80 p.151)
 Clock Z80::Sub(Register8bit reg)
 {
-	Sub(registers.Read(reg));
+	Sub(registers_.Read(reg));
 	return Clock(1, 4);
 }
 
@@ -99,7 +99,7 @@ Clock Z80::Sub(Register8bit reg)
 // (Z80 p.151)
 Clock Z80::Sub(Register16bit source_addr)
 {
-	Sub(mmu.Read8bitFromMemory(registers.Read(source_addr)));
+	Sub(mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
 	return Clock(2, 7);
 }
 
@@ -107,17 +107,17 @@ Clock Z80::Sub(Register16bit source_addr)
 // (Z80 p.153)
 Clock Z80::SubMinusCarry(uint8_t value)
 {
-	registers.SetFlag(Flags::Subtract, true);
-	{const uint8_t low_nibble_result = (registers.Read(Register8bit::A) & 0x0F) - (value & 0x0F)
-		- (registers.IsFlagSet(Flags::Carry) ? 1 : 0);
-	registers.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
+	registers_.SetFlag(Flags::Subtract, true);
+	{const uint8_t low_nibble_result = (registers_.Read(Register8bit::A) & 0x0F) - (value & 0x0F)
+		- (registers_.IsFlagSet(Flags::Carry) ? 1 : 0);
+	registers_.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
 	
-	const uint16_t result = registers.Read(Register8bit::A) - value - (registers.Read(Register8bit::A) ? 1 : 0);
+	const uint16_t result = registers_.Read(Register8bit::A) - value - (registers_.Read(Register8bit::A) ? 1 : 0);
 
-	registers.SetFlag(Flags::Carry, (result & 0x0100) != 0);
-	registers.SetFlag(Flags::Zero, (result & 0xFF) == 0);
+	registers_.SetFlag(Flags::Carry, (result & 0x0100) != 0);
+	registers_.SetFlag(Flags::Zero, (result & 0xFF) == 0);
 
-	registers.Write(Register8bit::A, static_cast<uint8_t>(result & 0xFF));
+	registers_.Write(Register8bit::A, static_cast<uint8_t>(result & 0xFF));
 
 	return Clock(2, 7);
 }
@@ -126,7 +126,7 @@ Clock Z80::SubMinusCarry(uint8_t value)
 // (Z80 p.153)
 Clock Z80::SubMinusCarry(Register8bit reg)
 {
-	SubMinusCarry(registers.Read(reg));
+	SubMinusCarry(registers_.Read(reg));
 	return Clock(1, 4);
 }
 
@@ -134,7 +134,7 @@ Clock Z80::SubMinusCarry(Register8bit reg)
 // (Z80 p.153)
 Clock Z80::SubMinusCarry(Register16bit source_addr)
 {
-	SubMinusCarry(mmu.Read8bitFromMemory(registers.Read(source_addr)));
+	SubMinusCarry(mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
 	return Clock(2, 7);
 }
 
@@ -142,14 +142,14 @@ Clock Z80::SubMinusCarry(Register16bit source_addr)
 // (Z80 p.155)
 Clock Z80::And(uint8_t value)
 {
-	registers.SetFlag(Flags::Carry, false);
-	registers.SetFlag(Flags::Subtract, false);
-	registers.SetFlag(Flags::HalfCarry, true);
+	registers_.SetFlag(Flags::Carry, false);
+	registers_.SetFlag(Flags::Subtract, false);
+	registers_.SetFlag(Flags::HalfCarry, true);
 
-	const uint8_t result = registers.Read(Register8bit::A) & value;
-	registers.SetFlag(Flags::Zero, result == 0);
+	const uint8_t result = registers_.Read(Register8bit::A) & value;
+	registers_.SetFlag(Flags::Zero, result == 0);
 
-	registers.Write(Register8bit::A, result);
+	registers_.Write(Register8bit::A, result);
 
 	return Clock(2, 7);
 }
@@ -158,7 +158,7 @@ Clock Z80::And(uint8_t value)
 // (Z80 p.155)
 Clock Z80::And(Register8bit reg)
 {
-	And(registers.Read(reg));
+	And(registers_.Read(reg));
 	return Clock(1, 4);
 }
 
@@ -166,7 +166,7 @@ Clock Z80::And(Register8bit reg)
 // (Z80 p.155)
 Clock Z80::And(Register16bit source_addr)
 {
-	And(mmu.Read8bitFromMemory(registers.Read(source_addr)));
+	And(mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
 	return Clock(2, 7);
 }
 
@@ -174,14 +174,14 @@ Clock Z80::And(Register16bit source_addr)
 // (Z80 p.157)
 Clock Z80::Or(uint8_t value)
 {
-	registers.SetFlag(Flags::Carry, false);
-	registers.SetFlag(Flags::Subtract, false);
-	registers.SetFlag(Flags::HalfCarry, false);
+	registers_.SetFlag(Flags::Carry, false);
+	registers_.SetFlag(Flags::Subtract, false);
+	registers_.SetFlag(Flags::HalfCarry, false);
 
-	const uint8_t result = registers.Read(Register8bit::A) | value;
-	registers.SetFlag(Flags::Zero, result == 0);
+	const uint8_t result = registers_.Read(Register8bit::A) | value;
+	registers_.SetFlag(Flags::Zero, result == 0);
 
-	registers.Write(Register8bit::A, result);
+	registers_.Write(Register8bit::A, result);
 
 	return Clock(2, 7);
 }
@@ -190,7 +190,7 @@ Clock Z80::Or(uint8_t value)
 // (Z80 p.157)
 Clock Z80::Or(Register8bit reg)
 {
-	Or(registers.Read(reg));
+	Or(registers_.Read(reg));
 	return Clock(1, 4);
 }
 
@@ -198,7 +198,7 @@ Clock Z80::Or(Register8bit reg)
 // (Z80 p.157)
 Clock Z80::Or(Register16bit source_addr)
 {
-	Or(mmu.Read8bitFromMemory(registers.Read(source_addr)));
+	Or(mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
 	return Clock(2, 7);
 }
 
@@ -206,14 +206,14 @@ Clock Z80::Or(Register16bit source_addr)
 // (Z80 p.159)
 Clock Z80::Xor(uint8_t value)
 {
-	registers.SetFlag(Flags::Carry, false);
-	registers.SetFlag(Flags::Subtract, false);
-	registers.SetFlag(Flags::HalfCarry, false);
+	registers_.SetFlag(Flags::Carry, false);
+	registers_.SetFlag(Flags::Subtract, false);
+	registers_.SetFlag(Flags::HalfCarry, false);
 
-	const uint8_t result = ~(registers.Read(Register8bit::A) & value);
-	registers.SetFlag(Flags::Zero, result == 0);
+	const uint8_t result = ~(registers_.Read(Register8bit::A) & value);
+	registers_.SetFlag(Flags::Zero, result == 0);
 
-	registers.Write(Register8bit::A, result);
+	registers_.Write(Register8bit::A, result);
 
 	return Clock(2, 7);
 }
@@ -222,7 +222,7 @@ Clock Z80::Xor(uint8_t value)
 // (Z80 p.159)
 Clock Z80::Xor(Register8bit reg)
 {
-	Xor(registers.Read(reg));
+	Xor(registers_.Read(reg));
 	return Clock(1, 4);
 }
 
@@ -230,7 +230,7 @@ Clock Z80::Xor(Register8bit reg)
 // (Z80 p.159)
 Clock Z80::Xor(Register16bit source_addr)
 {
-	Xor(mmu.Read8bitFromMemory(registers.Read(source_addr)));
+	Xor(mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
 	return Clock(2, 7);
 }
 
@@ -238,14 +238,14 @@ Clock Z80::Xor(Register16bit source_addr)
 // (Z80 p.161)
 Clock Z80::Compare(uint8_t value)
 {
-	registers.SetFlag(Flags::Subtract, true);
-	{const uint8_t low_nibble_result = (registers.Read(Register8bit::A) & 0x0F) - (value & 0x0F);
-	registers.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
+	registers_.SetFlag(Flags::Subtract, true);
+	{const uint8_t low_nibble_result = (registers_.Read(Register8bit::A) & 0x0F) - (value & 0x0F);
+	registers_.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
 
-	const uint16_t result = registers.Read(Register8bit::A) - value;
+	const uint16_t result = registers_.Read(Register8bit::A) - value;
 
-	registers.SetFlag(Flags::Carry, (result & 0x0100) != 0);
-	registers.SetFlag(Flags::Zero, (result & 0xFF) == 0);
+	registers_.SetFlag(Flags::Carry, (result & 0x0100) != 0);
+	registers_.SetFlag(Flags::Zero, (result & 0xFF) == 0);
 
 	return Clock(2, 7);
 }
@@ -254,7 +254,7 @@ Clock Z80::Compare(uint8_t value)
 // (Z80 p.161)
 Clock Z80::Compare(Register8bit reg)
 {
-	Compare(registers.Read(reg));
+	Compare(registers_.Read(reg));
 	return Clock(1, 4);
 }
 
@@ -262,7 +262,7 @@ Clock Z80::Compare(Register8bit reg)
 // (Z80 p.161)
 Clock Z80::Compare(Register16bit source_addr)
 {
-	Compare(mmu.Read8bitFromMemory(registers.Read(source_addr)));
+	Compare(mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
 	return Clock(2, 7);
 }
 
@@ -270,15 +270,15 @@ Clock Z80::Compare(Register16bit source_addr)
 // (Z80 p.163)
 Clock Z80::Increment(Register8bit reg)
 {
-	registers.SetFlag(Flags::Subtract, false);
+	registers_.SetFlag(Flags::Subtract, false);
 	// Carry is unaffected
-	{const uint8_t low_nibble = registers.Read(reg) & 0x0F;
-	registers.SetFlag(Flags::HalfCarry, low_nibble == 0x0F); }
+	{const uint8_t low_nibble = registers_.Read(reg) & 0x0F;
+	registers_.SetFlag(Flags::HalfCarry, low_nibble == 0x0F); }
 	
-	const uint8_t result = registers.Read(reg) + 1;
-	registers.SetFlag(Flags::Zero, result == 0);
+	const uint8_t result = registers_.Read(reg) + 1;
+	registers_.SetFlag(Flags::Zero, result == 0);
 
-	registers.Write(reg, result);
+	registers_.Write(reg, result);
 
 	return Clock(1, 4);
 }
@@ -287,16 +287,16 @@ Clock Z80::Increment(Register8bit reg)
 // (Z80 p.165)
 Clock Z80::IncrementInAddress(Register16bit reg_addr)
 {
-	registers.SetFlag(Flags::Subtract, false);
+	registers_.SetFlag(Flags::Subtract, false);
 	// Carry is unaffected
-	{const uint8_t low_nibble = mmu.Read8bitFromMemory(registers.Read(reg_addr)) & 0x0F;
-	registers.SetFlag(Flags::HalfCarry, low_nibble == 0x0F); }
+	{const uint8_t low_nibble = mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) & 0x0F;
+	registers_.SetFlag(Flags::HalfCarry, low_nibble == 0x0F); }
 
-	const uint8_t result = mmu.Read8bitFromMemory(registers.Read(reg_addr)) + 1;
+	const uint8_t result = mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) + 1;
 
-	registers.SetFlag(Flags::Zero, result == 0);
+	registers_.SetFlag(Flags::Zero, result == 0);
 
-	mmu.Write8bitToMemory(registers.Read(reg_addr), result);
+	mmu_.Write8bitToMemory(registers_.Read(reg_addr), result);
 
 	return Clock(3, 11);
 }
@@ -305,16 +305,16 @@ Clock Z80::IncrementInAddress(Register16bit reg_addr)
 // (Z80 p.168)
 Clock Z80::Decrement(Register8bit reg)
 {
-	registers.SetFlag(Flags::Subtract, true);
+	registers_.SetFlag(Flags::Subtract, true);
 	// Carry is unaffected
-	{const uint8_t low_nibble = registers.Read(reg) & 0x0F;
-	registers.SetFlag(Flags::HalfCarry, low_nibble == 0); }
+	{const uint8_t low_nibble = registers_.Read(reg) & 0x0F;
+	registers_.SetFlag(Flags::HalfCarry, low_nibble == 0); }
 
-	const uint8_t result = registers.Read(reg) - 1;
+	const uint8_t result = registers_.Read(reg) - 1;
 
-	registers.SetFlag(Flags::Zero, result == 0);
+	registers_.SetFlag(Flags::Zero, result == 0);
 
-	registers.Write(reg, result);
+	registers_.Write(reg, result);
 
 	return Clock(1, 4);
 }
@@ -323,16 +323,16 @@ Clock Z80::Decrement(Register8bit reg)
 // (Z80 p.168)
 Clock Z80::DecrementInAddress(Register16bit reg_addr)
 {
-	registers.SetFlag(Flags::Subtract, true);
+	registers_.SetFlag(Flags::Subtract, true);
 	// Carry is unaffected
-	{const uint8_t low_nibble = mmu.Read8bitFromMemory(registers.Read(reg_addr)) & 0x0F;
-	registers.SetFlag(Flags::HalfCarry, low_nibble == 0); }
+	{const uint8_t low_nibble = mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) & 0x0F;
+	registers_.SetFlag(Flags::HalfCarry, low_nibble == 0); }
 
-	const uint8_t result = mmu.Read8bitFromMemory(registers.Read(reg_addr)) - 1;
+	const uint8_t result = mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) - 1;
 
-	registers.SetFlag(Flags::Zero, result == 0);
+	registers_.SetFlag(Flags::Zero, result == 0);
 
-	mmu.Write8bitToMemory(registers.Read(reg_addr), result);
+	mmu_.Write8bitToMemory(registers_.Read(reg_addr), result);
 
 	return Clock(3, 11);
 }

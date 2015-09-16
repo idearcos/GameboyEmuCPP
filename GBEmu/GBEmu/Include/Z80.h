@@ -233,12 +233,14 @@ private:
 #pragma endregion
 
 	Clock WrongOpCode();
+	Clock WrongBitOpCode();
 
 private:
-	Registers registers;
-	Clock clock;
-	MMU mmu;
-	std::map<uint8_t, std::function<Clock()>> operations_;
+	Registers registers_;
+	Clock clock_;
+	MMU mmu_;
+	std::map<uint8_t, std::function<Clock()>> instructions_;
+	std::map<uint8_t, std::function<Clock()>> bit_instructions_;
 
 	enum class State
 	{
