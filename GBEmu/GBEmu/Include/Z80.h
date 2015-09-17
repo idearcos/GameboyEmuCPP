@@ -38,25 +38,16 @@ private:
 #pragma endregion
 
 #pragma region 16-bit load group
-	// LD dd, nn
+	// LD rr, nn
 	Clock LoadRegister(Register16bit dest, uint16_t value);
-	// LD dd, dd'
+	// LD (nn), rr
+	Clock LoadAddressFromRegister(uint16_t addr, Register16bit source);
+	// LD rr, rr'
 	Clock LoadRegister(Register16bit dest, Register16bit source);
 	// PUSH qq
 	Clock PushToStack(Register16bit source);
 	// POP qq
 	Clock PopFromStack(Register16bit dest);
-#pragma endregion
-
-#pragma region GB-specific load instruction group
-	// LDI (rr), r'
-	Clock LoadAddressAndIncrement(Register16bit dest_addr, Register8bit source);
-	// LDD (rr), r'
-	Clock LoadAddressAndDecrement(Register16bit dest_addr, Register8bit source);
-	// LDI r, (rr)
-	Clock LoadRegisterAndIncrement(Register8bit dest, Register16bit source_addr);
-	// LDD r, (rr')
-	Clock LoadRegisterAndDecrement(Register8bit dest, Register16bit source_addr);
 #pragma endregion
 
 #pragma region 8-bit arithmetic group
@@ -192,15 +183,15 @@ private:
 #pragma region Bit set, reset and test group
 	// BIT n, r
 	Clock TestBit(uint8_t bit_index, Register8bit reg);
-	// BIT n, *rr
+	// BIT n, (rr)
 	Clock TestBit(uint8_t bit_index, Register16bit reg_addr);
 	// SET n, r
 	Clock SetBit(uint8_t bit_index, Register8bit reg);
-	// SET n, *rr
+	// SET n, (rr)
 	Clock SetBit(uint8_t bit_index, Register16bit reg_addr);
 	// RES n, r
 	Clock ResetBit(uint8_t bit_index, Register8bit reg);
-	// RES n, *rr
+	// RES n, (rr)
 	Clock ResetBit(uint8_t bit_index, Register16bit reg_addr);
 #pragma endregion
 
@@ -213,7 +204,7 @@ private:
 	Clock Jump(int8_t displacement);
 	// JR cc, n
 	Clock JumpIf(int8_t displacement, Flags flag, bool flag_value);
-	// JP *rr
+	// JP (rr)
 	Clock Jump(Register16bit reg_addr);
 #pragma endregion
 
@@ -232,8 +223,26 @@ private:
 	Clock Restart(uint16_t address);
 #pragma endregion
 
+#pragma region GB exclusive instructions group
+	// LDI (rr), r'
+	Clock LoadAddressAndIncrement(Register16bit dest_addr, Register8bit source);
+	// LDD (rr), r'
+	Clock LoadAddressAndDecrement(Register16bit dest_addr, Register8bit source);
+	// LDI r, (rr)
+	Clock LoadRegisterAndIncrement(Register8bit dest, Register16bit source_addr);
+	// LDD r, (rr')
+	Clock LoadRegisterAndDecrement(Register8bit dest, Register16bit source_addr);
+	// SWAP r
+	Clock Swap(Register8bit reg);
+	// SWAP (rr)
+	Clock Swap(Register16bit reg_address);
+	// LD IO r, n
+	Clock LoadRegisterFromIO(Register8bit dest, uint8_t displacement);
+	// LD IO r, r'
+	Clock LoadRegisterFromIO(Register8bit dest, Register8bit reg_displacement);
+#pragma endregion
+
 	Clock WrongOpCode();
-	Clock WrongBitOpCode();
 
 private:
 	Registers registers_;

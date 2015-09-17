@@ -51,7 +51,7 @@ Clock Z80::JumpIf(int8_t displacement, Flags flag, bool flag_value)
 	return Clock(2, 7);
 }
 
-// JP *rr
+// JP (rr)
 // (Z80 p.272)
 Clock Z80::Jump(Register16bit reg_addr)
 {

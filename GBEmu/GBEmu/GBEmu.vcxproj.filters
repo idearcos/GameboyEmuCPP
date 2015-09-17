@@ -77,5 +77,8 @@
     <ClCompile Include="Source\Z80_CallAndReturn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Z80_GbExclusive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

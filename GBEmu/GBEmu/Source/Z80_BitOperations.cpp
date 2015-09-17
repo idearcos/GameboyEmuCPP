@@ -18,7 +18,7 @@ Clock Z80::TestBit(uint8_t bit_index, Register8bit reg)
 	return Clock(2, 8);
 }
 
-// BIT n, *rr
+// BIT n, (rr)
 // (Z80 p.243)
 Clock Z80::TestBit(uint8_t bit_index, Register16bit reg_addr)
 {
@@ -52,7 +52,7 @@ Clock Z80::SetBit(uint8_t bit_index, Register8bit reg)
 	return Clock(2, 8);
 }
 
-// SET n, *rr
+// SET n, (rr)
 // (Z80 p.251)
 Clock Z80::SetBit(uint8_t bit_index, Register16bit reg_addr)
 {
@@ -84,7 +84,7 @@ Clock Z80::ResetBit(uint8_t bit_index, Register8bit reg)
 	return Clock(2, 8);
 }
 
-// RES n, *rr
+// RES n, (rr)
 // (Z80 p.241)
 Clock Z80::ResetBit(uint8_t bit_index, Register16bit reg_addr)
 {

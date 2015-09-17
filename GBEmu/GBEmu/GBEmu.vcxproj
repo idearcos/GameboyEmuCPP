@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="Source\GBEmu.cpp" />
     <ClCompile Include="Source\Z80_CallAndReturn.cpp" />
+    <ClCompile Include="Source\Z80_GbExclusive.cpp" />
     <ClCompile Include="Source\Z80_Jump.cpp" />
     <ClCompile Include="Source\MMU.cpp" />
     <ClCompile Include="Source\Registers.cpp" />
