@@ -236,10 +236,18 @@ private:
 	Clock Swap(Register8bit reg);
 	// SWAP (rr)
 	Clock Swap(Register16bit reg_address);
-	// LD IO r, n
+	// LDIO (n), r
+	Clock LoadIOFromRegister(uint8_t displacement, Register8bit source);
+	// LDIO (r), r'
+	Clock LoadIOFromRegister(Register8bit reg_displacement, Register8bit source);
+	// LDIO r, (n)
 	Clock LoadRegisterFromIO(Register8bit dest, uint8_t displacement);
-	// LD IO r, r'
+	// LDIO r, (r')
 	Clock LoadRegisterFromIO(Register8bit dest, Register8bit reg_displacement);
+	// LD rr, rr'+n
+	Clock LoadRegisterFromAddress(Register16bit dest, Register16bit source_addr, int8_t displacement);
+	// ADD rr, n
+	Clock Add(Register16bit dest, int8_t displacement);
 #pragma endregion
 
 	Clock WrongOpCode();

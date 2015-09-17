@@ -46,6 +46,7 @@ Z80::Z80()
 #pragma endregion
 
 #pragma region Instructions 0x10 - 0x1F
+	//TODO STOP
 	instructions_[0x10] = [this](){ return this->WrongOpCode(); };
 	// LD DE, nn
 	instructions_[0x11] = [this](){
@@ -539,10 +540,12 @@ Z80::Z80()
 #pragma endregion
 
 #pragma region Instructions 0xE0 - 0xEF
-	instructions_[0xE0] = [this](){ return this->WrongOpCode(); };
+	// LDIO (n), A
+	instructions_[0xE0] = [this](){ return this->LoadIOFromRegister(this->FetchByte(), Register8bit::A); };
 	// POP HL
 	instructions_[0xE1] = [this](){ return this->PopFromStack(Register16bit::HL); };
-	instructions_[0xE2] = [this](){ return this->WrongOpCode(); };
+	// LDIO (C), A
+	instructions_[0xE2] = [this](){ return this->LoadIOFromRegister(Register8bit::C, Register8bit::A); };
 	// EMPTY
 	instructions_[0xE3] = [this](){ return this->WrongOpCode(); };
 	// EMPTY
@@ -553,10 +556,15 @@ Z80::Z80()
 	instructions_[0xE6] = [this](){ return this->And(this->FetchByte()); };
 	// RST 20h
 	instructions_[0xE7] = [this](){ return this->Restart(0x20); };
-	instructions_[0xE8] = [this](){ return this->WrongOpCode(); };
+	// ADD SP, n
+	instructions_[0xE8] = [this](){ return this->Add(Register16bit::SP, this->FetchByte()); };
 	// JP (HL)
 	instructions_[0xE9] = [this](){ return this->Jump(Register16bit::HL); };
-	instructions_[0xEA] = [this](){ return this->WrongOpCode(); };
+	// LD (nn), A
+	instructions_[0xEA] = [this](){
+		uint16_t address{ this->FetchByte() };
+		address += static_cast<uint16_t>(this->FetchByte()) << 8;
+		return this->LoadAddressFromRegister(address, Register8bit::A); };
 	// EMPTY
 	instructions_[0xEB] = [this](){ return this->WrongOpCode(); };
 	// EMPTY
@@ -570,11 +578,11 @@ Z80::Z80()
 #pragma endregion
 
 #pragma region Instructions 0xF0 - 0xFF
-	// LD IO A, n
+	// LDIO A, (n)
 	instructions_[0xF0] = [this](){ return this->LoadRegisterFromIO(Register8bit::A, this->FetchByte()); };
 	// POP AF
 	instructions_[0xF1] = [this](){ return this->PopFromStack(Register16bit::AF); };
-	// LD IO A, C
+	// LDIO A, (C)
 	instructions_[0xF2] = [this](){ return this->LoadRegisterFromIO(Register8bit::A, Register8bit::C); };
 	// DI
 	instructions_[0xF3] = [this](){ return this->DisableInterrupts(); };
@@ -586,10 +594,15 @@ Z80::Z80()
 	instructions_[0xF6] = [this](){ return this->Or(this->FetchByte()); };
 	// RST 30h
 	instructions_[0xF7] = [this](){ return this->Restart(0x30); };
+	// LD HL, SP+n
 	instructions_[0xF8] = [this](){ return this->WrongOpCode(); };
 	// LD SP, HL
 	instructions_[0xF9] = [this](){ return this->LoadRegister(Register16bit::SP, Register16bit::HL); };
-	instructions_[0xFA] = [this](){ return this->WrongOpCode(); };
+	// LD A, (nn)
+	instructions_[0xFA] = [this](){
+		uint16_t address{ this->FetchByte() };
+		address += static_cast<uint16_t>(this->FetchByte()) << 8;
+		return this->LoadRegisterFromAddress(Register8bit::A, address); };
 	// EI
 	instructions_[0xFB] = [this](){ return this->EnableInterrupts(); };
 	// EMPTY

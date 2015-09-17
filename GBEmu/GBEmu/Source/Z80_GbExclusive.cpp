@@ -59,7 +59,23 @@ Clock Z80::Swap(Register16bit reg_address)
 	return Clock(4, 16);
 }
 
-// LD IO r, n
+// LDIO (n), r
+Clock Z80::LoadIOFromRegister(uint8_t displacement, Register8bit source)
+{
+	mmu_.Write8bitToMemory(0xFF00 + displacement, registers_.Read(source));
+
+	return Clock(3, 12);
+}
+
+// LDIO (r), r'
+Clock Z80::LoadIOFromRegister(Register8bit reg_displacement, Register8bit source)
+{
+	mmu_.Write8bitToMemory(0xFF00 + registers_.Read(reg_displacement), registers_.Read(source));
+
+	return Clock(3, 12);
+}
+
+// LDIO r, (n)
 Clock Z80::LoadRegisterFromIO(Register8bit dest, uint8_t displacement)
 {
 	registers_.Write(dest, mmu_.Read8bitFromMemory(0xFF00 + displacement));
@@ -67,10 +83,41 @@ Clock Z80::LoadRegisterFromIO(Register8bit dest, uint8_t displacement)
 	return Clock(3, 12);
 }
 
-// LD IO r, r'
+// LDIO r, (r')
 Clock Z80::LoadRegisterFromIO(Register8bit dest, Register8bit reg_displacement)
 {
 	registers_.Write(dest, mmu_.Read8bitFromMemory(0xFF00 + registers_.Read(reg_displacement)));
 
 	return Clock(2, 8);
+}
+
+// LD rr, rr'+n
+Clock Z80::LoadRegisterFromAddress(Register16bit dest, Register16bit source_addr, int8_t displacement)
+{
+	registers_.SetFlag(Flags::Zero, false);
+	registers_.SetFlag(Flags::Subtract, false);
+	//TODO how are carry and half carry affected?
+	//registers_.SetFlag(Flags::HalfCarry, false);
+	//registers_.SetFlag(Flags::Carry, false);
+
+	registers_.Write(dest, mmu_.Read16bitFromMemory(registers_.Read(source_addr) + displacement));
+
+	return Clock(3, 12);
+}
+
+// ADD rr, n
+Clock Z80::Add(Register16bit dest, int8_t displacement)
+{
+	registers_.SetFlag(Flags::Zero, false);
+	registers_.SetFlag(Flags::Subtract, false);
+
+	{const uint16_t low_12_bits_result = (registers_.Read(dest) & 0x0FFF) + displacement;
+	registers_.SetFlag(Flags::HalfCarry, (low_12_bits_result & 0x1000) != 0); }
+
+	const uint32_t result = registers_.Read(dest) + displacement;
+	registers_.SetFlag(Flags::Carry, (result & 0x10000) != 0);
+
+	registers_.Write(dest, static_cast<uint16_t>(result & 0xFFFF));
+
+	return Clock(4, 16);
 }
