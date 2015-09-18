@@ -18,4 +18,9 @@ private:
 	const std::array<uint8_t, 256> bios_;
 	bool bios_loaded_{ true };
 
+private:
+	MMU(const MMU&) = delete;
+	MMU(MMU&&) = delete;
+	MMU& operator=(const MMU&) = delete;
+	MMU& operator=(MMU&&) = delete;
 };

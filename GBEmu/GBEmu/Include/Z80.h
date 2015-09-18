@@ -9,6 +9,8 @@
 #include "MMU.h"
 #include "Clock.h"
 
+using InstructionMap = std::map<uint8_t, std::function<Clock()>>;
+
 class Z80
 {
 public:
@@ -18,7 +20,10 @@ public:
 private:
 	void DispatchLoopFunction();
 
-	inline uint8_t FetchByte();
+	uint8_t FetchByte();
+
+	InstructionMap FillInstructionMap();
+	InstructionMap FillBitInstructionMap();
 
 #pragma region 8-bit load group
 	// LD r, r'
@@ -256,8 +261,8 @@ private:
 	Registers registers_;
 	Clock clock_;
 	MMU mmu_;
-	std::map<uint8_t, std::function<Clock()>> instructions_;
-	std::map<uint8_t, std::function<Clock()>> bit_instructions_;
+	const InstructionMap instructions_;
+	const InstructionMap bit_instructions_;
 
 	enum class State
 	{

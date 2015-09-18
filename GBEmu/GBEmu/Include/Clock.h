@@ -9,6 +9,11 @@ public:
 	Clock(uint8_t m, uint8_t t) : m_(m), t_(t) {}
 	~Clock() = default;
 
+	uint8_t GetTicks() const
+	{
+		return t_;
+	}
+
 	Clock& operator+=(const Clock& rhs)
 	{
 		this->m_ += rhs.m_;
