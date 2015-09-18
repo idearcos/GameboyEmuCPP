@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Clock.h" />
+    <ClInclude Include="Include\GPU.h" />
     <ClInclude Include="Include\MMU.h" />
     <ClInclude Include="Include\Registers.h" />
     <ClInclude Include="Include\stdafx.h" />
@@ -163,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GBEmu.cpp" />
+    <ClCompile Include="Source\GPU.cpp" />
     <ClCompile Include="Source\Z80_CallAndReturn.cpp" />
     <ClCompile Include="Source\Z80_GbExclusive.cpp" />
     <ClCompile Include="Source\Z80_Jump.cpp" />
