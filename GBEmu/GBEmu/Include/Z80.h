@@ -8,6 +8,7 @@
 #include "Registers.h"
 #include "MMU.h"
 #include "Clock.h"
+#include "GPU.h"
 
 using InstructionMap = std::map<uint8_t, std::function<Clock()>>;
 
@@ -261,6 +262,7 @@ private:
 	Registers registers_;
 	Clock clock_;
 	MMU mmu_;
+	GPU gpu_;
 	const InstructionMap instructions_;
 	const InstructionMap bit_instructions_;
 

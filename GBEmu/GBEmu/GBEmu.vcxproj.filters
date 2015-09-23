@@ -39,6 +39,9 @@
     <ClInclude Include="Include\GPU.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Observer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GBEmu.cpp">

@@ -1,7 +1,6 @@
 #include "MMU.h"
 
 MMU::MMU() :
-	0x3E, 0x19, 0xEA, 0x10, 0x99, 0x21, 0x2F, 0x99, 0x0E, 0x0C, 0x3D, 0x28, 0x08, 0x32, 0x0D, 0x20,
 	bios_(std::array<uint8_t, 256>{ {
 		0x31, 0xFE, 0xFF, 0xAF, 0x21, 0xFF, 0x9F, 0x32, 0xCB, 0x7C, 0x20, 0xFB, 0x21, 0x26, 0xFF, 0x0E,
 		0x11, 0x3E, 0x80, 0x32, 0xE2, 0x0C, 0x3E, 0xF3, 0xE2, 0x32, 0x3E, 0x77, 0x77, 0x3E, 0xFC, 0xE0,
@@ -30,19 +29,28 @@ uint8_t MMU::Read8bitFromMemory(uint16_t /*addr*/) const
 	return value;
 }
 
-uint16_t MMU::Read16bitFromMemory(uint16_t /*addr*/) const
+uint16_t MMU::Read16bitFromMemory(uint16_t addr) const
 {
-	uint16_t value{ 0 };
-	// First load low order, then high order byte
+	uint16_t value{ Read8bitFromMemory(addr) };
+	value += static_cast<uint16_t>(Read8bitFromMemory(addr + 1)) << 8;
 	return value;
 }
 
-void MMU::Write8bitToMemory(uint16_t /*addr*/, uint8_t /*value*/)
+void MMU::Write8bitToMemory(uint16_t addr, uint8_t value)
 {
-	// Do something
+	if (IsInVram(addr))
+	{
+		this->Notify(&MMUObserver::OnMemoryWrite, Region::Vram, addr - start_vram_, value);
+	}
 }
 
-void MMU::Write16bitToMemory(uint16_t /*addr*/, uint16_t /*value*/)
+void MMU::Write16bitToMemory(uint16_t addr, uint16_t value)
 {
-	// First write high order, then low order byte
+	Write8bitToMemory(addr, static_cast<uint8_t>(value & 0xFF));
+	Write8bitToMemory(addr + 1, static_cast<uint8_t>(value >> 8));
+}
+
+bool MMU::IsInVram(uint16_t addr) const
+{
+	return (addr >= start_vram_) && (addr < start_eram_);
 }

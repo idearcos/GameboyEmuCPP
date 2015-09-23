@@ -6,7 +6,7 @@ Z80::Z80() :
 	instructions_(FillInstructionMap()),
 	bit_instructions_(FillBitInstructionMap())
 {
-	
+	mmu_.AddObserver(&gpu_);
 }
 
 void Z80::DispatchLoopFunction()
