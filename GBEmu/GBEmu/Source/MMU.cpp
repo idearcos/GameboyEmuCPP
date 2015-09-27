@@ -19,38 +19,74 @@ MMU::MMU() :
 		0x21, 0x04, 0x01, 0x11, 0xA8, 0x00, 0x1A, 0x13, 0xBE, 0x20, 0xFE, 0x23, 0x7D, 0xFE, 0x34, 0x20,
 		0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50 } })
 {
-	
+	region_start_addresses_[Region::VRAM] = start_vram_;
+	region_start_addresses_[Region::IO] = start_io_;
+	vram_.fill(0);
 }
 
-uint8_t MMU::Read8bitFromMemory(uint16_t /*addr*/) const
+uint8_t MMU::Read8bitFromMemory(uint16_t absolute_address) const
 {
-	uint8_t value{ 0 };
-	// Do something
-	return value;
-}
+	Region region{ Region::VRAM };
+	uint16_t local_address(absolute_address);
+	std::tie(region, local_address) = AbsoluteToLocalAddress(absolute_address);
 
-uint16_t MMU::Read16bitFromMemory(uint16_t addr) const
-{
-	uint16_t value{ Read8bitFromMemory(addr) };
-	value += static_cast<uint16_t>(Read8bitFromMemory(addr + 1)) << 8;
-	return value;
-}
-
-void MMU::Write8bitToMemory(uint16_t addr, uint8_t value)
-{
-	if (IsInVram(addr))
+	switch (region)
 	{
-		this->Notify(&MMUObserver::OnMemoryWrite, Region::Vram, static_cast<uint16_t>(addr - start_vram_), value);
+	case Region::VRAM:
+		return vram_[local_address];
+	case Region::IO:
+		return io_[local_address];
+	default:
+		throw std::logic_error("Trying to read from non-implemented memory region");
 	}
 }
 
-void MMU::Write16bitToMemory(uint16_t addr, uint16_t value)
+uint16_t MMU::Read16bitFromMemory(uint16_t absolute_address) const
 {
-	Write8bitToMemory(addr, static_cast<uint8_t>(value & 0xFF));
-	Write8bitToMemory(addr + 1, static_cast<uint8_t>(value >> 8));
+	uint16_t value{ Read8bitFromMemory(absolute_address) };
+	value += static_cast<uint16_t>(Read8bitFromMemory(absolute_address + 1)) << 8;
+	return value;
 }
 
-bool MMU::IsInVram(uint16_t addr) const
+uint8_t MMU::Read8bitFromMemory(Region region, uint16_t local_address) const
 {
-	return (addr >= start_vram_) && (addr < start_eram_);
+	return Read8bitFromMemory(LocalToAbsoluteAddress(region, local_address));
+}
+
+void MMU::Write8bitToMemory(uint16_t absolute_address, uint8_t value)
+{
+	Region region{ Region::VRAM };
+	uint16_t local_address(absolute_address);
+	std::tie(region, local_address) = AbsoluteToLocalAddress(absolute_address);
+	Notify(&MMUObserver::OnMemoryWrite, region, local_address, value);
+}
+
+void MMU::Write16bitToMemory(uint16_t absolute_address, uint16_t value)
+{
+	Write8bitToMemory(absolute_address, static_cast<uint8_t>(value & 0xFF));
+	Write8bitToMemory(absolute_address + 1, static_cast<uint8_t>(value >> 8));
+}
+
+std::tuple<MMU::Region, uint16_t> MMU::AbsoluteToLocalAddress(uint16_t absolute_address) const
+{
+	if ((absolute_address >= start_vram_) && (absolute_address < start_eram_))
+	{
+		return std::make_tuple(Region::VRAM, absolute_address - start_vram_);
+	}
+	else if ((absolute_address >= start_io_) && (absolute_address < start_zero_page_))
+	{
+		return std::make_tuple(Region::IO, absolute_address - start_io_);
+	}
+}
+
+uint16_t MMU::LocalToAbsoluteAddress(Region region, uint16_t local_address) const
+{
+	try
+	{
+		return region_start_addresses_.at(region) + local_address;
+	}
+	catch (std::out_of_range &)
+	{
+		throw std::logic_error("Trying to convert a local address of a non-implemented memory region");
+	}
 }

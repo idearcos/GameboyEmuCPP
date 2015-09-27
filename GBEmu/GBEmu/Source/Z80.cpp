@@ -4,7 +4,8 @@
 
 Z80::Z80() :
 	instructions_(FillInstructionMap()),
-	bit_instructions_(FillBitInstructionMap())
+	bit_instructions_(FillBitInstructionMap()),
+	gpu_(mmu_)
 {
 	mmu_.AddObserver(&gpu_);
 }

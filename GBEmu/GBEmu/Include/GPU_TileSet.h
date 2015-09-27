@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include "GPU_Tile.h"
+#include "GPU_TileMap.h"
 
 class TileSet
 {
@@ -16,11 +17,9 @@ public:
 	TileSet(size_t num_tiles, size_t tile_width, size_t tile_height);
 	~TileSet() = default;
 
-	uint8_t ReadPixel(uint8_t tile_number, size_t x, size_t y);
-	void WritePixel(uint8_t tile_number, size_t x, size_t y, uint8_t value);
-
-private:
-	Tile& GetTile(uint8_t tile_number);
+	Tile& GetTile(size_t tile_number);
+	uint8_t ReadPixel(size_t tile_number, size_t x, size_t y);
+	void WritePixel(size_t tile_number, size_t x, size_t y, uint8_t value);
 
 private:
 	const size_t num_tiles_;

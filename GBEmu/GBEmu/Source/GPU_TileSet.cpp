@@ -11,7 +11,7 @@ TileSet::TileSet(size_t num_tiles, size_t tile_width, size_t tile_height) :
 	}
 }
 
-Tile& TileSet::GetTile(uint8_t tile_number)
+Tile& TileSet::GetTile(size_t tile_number)
 {
 	try
 	{
@@ -23,12 +23,12 @@ Tile& TileSet::GetTile(uint8_t tile_number)
 	}
 }
 
-uint8_t TileSet::ReadPixel(uint8_t tile_number, size_t x, size_t y)
+uint8_t TileSet::ReadPixel(size_t tile_number, size_t x, size_t y)
 {
 	return GetTile(tile_number).ReadPixel(x, y);
 }
 
-void TileSet::WritePixel(uint8_t tile_number, size_t x, size_t y, uint8_t value)
+void TileSet::WritePixel(size_t tile_number, size_t x, size_t y, uint8_t value)
 {
 	GetTile(tile_number).WritePixel(x, y, value);
 }

@@ -18,6 +18,7 @@ public:
 	~TileMap() = default;
 
 	TileNumber GetTileNumber(size_t line, size_t scroll_y, size_t scroll_x) const;
+	void SetTileNumber(size_t index, TileNumber tile_number);
 
 private:
 	const size_t map_width_;

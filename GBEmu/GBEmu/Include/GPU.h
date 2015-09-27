@@ -8,16 +8,17 @@
 #include "GPU_States.h"
 #include "GPU_TileSet.h"
 #include "GPU_TileMap.h"
+#include "GPU_Renderer.h"
 
 class GPU : public MMUObserver
 {
 public:
-	GPU();
+	GPU(MMU &mmu);
 	~GPU() = default;
 
 	void Lapse(const Clock &clock);
 	void RenderScanLine();
-	void RefreshScreen() {}
+	void RefreshScreen();
 	void ResetCurrentLine() { current_line_ = 0; }
 	size_t IncrementCurrentLine() { return ++current_line_; }
 
@@ -27,25 +28,30 @@ private:
 	static std::map<Mode, std::unique_ptr<State>> InitStateMap();
 	inline bool IsAddressInTileSet(uint16_t address) const;
 	inline bool IsAddressInTileMap(uint16_t address, TileMap::Number tilemap_number) const;
-	size_t GetAbsoluteTileNumber(uint8_t tile_number, TileSet::Number tileset_number) const;
+	size_t GetAbsoluteTileNumber(TileMap::TileNumber tile_number, TileSet::Number tileset_number) const;
 
 private:
 	// All addresses are relative to the beginning of VRAM
-	static const uint16_t tileset1_start{ 0x0000 };
-	static const uint16_t tileset0_start{ 0x0800 };
-	static const size_t tileset_size{ 0x1000 };
-	static const size_t tileset_total_size{ 0x1800 };
-	static const uint16_t tilemap0_start{ 0x1800 };
-	static const uint16_t tilemap1_start{ 0x1C00 };
-	static const uint16_t tilemap_size{ 0x0400 };
-	static const size_t tile_width{ 8 };
-	static const size_t tile_height{ 8 };
-	static const size_t tile_size{ tile_width * tile_height };
-	static const size_t num_tiles_in_set{ 384 };
+	static const uint16_t tileset1_start_{ 0x0000 };
+	static const uint16_t tileset0_start_{ 0x0800 };
+	static const size_t tileset_size_{ 0x1000 };
+	static const size_t tileset_total_size_{ 0x1800 };
+	static const uint16_t tilemap0_start_{ 0x1800 };
+	static const uint16_t tilemap1_start_{ 0x1C00 };
+	static const uint16_t tilemap_size_{ 0x0400 };
+	static const size_t screen_width_{ 160 };
+	static const size_t screen_height_{ 144 };
+	static const size_t tile_width_{ 8 };
+	static const size_t tile_height_{ 8 };
+	static const size_t tile_size_{ tile_width_ * tile_height_ };
+	static const size_t num_tiles_in_set_{ 384 };
 
-	std::array<uint8_t, 8192> vram_;
 	TileSet tileset_;
 	std::map<TileMap::Number, TileMap> tilemaps_;
+	Renderer renderer_;
+	std::vector<uint8_t> framebuffer_;
+	std::map<uint8_t, std::array<uint8_t, 3>> palette_;
+	MMU &mmu_;
 
 	Mode current_mode_{ Mode::ReadingOAM };
 	const std::map<Mode, std::unique_ptr<State>> states_;
@@ -56,7 +62,11 @@ private:
 
 	bool lcd_on_{ true };
 	bool background_on_{ true };
+	bool sprites_on_{ true };
+	bool window_on_{ true };
 	TileMap::Number current_bg_tilemap_{ TileMap::Number::Zero };
+	TileSet::Number current_bg_tileset_{ TileSet::Number::Zero };
+	TileMap::Number current_window_tilemap_{ TileMap::Number::Zero };
 
 private:
 	GPU(const GPU&) = delete;

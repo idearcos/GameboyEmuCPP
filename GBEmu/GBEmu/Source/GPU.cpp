@@ -2,11 +2,12 @@
 
 #include <list>
 
-GPU::GPU() :
+GPU::GPU(MMU &mmu) :
 	states_(InitStateMap()),
-	tileset_(num_tiles_in_set, tile_width, tile_height)
+	tileset_(num_tiles_in_set_, tile_width_, tile_height_),
+	mmu_(mmu)
 {
-	vram_.fill(0);
+	
 }
 
 std::map<Mode, std::unique_ptr<State>> GPU::InitStateMap()
@@ -21,7 +22,7 @@ std::map<Mode, std::unique_ptr<State>> GPU::InitStateMap()
 
 bool GPU::IsAddressInTileSet(uint16_t address) const
 {
-	return (address >= tileset1_start) && (address < (tileset1_start + tileset_total_size));
+	return (address >= tileset1_start_) && (address < (tileset1_start_ + tileset_total_size_));
 }
 
 bool GPU::IsAddressInTileMap(uint16_t address, TileMap::Number tilemap_number) const
@@ -29,9 +30,9 @@ bool GPU::IsAddressInTileMap(uint16_t address, TileMap::Number tilemap_number) c
 	switch (tilemap_number)
 	{
 	case TileMap::Number::Zero:
-		return ((address >= tilemap0_start) && (address < (tilemap0_start + tilemap_size)));
+		return ((address >= tilemap0_start_) && (address < (tilemap0_start_ + tilemap_size_)));
 	case TileMap::Number::One:
-		return ((address >= tilemap1_start) && (address < (tilemap1_start + tilemap_size)));
+		return ((address >= tilemap1_start_) && (address < (tilemap1_start_ + tilemap_size_)));
 	default:
 		throw std::logic_error("Trying to verify address in wrong numbered tilemap");
 	}
@@ -59,44 +60,88 @@ void GPU::Lapse(const Clock &clock)
 
 void GPU::OnMemoryWrite(MMU::Region region, uint16_t addr, uint8_t value)
 {
-	if (MMU::Region::Vram == region)
+	if (MMU::Region::VRAM == region)
 	{
-		vram_[addr] = value;
-
 		if (IsAddressInTileSet(addr))
 		{
 			// There are 384 tiles in the tile set. Get the index of the tile being modified (upper 12 bits)
-			const uint16_t tile_index{ addr >> 4 };
+			const size_t tile_index = addr >> 4;
 
 			// The lower 4 bits of the address point to one of the 16 bytes that a tile is made of.
-			const uint8_t byte_in_tile{ addr & 0xF };
+			const uint8_t byte_in_tile{ static_cast<uint8_t>(addr & 0xF) };
 
 			// Each row of the tile consists of 2 bytes (2 bits per pixel * 8 pixels = 16 bits)
 			// Due to the memory structure (high-bit and low-bit in consecutive bytes), each byte affects the whole row of the tile.
 			// Get the y (row index)
-			const uint8_t y{ byte_in_tile >> 1 };
+			const uint8_t y{ static_cast<uint8_t>(byte_in_tile >> 1) };
 
 			// Get the address of the first byte in this row (either current address, or the previous byte)
 			const uint16_t row_beginning = (addr & 1) != 0 ? addr - 1 : addr;
 
 			for (uint8_t x = 0; x < 8; x++)
 			{
-				uint8_t value = (vram_[row_beginning] & (1 << (7 - x))) | ((vram_[row_beginning + 1] & (1 << (7 - x))) << 1);
+				const uint8_t value = (mmu_.Read8bitFromMemory(MMU::Region::VRAM, row_beginning) & (1 << (7 - x)))
+					| ((mmu_.Read8bitFromMemory(MMU::Region::VRAM, row_beginning + 1) & (1 << (7 - x))) << 1);
+				tileset_.WritePixel(tile_index, x, y, value);
 			}
 		}
-
-		if (IsAddressInTileMap(addr, TileMap::Number::Zero))
+		else if (IsAddressInTileMap(addr, TileMap::Number::Zero))
 		{
-			const uint8_t tile_number = (addr - tileset1_start) / (tileset_size / num_tiles_in_set);
+			const uint8_t index = (addr - tileset1_start_) / (tileset_size_ / num_tiles_in_set_);
+			tilemaps_.at(TileMap::Number::Zero).SetTileNumber(index, value);
 		}
 		else if (IsAddressInTileMap(addr, TileMap::Number::One))
 		{
-			const int8_t tile_number = (addr - (tileset0_start + (tileset_size / 2))) / (tileset_size / num_tiles_in_set);
+			const int8_t index = (addr - (tileset0_start_ + (tileset_size_ / 2))) / (tileset_size_ / num_tiles_in_set_);
+			tilemaps_.at(TileMap::Number::One).SetTileNumber(index, value);
+		}		
+	}
+	else if (MMU::Region::IO == region)
+	{
+		if (0x0040 == addr)
+		{
+			background_on_ = value & 0x01 != 0;
+			sprites_on_ = value & 0x02 != 0;
+			//TODO sprite_size = value & 0x04
+			current_bg_tilemap_ = (value & 0x08 != 0) ? TileMap::Number::One : TileMap::Number::Zero;
+			current_bg_tileset_ = (value & 0x10 != 0) ? TileSet::Number::One : TileSet::Number::Zero;
+			window_on_ = value & 0x20 != 0;
+			current_window_tilemap_ = (value & 0x40 != 0) ? TileMap::Number::One : TileMap::Number::Zero;
+			lcd_on_ = value & 0x80 != 0;
 		}
-
-		// There are 384 tiles in the tile set. Get the index of the tile being modified (upper 12 bits)
-		const uint16_t tile_index = addr >> 4;
-		
+		else if (0x0042 == addr)
+		{
+			bg_scroll_y_ = value;
+		}
+		else if (0x0043 == addr)
+		{
+			bg_scroll_x_ = value;
+		}
+		else if (0x0044 == addr)
+		{
+			throw std::runtime_error("Trying to write current scanline (read-only register)");
+		}
+		else if (0x0047 == addr)
+		{
+			for (auto i = 0; i < 4; i++)
+			{
+				switch ((value >> (i * 2)) & 3)
+				{
+				case 0:
+					palette_[i] = std::array<uint8_t, 3>{{ 255, 255, 255 }};
+					break;
+				case 1:
+					palette_[i] = std::array<uint8_t, 3>{{ 192, 192, 192 }};
+					break;
+				case 2:
+					palette_[i] = std::array<uint8_t, 3>{{ 96, 96, 96 }};
+					break;
+				case 3:
+					palette_[i] = std::array<uint8_t, 3>{{ 0, 0, 0 }};
+					break;
+				}
+			}
+		}
 	}
 }
 
@@ -106,10 +151,37 @@ void GPU::RenderScanLine()
 	{
 		if (background_on_)
 		{
-			const auto tile_number = tilemaps_.at(current_bg_tilemap_).GetTileNumber(current_line_, bg_scroll_y_, bg_scroll_x_);
+			// The pixel offset inside the first tile to be drawn, depending on the horizontal scroll of the background (last 3 bits, 0-7)
+			auto x_offset_in_tile = bg_scroll_x_ & 0x07;
 
-			// The first line index inside the tile to be used is given by the remainder of the previous division.
-			//const uint8_t line_in_tile{ static_cast<uint8_t>((current_line_ + bg_scroll_y_) & 0x07) };
+			// The line (of the tiles) to be drawn, depending on the vertical scroll of the background and the current line being drawn (last 3 bits, 0-7)
+			const uint8_t line_in_tile{ static_cast<uint8_t>((current_line_ + bg_scroll_y_) & 0x07) };
+
+			size_t pixels_drawn = 0;
+			while (pixels_drawn < screen_width_)
+			{
+				const auto tile_number = tilemaps_.at(current_bg_tilemap_).GetTileNumber(current_line_, bg_scroll_y_, bg_scroll_x_ + pixels_drawn);
+
+				const auto tile = tileset_.GetTile(tile_number);
+
+				for (auto x_in_tile = x_offset_in_tile; (x_in_tile < tile_width_) && (pixels_drawn < screen_width_); x_in_tile++)
+				{
+					const auto rgb = palette_.at(tile.ReadPixel(x_in_tile, line_in_tile));
+					for (int i = 0; i < rgb.size(); i++)
+					{
+						framebuffer_[screen_width_ * current_line_ * 3 + pixels_drawn * 3 + i] = rgb[i];
+					}
+					pixels_drawn += 1;
+				}
+
+				x_offset_in_tile += pixels_drawn;
+				x_offset_in_tile &= 0x07;
+			}
 		}
 	}
+}
+
+void GPU::RefreshScreen()
+{
+	renderer_.RefreshScreen(framebuffer_);
 }

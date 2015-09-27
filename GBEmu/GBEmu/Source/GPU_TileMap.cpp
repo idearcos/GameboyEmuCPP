@@ -28,3 +28,15 @@ TileMap::TileNumber TileMap::GetTileNumber(size_t line, size_t scroll_y, size_t 
 		throw std::runtime_error("Tried to access tile map out of range");
 	}
 }
+
+void TileMap::SetTileNumber(size_t index, TileNumber tile_number)
+{
+	try
+	{
+		tilemap_data_.at(index) = tile_number;
+	}
+	catch (std::out_of_range &)
+	{
+		throw std::logic_error("Trying to set tile number out of map's range");
+	}
+}
