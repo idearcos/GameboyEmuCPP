@@ -6,10 +6,10 @@ class Clock
 {
 public:
 	Clock() = default;
-	Clock(uint8_t m, uint8_t t) : m_(m), t_(t) {}
+	Clock(size_t m, size_t t) : m_(m), t_(t) {}
 	~Clock() = default;
 
-	uint8_t GetTicks() const
+	size_t GetTicks() const
 	{
 		return t_;
 	}
@@ -22,6 +22,6 @@ public:
 	}
 
 private:
-	uint8_t m_{ 0 }; // Clock for last instruction
-	uint8_t t_{ 0 }; // Clock for last instruction
+	size_t m_{ 0 };
+	size_t t_{ 0 };
 };

@@ -5,96 +5,12 @@
 #include <array>
 #include "Clock.h"
 #include "MMU.h"
+#include "GPU_States.h"
+#include "GPU_TileSet.h"
+#include "GPU_TileMap.h"
 
 class GPU : public MMUObserver
 {
-private:
-	enum class Mode
-	{
-		ReadingOAM,
-		ReadingVRAM,
-		HBlank,
-		VBlank
-	};
-
-	class State
-	{
-	public:
-		State(uint8_t ticks_per_period) : ticks_per_period_(ticks_per_period) {}
-		// Returns the new mode, and the remainder of ticks that have to be accounted for the next period
-		std::tuple<Mode, uint8_t> Lapse(uint8_t ticks_current_period, GPU &gpu);
-
-	private:
-		virtual Mode Transition(GPU &gpu) = 0;
-		const uint8_t ticks_per_period_;
-
-	private:
-		State(const State&) = delete;
-		State(State&&) = delete;
-		State& operator=(const State&) = delete;
-		State& operator=(State&&) = delete;
-	};
-
-	class ReadingOAM final : public State
-	{
-	public:
-		ReadingOAM() : State(80) {}
-	private:
-		Mode Transition(GPU&) override { return Mode::ReadingVRAM; }
-	};
-
-	class ReadingVRAM final : public State
-	{
-	public:
-		ReadingVRAM() : State(172) {}
-	private:
-		Mode Transition(GPU&) override;
-	};
-
-	class HBlank final : public State
-	{
-	public:
-		HBlank() : State(204) {}
-	private:
-		Mode Transition(GPU &gpu) override;
-	};
-
-	class VBlank final : public State
-	{
-	public:
-		VBlank() : State(uint8_t(456)) {}
-	private:
-		Mode Transition(GPU &gpu) override;
-	};
-
-	class TileSet
-	{
-	public:
-		static const uint32_t num_tiles_{ 128 * 3 };
-		static const uint32_t tile_width_{ 8 };
-		static const uint32_t tile_height_{ 8 };
-
-		TileSet() = default;
-		~TileSet() = default;
-
-		void WriteTileData(uint32_t tile_index, uint8_t x, uint8_t y, uint8_t value);
-
-	private:
-		std::array<uint8_t, num_tiles_ * tile_width_ * tile_height_> tileset_data_;
-	};
-	
-	enum class TileSetIndex
-	{
-		Zero,
-		One
-	};
-
-	enum class TileMapIndex
-	{
-		Zero,
-		One
-	};
-
 public:
 	GPU();
 	~GPU() = default;
@@ -103,27 +19,44 @@ public:
 	void RenderScanLine();
 	void RefreshScreen() {}
 	void ResetCurrentLine() { current_line_ = 0; }
-	uint8_t IncrementCurrentLine() { return ++current_line_; }
+	size_t IncrementCurrentLine() { return ++current_line_; }
 
 	void OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value) override;
 
 private:
 	static std::map<Mode, std::unique_ptr<State>> InitStateMap();
+	inline bool IsAddressInTileSet(uint16_t address) const;
+	inline bool IsAddressInTileMap(uint16_t address, TileMap::Number tilemap_number) const;
+	size_t GetAbsoluteTileNumber(uint8_t tile_number, TileSet::Number tileset_number) const;
 
 private:
+	// All addresses are relative to the beginning of VRAM
+	static const uint16_t tileset1_start{ 0x0000 };
+	static const uint16_t tileset0_start{ 0x0800 };
+	static const size_t tileset_size{ 0x1000 };
+	static const size_t tileset_total_size{ 0x1800 };
+	static const uint16_t tilemap0_start{ 0x1800 };
+	static const uint16_t tilemap1_start{ 0x1C00 };
+	static const uint16_t tilemap_size{ 0x0400 };
+	static const size_t tile_width{ 8 };
+	static const size_t tile_height{ 8 };
+	static const size_t tile_size{ tile_width * tile_height };
+	static const size_t num_tiles_in_set{ 384 };
+
 	std::array<uint8_t, 8192> vram_;
 	TileSet tileset_;
+	std::map<TileMap::Number, TileMap> tilemaps_;
 
 	Mode current_mode_{ Mode::ReadingOAM };
 	const std::map<Mode, std::unique_ptr<State>> states_;
-	uint8_t ticks_current_period_{ 0 };
-	uint8_t current_line_{ 0 };
-	uint8_t bg_scroll_x{ 0 };
-	uint8_t bg_scroll_y{ 0 };
+	size_t ticks_current_period_{ 0 };
+	size_t current_line_{ 0 };
+	size_t bg_scroll_x_{ 0 };
+	size_t bg_scroll_y_{ 0 };
 
 	bool lcd_on_{ true };
 	bool background_on_{ true };
-	TileMapIndex background_tile_map_{ TileMapIndex::Zero };
+	TileMap::Number current_bg_tilemap_{ TileMap::Number::Zero };
 
 private:
 	GPU(const GPU&) = delete;

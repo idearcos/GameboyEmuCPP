@@ -40,7 +40,7 @@ void MMU::Write8bitToMemory(uint16_t addr, uint8_t value)
 {
 	if (IsInVram(addr))
 	{
-		this->Notify(&MMUObserver::OnMemoryWrite, Region::Vram, addr - start_vram_, value);
+		this->Notify(&MMUObserver::OnMemoryWrite, Region::Vram, static_cast<uint16_t>(addr - start_vram_), value);
 	}
 }
 
