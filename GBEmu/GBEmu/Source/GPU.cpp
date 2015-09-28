@@ -47,6 +47,7 @@ size_t GPU::GetAbsoluteTileNumber(uint8_t tile_number, TileSet::Number tileset_n
 	case TileSet::Number::One:
 		return tile_number;
 	default:
+		throw std::logic_error("Trying to get tile number from non-implemented tileset");
 		break;
 	}
 }
@@ -87,12 +88,12 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t addr, uint8_t value)
 		}
 		else if (IsAddressInTileMap(addr, TileMap::Number::Zero))
 		{
-			const uint8_t index = (addr - tileset1_start_) / (tileset_size_ / num_tiles_in_set_);
+			const auto index = (addr - tileset1_start_) / (tileset_size_ / num_tiles_in_set_);
 			tilemaps_.at(TileMap::Number::Zero).SetTileNumber(index, value);
 		}
 		else if (IsAddressInTileMap(addr, TileMap::Number::One))
 		{
-			const int8_t index = (addr - (tileset0_start_ + (tileset_size_ / 2))) / (tileset_size_ / num_tiles_in_set_);
+			const auto index = (addr - (tileset0_start_ + (tileset_size_ / 2))) / (tileset_size_ / num_tiles_in_set_);
 			tilemaps_.at(TileMap::Number::One).SetTileNumber(index, value);
 		}		
 	}
@@ -100,14 +101,14 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t addr, uint8_t value)
 	{
 		if (0x0040 == addr)
 		{
-			background_on_ = value & 0x01 != 0;
-			sprites_on_ = value & 0x02 != 0;
+			background_on_ = (value & 0x01) != 0;
+			sprites_on_ = (value & 0x02) != 0;
 			//TODO sprite_size = value & 0x04
-			current_bg_tilemap_ = (value & 0x08 != 0) ? TileMap::Number::One : TileMap::Number::Zero;
-			current_bg_tileset_ = (value & 0x10 != 0) ? TileSet::Number::One : TileSet::Number::Zero;
-			window_on_ = value & 0x20 != 0;
-			current_window_tilemap_ = (value & 0x40 != 0) ? TileMap::Number::One : TileMap::Number::Zero;
-			lcd_on_ = value & 0x80 != 0;
+			current_bg_tilemap_ = ((value & 0x08) != 0) ? TileMap::Number::One : TileMap::Number::Zero;
+			current_bg_tileset_ = ((value & 0x10) != 0) ? TileSet::Number::One : TileSet::Number::Zero;
+			window_on_ = (value & 0x20) != 0;
+			current_window_tilemap_ = ((value & 0x40) != 0) ? TileMap::Number::One : TileMap::Number::Zero;
+			lcd_on_ = (value & 0x80) != 0;
 		}
 		else if (0x0042 == addr)
 		{

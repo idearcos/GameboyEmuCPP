@@ -3,13 +3,13 @@
 
 #include <thread>
 #include <iostream>
-#include "Z80.h"
+#include "GameBoy.h"
 
-int main(int argc, char* argv[])
+int main(int /*argc*/, char* /*argv*/[])
 {
 	try
 	{
-		Z80 z80;
+		GameBoy gb;
 
 		std::this_thread::sleep_for(std::chrono::seconds(3));
 	}

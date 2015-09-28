@@ -50,7 +50,7 @@ private:
 	std::map<TileMap::Number, TileMap> tilemaps_;
 	Renderer renderer_;
 	std::vector<uint8_t> framebuffer_;
-	std::map<uint8_t, std::array<uint8_t, 3>> palette_;
+	std::map<size_t, std::array<uint8_t, 3>> palette_;
 	MMU &mmu_;
 
 	Mode current_mode_{ Mode::ReadingOAM };

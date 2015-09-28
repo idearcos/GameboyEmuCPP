@@ -163,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Clock.h" />
+    <ClInclude Include="Include\GameBoy.h" />
     <ClInclude Include="Include\GPU.h" />
     <ClInclude Include="Include\GPU_Renderer.h" />
     <ClInclude Include="Include\GPU_States.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Include\Z80.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameBoy.cpp" />
     <ClCompile Include="Source\GBEmu.cpp" />
     <ClCompile Include="Source\GPU.cpp" />
     <ClCompile Include="Source\GPU_Renderer.cpp" />

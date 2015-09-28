@@ -15,14 +15,13 @@ using InstructionMap = std::map<uint8_t, std::function<Clock()>>;
 class Z80
 {
 public:
-	Z80();
+	Z80(MMU &mmu);
 	~Z80() = default;
 
-private:
-	void DispatchLoopFunction();
-
 	uint8_t FetchByte();
+	Clock Execute(uint8_t opcode);
 
+private:
 	InstructionMap FillInstructionMap();
 	InstructionMap FillBitInstructionMap();
 
@@ -261,8 +260,8 @@ private:
 private:
 	Registers registers_;
 	Clock clock_;
-	MMU mmu_;
-	GPU gpu_;
+	MMU &mmu_;
+
 	const InstructionMap instructions_;
 	const InstructionMap bit_instructions_;
 
@@ -274,5 +273,7 @@ private:
 
 	bool interrupt_enabled_{ true };
 
-	std::atomic<bool> exit_loop_{ false };
+private:
+	Z80& operator=(const Z80&) = delete;
+	Z80& operator=(Z80&&) = delete;
 };

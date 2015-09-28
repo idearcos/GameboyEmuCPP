@@ -18,8 +18,8 @@ Renderer::Renderer()
 	window_ = glfwCreateWindow(160, 144, "GameBoy :)", NULL, NULL);
 	if (nullptr == window_)
 	{
-		throw std::runtime_error("Failed to open GLFW window. If you have an Intel GPU, it is not 3.3 compatible.");
 		glfwTerminate();
+		throw std::runtime_error("Failed to open GLFW window. If you have an Intel GPU, it is not 3.3 compatible.");
 	}
 	glfwMakeContextCurrent(window_);
 
@@ -46,5 +46,9 @@ void Renderer::GlfwErrorCallback(int error, const char* description)
 
 void Renderer::RefreshScreen(const std::vector<uint8_t> &framebuffer)
 {
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	glDrawPixels(160, 144, GL_RGB, GL_UNSIGNED_BYTE, framebuffer.data());
+
+	glfwSwapBuffers(window_);
 }
