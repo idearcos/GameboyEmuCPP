@@ -5,8 +5,16 @@
 GPU::GPU(MMU &mmu) :
 	states_(InitStateMap()),
 	tileset_(num_tiles_in_set_, tile_width_, tile_height_),
-	mmu_(mmu)
+	mmu_(mmu),
+	framebuffer_(screen_width_ * screen_height_ * 3, 0)
 {
+	tilemaps_.emplace(std::piecewise_construct, std::forward_as_tuple(TileMap::Number::Zero), std::forward_as_tuple(map_width_, map_height_, tile_width_, tile_height_));
+	tilemaps_.emplace(std::piecewise_construct, std::forward_as_tuple(TileMap::Number::One), std::forward_as_tuple(map_width_, map_height_, tile_width_, tile_height_));
+
+	for (auto i = 0; i < 4; i++)
+	{
+		palette_[i] = std::array<uint8_t, 3>{{ 255, 255, 255 }};
+	}
 	
 }
 
@@ -88,12 +96,12 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t addr, uint8_t value)
 		}
 		else if (IsAddressInTileMap(addr, TileMap::Number::Zero))
 		{
-			const auto index = (addr - tileset1_start_) / (tileset_size_ / num_tiles_in_set_);
+			const auto index = addr - tilemap0_start_;
 			tilemaps_.at(TileMap::Number::Zero).SetTileNumber(index, value);
 		}
 		else if (IsAddressInTileMap(addr, TileMap::Number::One))
 		{
-			const auto index = (addr - (tileset0_start_ + (tileset_size_ / 2))) / (tileset_size_ / num_tiles_in_set_);
+			const auto index = addr - tilemap1_start_;
 			tilemaps_.at(TileMap::Number::One).SetTileNumber(index, value);
 		}		
 	}
@@ -167,10 +175,17 @@ void GPU::RenderScanLine()
 
 				for (auto x_in_tile = x_offset_in_tile; (x_in_tile < tile_width_) && (pixels_drawn < screen_width_); x_in_tile++)
 				{
-					const auto rgb = palette_.at(tile.ReadPixel(x_in_tile, line_in_tile));
-					for (int i = 0; i < rgb.size(); i++)
+					try
 					{
-						framebuffer_[screen_width_ * current_line_ * 3 + pixels_drawn * 3 + i] = rgb[i];
+						const auto rgb = palette_.at(tile.ReadPixel(x_in_tile, line_in_tile));
+						for (int i = 0; i < rgb.size(); i++)
+						{
+							framebuffer_[screen_width_ * current_line_ * 3 + pixels_drawn * 3 + i] = rgb[i];
+						}
+					}
+					catch (std::out_of_range &)
+					{
+						throw std::runtime_error("Trying to access invalid palette");
 					}
 					pixels_drawn += 1;
 				}

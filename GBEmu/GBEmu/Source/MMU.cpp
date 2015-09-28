@@ -12,7 +12,7 @@ MMU::MMU()
 	region_start_addresses_[Region::IO] = start_io_;
 	region_start_addresses_[Region::ZeroPage] = start_zero_page_;
 
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ROM), std::forward_as_tuple(0x8000, 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ROM), std::forward_as_tuple(0x10000, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::VRAM), std::forward_as_tuple(0x2000, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ERAM), std::forward_as_tuple(0x2000, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::WRAM), std::forward_as_tuple(0x3E00, 0));
@@ -47,19 +47,11 @@ uint8_t MMU::Read8bitFromMemory(uint16_t absolute_address)
 
 	try
 	{
-		if (bios_loaded_ && (Region::ROM == region))
+		if (Region::BIOS == region)
 		{
-			if (local_address < memory_regions_.at(Region::BIOS).size())
+			if (local_address == memory_regions_.at(Region::BIOS).size() - 1)
 			{
-				if (local_address == memory_regions_.at(Region::BIOS).size() - 1)
-				{
-					bios_loaded_ = false;
-				}
-				return memory_regions_.at(Region::BIOS).at(local_address);
-			}
-			else
-			{
-				throw std::runtime_error("Trying to read beyond range while BIOS is loaded");
+				bios_loaded_ = false;
 			}
 		}
 		return memory_regions_.at(region).at(local_address);
@@ -147,6 +139,10 @@ std::tuple<MMU::Region, uint16_t> MMU::AbsoluteToLocalAddress(uint16_t absolute_
 			if ((absolute_address >= pair.second)
 				&& (absolute_address < (pair.second + memory_regions_.at(pair.first).size())))
 			{
+				if ((pair.first == Region::BIOS) && (!bios_loaded_))
+				{
+					continue;
+				}
 				return std::make_tuple(pair.first, absolute_address - pair.second);
 			}
 		}

@@ -51,4 +51,6 @@ void Renderer::RefreshScreen(const std::vector<uint8_t> &framebuffer)
 	glDrawPixels(160, 144, GL_RGB, GL_UNSIGNED_BYTE, framebuffer.data());
 
 	glfwSwapBuffers(window_);
+
+	glfwPollEvents();
 }

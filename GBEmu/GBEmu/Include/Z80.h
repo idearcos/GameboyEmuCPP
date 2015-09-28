@@ -255,7 +255,7 @@ private:
 	Clock Add(Register16bit dest, int8_t displacement);
 #pragma endregion
 
-	Clock WrongOpCode();
+	Clock WrongOpCode(uint8_t opcode);
 
 private:
 	Registers registers_;

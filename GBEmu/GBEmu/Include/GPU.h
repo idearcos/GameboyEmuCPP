@@ -39,8 +39,11 @@ private:
 	static const uint16_t tilemap0_start_{ 0x1800 };
 	static const uint16_t tilemap1_start_{ 0x1C00 };
 	static const uint16_t tilemap_size_{ 0x0400 };
+
 	static const size_t screen_width_{ 160 };
 	static const size_t screen_height_{ 144 };
+	static const size_t map_width_{ 32 };
+	static const size_t map_height_{ 32 };
 	static const size_t tile_width_{ 8 };
 	static const size_t tile_height_{ 8 };
 	static const size_t tile_size_{ tile_width_ * tile_height_ };

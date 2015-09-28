@@ -9,16 +9,12 @@ class GameBoy
 {
 public:
 	GameBoy();
-	~GameBoy();
+	~GameBoy() = default;
 
-private:
-	void DispatchLoopFunction();
+	void Run();
 
 private:
 	Z80 z80_;
 	MMU mmu_;
 	GPU gpu_;
-
-	std::atomic<bool> exit_loop_{ false };
-	std::thread dispatch_loop_thread_;
 };

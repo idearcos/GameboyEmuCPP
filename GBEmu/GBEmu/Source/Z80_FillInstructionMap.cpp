@@ -47,7 +47,7 @@ InstructionMap Z80::FillInstructionMap()
 
 #pragma region Instructions 0x10 - 0x1F
 	//TODO STOP
-	instructions[0x10] = [this](){ return this->WrongOpCode(); };
+	instructions[0x10] = [this](){ return this->WrongOpCode(0x10); };
 	// LD DE, nn
 	instructions[0x11] = [this](){
 		uint16_t value{ this->FetchByte() };
@@ -503,7 +503,7 @@ InstructionMap Z80::FillInstructionMap()
 		address += static_cast<uint16_t>(this->FetchByte()) << 8;
 		return this->JumpIf(address, Flags::Carry, false); };
 	// EMPTY
-	instructions[0xD3] = [this](){ return this->WrongOpCode(); };
+	instructions[0xD3] = [this](){ return this->WrongOpCode(0xD3); };
 	// CALL NC, nn
 	instructions[0xD4] = [this](){
 		uint16_t address{ this->FetchByte() };
@@ -525,14 +525,14 @@ InstructionMap Z80::FillInstructionMap()
 		address += static_cast<uint16_t>(this->FetchByte()) << 8;
 		return this->JumpIf(address, Flags::Carry, true); };
 	// EMPTY
-	instructions[0xDB] = [this](){ return this->WrongOpCode(); };
+	instructions[0xDB] = [this](){ return this->WrongOpCode(0xDB); };
 	// CALL C, nn
 	instructions[0xDC] = [this](){
 		uint16_t address{ this->FetchByte() };
 		address += static_cast<uint16_t>(this->FetchByte()) << 8;
 		return this->CallIf(address, Flags::Carry, true); };
 	// EMPTY
-	instructions[0xDD] = [this](){ return this->WrongOpCode(); };
+	instructions[0xDD] = [this](){ return this->WrongOpCode(0xDD); };
 	// SBC A, n
 	instructions[0xDE] = [this](){ return this->SubMinusCarry(this->FetchByte()); };
 	// RST 18h
@@ -547,9 +547,9 @@ InstructionMap Z80::FillInstructionMap()
 	// LDIO (C), A
 	instructions[0xE2] = [this](){ return this->LoadIOFromRegister(Register8bit::C, Register8bit::A); };
 	// EMPTY
-	instructions[0xE3] = [this](){ return this->WrongOpCode(); };
+	instructions[0xE3] = [this](){ return this->WrongOpCode(0xE3); };
 	// EMPTY
-	instructions[0xE4] = [this](){ return this->WrongOpCode(); };
+	instructions[0xE4] = [this](){ return this->WrongOpCode(0xE4); };
 	// PUSH HL
 	instructions[0xE5] = [this](){ return this->PushToStack(Register16bit::HL); };
 	// AND n
@@ -566,11 +566,11 @@ InstructionMap Z80::FillInstructionMap()
 		address += static_cast<uint16_t>(this->FetchByte()) << 8;
 		return this->LoadAddressFromRegister(address, Register8bit::A); };
 	// EMPTY
-	instructions[0xEB] = [this](){ return this->WrongOpCode(); };
+	instructions[0xEB] = [this](){ return this->WrongOpCode(0xEB); };
 	// EMPTY
-	instructions[0xEC] = [this](){ return this->WrongOpCode(); };
+	instructions[0xEC] = [this](){ return this->WrongOpCode(0xEC); };
 	// EMPTY
-	instructions[0xED] = [this](){ return this->WrongOpCode(); };
+	instructions[0xED] = [this](){ return this->WrongOpCode(0xED); };
 	// XOR n
 	instructions[0xEE] = [this](){ return this->Xor(this->FetchByte()); };
 	// RST 28h
@@ -587,7 +587,7 @@ InstructionMap Z80::FillInstructionMap()
 	// DI
 	instructions[0xF3] = [this](){ return this->DisableInterrupts(); };
 	// EMPTY
-	instructions[0xF4] = [this](){ return this->WrongOpCode(); };
+	instructions[0xF4] = [this](){ return this->WrongOpCode(0xF4); };
 	// PUSH AF
 	instructions[0xF5] = [this](){ return this->PushToStack(Register16bit::AF); };
 	// OR n
@@ -595,7 +595,7 @@ InstructionMap Z80::FillInstructionMap()
 	// RST 30h
 	instructions[0xF7] = [this](){ return this->Restart(0x30); };
 	// LD HL, SP+n
-	instructions[0xF8] = [this](){ return this->WrongOpCode(); };
+	instructions[0xF8] = [this](){ return this->WrongOpCode(0xF8); };
 	// LD SP, HL
 	instructions[0xF9] = [this](){ return this->LoadRegister(Register16bit::SP, Register16bit::HL); };
 	// LD A, (nn)
@@ -606,9 +606,9 @@ InstructionMap Z80::FillInstructionMap()
 	// EI
 	instructions[0xFB] = [this](){ return this->EnableInterrupts(); };
 	// EMPTY
-	instructions[0xFC] = [this](){ return this->WrongOpCode(); };
+	instructions[0xFC] = [this](){ return this->WrongOpCode(0xFC); };
 	// EMPTY
-	instructions[0xFD] = [this](){ return this->WrongOpCode(); };
+	instructions[0xFD] = [this](){ return this->WrongOpCode(0xFD); };
 	// CP n
 	instructions[0xFE] = [this](){ return this->Compare(this->FetchByte()); };
 	// RST 38h

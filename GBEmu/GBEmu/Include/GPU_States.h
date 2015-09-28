@@ -21,7 +21,8 @@ public:
 	std::tuple<Mode, size_t> Lapse(size_t ticks_current_period, GPU &gpu);
 
 private:
-	virtual Mode Transition(GPU &gpu) = 0;
+	virtual Mode CurrentMode() const = 0;
+	virtual Mode Transition(GPU &gpu) const = 0;
 	const size_t ticks_per_period_;
 
 private:
@@ -36,7 +37,8 @@ class ReadingOAM final : public State
 public:
 	ReadingOAM() : State(80) {}
 private:
-	Mode Transition(GPU&) override;
+	Mode CurrentMode() const override { return Mode::ReadingOAM; }
+	Mode Transition(GPU&) const override;
 };
 
 class ReadingVRAM final : public State
@@ -44,7 +46,8 @@ class ReadingVRAM final : public State
 public:
 	ReadingVRAM() : State(172) {}
 private:
-	Mode Transition(GPU&) override;
+	Mode CurrentMode() const override { return Mode::ReadingVRAM; }
+	Mode Transition(GPU&) const override;
 };
 
 class HBlank final : public State
@@ -52,7 +55,8 @@ class HBlank final : public State
 public:
 	HBlank() : State(204) {}
 private:
-	Mode Transition(GPU &gpu) override;
+	Mode CurrentMode() const override { return Mode::HBlank; }
+	Mode Transition(GPU &gpu) const override;
 };
 
 class VBlank final : public State
@@ -60,5 +64,6 @@ class VBlank final : public State
 public:
 	VBlank() : State(456) {}
 private:
-	Mode Transition(GPU &gpu) override;
+	Mode CurrentMode() const override { return Mode::VBlank; }
+	Mode Transition(GPU &gpu) const override;
 };

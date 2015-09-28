@@ -1,4 +1,5 @@
 #include "Z80.h"
+#include <sstream>
 
 Z80::Z80(MMU &mmu) :
 	instructions_(FillInstructionMap()),
@@ -22,7 +23,9 @@ Clock Z80::Execute(uint8_t opcode)
 	return op_duration;
 }
 
-Clock Z80::WrongOpCode()
+Clock Z80::WrongOpCode(uint8_t opcode)
 {
-	throw std::runtime_error("Wrong operation code");
+	std::stringstream error_msg;
+	error_msg << "Wrong operation code 0x" << std::hex << static_cast<size_t>(opcode) << std::endl;
+	throw std::runtime_error(error_msg.str());
 }

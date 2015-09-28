@@ -9,22 +9,22 @@ std::tuple<Mode, size_t> State::Lapse(size_t ticks_current_period, GPU &gpu)
 	}
 	else
 	{
-		return std::make_tuple(Mode::VBlank, ticks_current_period);
+		return std::make_tuple(CurrentMode(), ticks_current_period);
 	}
 }
 
-Mode ReadingOAM::Transition(GPU &)
+Mode ReadingOAM::Transition(GPU &) const
 {
 	return Mode::ReadingVRAM;
 }
 
-Mode ReadingVRAM::Transition(GPU &gpu)
+Mode ReadingVRAM::Transition(GPU &gpu) const
 {
 	gpu.RenderScanLine();
 	return Mode::HBlank;
 }
 
-Mode HBlank::Transition(GPU &gpu)
+Mode HBlank::Transition(GPU &gpu) const
 {
 	if (gpu.IncrementCurrentLine() >= 144)
 	{
@@ -37,10 +37,11 @@ Mode HBlank::Transition(GPU &gpu)
 	}
 }
 
-Mode VBlank::Transition(GPU &gpu)
+Mode VBlank::Transition(GPU &gpu) const
 {
 	if (gpu.IncrementCurrentLine() >= 154)
 	{
+		gpu.ResetCurrentLine();
 		return Mode::ReadingOAM;
 	}
 	else
