@@ -10,14 +10,14 @@ TileMap::TileMap(size_t map_width, size_t map_height, size_t tile_width, size_t 
 
 }
 
-TileMap::TileNumber TileMap::GetTileNumber(size_t line, size_t scroll_y, size_t scroll_x) const
+TileMap::TileNumber TileMap::GetTileNumber(size_t scroll_y, size_t scroll_x) const
 {
 	// Current line and scroll Y are counted in pixels.
 	// Divide by 8 (rounding down) to get target tile's row.
-	const auto target_tile_row = ((line + scroll_y) & 0xFF) / tile_height_;
+	const auto target_tile_row = ((scroll_y) & 0xFF) / tile_height_;
 
 	// Divide scroll x (in pixels) by 8 (rounding down) to get target tile's column.
-	const auto target_tile_column = scroll_x / tile_width_;
+	const auto target_tile_column = (scroll_x & 0xFF) / tile_width_;
 
 	try
 	{

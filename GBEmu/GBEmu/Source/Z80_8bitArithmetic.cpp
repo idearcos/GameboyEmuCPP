@@ -210,7 +210,7 @@ Clock Z80::Xor(uint8_t value)
 	registers_.SetFlag(Flags::Subtract, false);
 	registers_.SetFlag(Flags::HalfCarry, false);
 
-	const uint8_t result = ~(registers_.Read(Register8bit::A) & value);
+	const uint8_t result = registers_.Read(Register8bit::A) ^ value;
 	registers_.SetFlag(Flags::Zero, result == 0);
 
 	registers_.Write(Register8bit::A, result);

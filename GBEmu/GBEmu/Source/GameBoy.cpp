@@ -7,7 +7,7 @@ GameBoy::GameBoy() :
 	gpu_(mmu_)
 {
 	mmu_.AddObserver(&gpu_);
-	mmu_.LoadRom("cpu_instrs.gb");
+	mmu_.LoadRom("tetris.gb");
 }
 
 void GameBoy::Run()
@@ -18,9 +18,9 @@ void GameBoy::Run()
 		const auto opcode = z80_.FetchByte();
 		try
 		{
-			const auto op_duration = z80_.Execute(opcode);
-			clock += op_duration;
-			gpu_.Lapse(op_duration);
+			//const auto op_duration = z80_.Execute(opcode);
+			//clock += op_duration;
+			gpu_.Lapse(Clock(1, 4));
 		}
 		catch (std::out_of_range &)
 		{

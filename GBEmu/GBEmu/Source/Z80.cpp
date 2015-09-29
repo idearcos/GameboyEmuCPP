@@ -11,13 +11,18 @@ Z80::Z80(MMU &mmu) :
 
 uint8_t Z80::FetchByte()
 {
-	const auto opcode = mmu_.Read8bitFromMemory(registers_.Read(Register16bit::PC));
+	const auto byte = mmu_.Read8bitFromMemory(registers_.Read(Register16bit::PC));
 	registers_.Increment(Register16bit::PC);
-	return opcode;
+	return byte;
 }
 
 Clock Z80::Execute(uint8_t opcode)
 {
+	bool b = false;
+	if (registers_.Read(Register16bit::PC) >= 0x95)
+	{
+		b = true;
+	}
 	const auto op_duration = instructions_.at(opcode)();
 	clock_ += op_duration;
 	return op_duration;

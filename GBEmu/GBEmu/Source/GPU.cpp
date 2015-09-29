@@ -13,7 +13,7 @@ GPU::GPU(MMU &mmu) :
 
 	for (auto i = 0; i < 4; i++)
 	{
-		palette_[i] = std::array<uint8_t, 3>{{ 255, 255, 255 }};
+		palette_[i] = std::array<uint8_t, 3>{{ 0, 0, 0 }};
 	}
 	
 }
@@ -169,7 +169,7 @@ void GPU::RenderScanLine()
 			size_t pixels_drawn = 0;
 			while (pixels_drawn < screen_width_)
 			{
-				const auto tile_number = tilemaps_.at(current_bg_tilemap_).GetTileNumber(current_line_, bg_scroll_y_, bg_scroll_x_ + pixels_drawn);
+				const auto tile_number = tilemaps_.at(current_bg_tilemap_).GetTileNumber(current_line_ + bg_scroll_y_, pixels_drawn + bg_scroll_x_);
 
 				const auto tile = tileset_.GetTile(tile_number);
 

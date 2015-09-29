@@ -73,16 +73,16 @@ uint16_t Registers::Read(Register16bit reg) const
 	switch (reg)
 	{
 	case Register16bit::AF:
-		value = 255 * a_ + f_;
+		value = (a_ << 8) + f_;
 		break;
 	case Register16bit::BC:
-		value = 255 * b_ + c_;
+		value = (b_ << 8) + c_;
 		break;
 	case Register16bit::DE:
-		value = 255 * d_ + e_;
+		value = (d_ << 8) + e_;
 		break;
 	case Register16bit::HL:
-		value = 255 * h_ + l_;
+		value = (h_ << 8) + l_;
 		break;
 	case Register16bit::PC:
 		value = pc_;

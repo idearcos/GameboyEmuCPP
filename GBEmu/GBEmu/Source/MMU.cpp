@@ -12,7 +12,7 @@ MMU::MMU()
 	region_start_addresses_[Region::IO] = start_io_;
 	region_start_addresses_[Region::ZeroPage] = start_zero_page_;
 
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ROM), std::forward_as_tuple(0x10000, 0));
+	//memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ROM), std::forward_as_tuple(0x10000, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::VRAM), std::forward_as_tuple(0x2000, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ERAM), std::forward_as_tuple(0x2000, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::WRAM), std::forward_as_tuple(0x3E00, 0));
@@ -108,9 +108,12 @@ void MMU::LoadRom(std::string rom_file_path)
 			rom_file.seekg(0, rom_file.end);
 			auto file_size = rom_file.tellg();
 			rom_file.seekg(0, rom_file.beg);
+
+			memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ROM), std::forward_as_tuple(file_size, 0));
+
 			if (file_size > memory_regions_.at(Region::ROM).size())
 			{
-				throw std::runtime_error("Could not open ROM file");
+				throw std::runtime_error("ROM file is bigger than ROM memory region");
 			}
 
 			rom_file.read(reinterpret_cast<char*>(memory_regions_.at(Region::ROM).data()), file_size);

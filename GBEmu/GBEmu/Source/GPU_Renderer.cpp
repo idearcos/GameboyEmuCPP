@@ -44,9 +44,44 @@ void Renderer::GlfwErrorCallback(int error, const char* description)
 	throw std::runtime_error(strError);
 }
 
-void Renderer::RefreshScreen(const std::vector<uint8_t> &framebuffer)
+void Renderer::RefreshScreen(std::vector<uint8_t> &framebuffer)
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
+
+	static uint8_t s_intensity = 0;
+	uint8_t intensity = s_intensity;
+	uint8_t component = 0;
+
+	framebuffer.clear();
+	for (auto y = 0; y < 144; y++)
+	{
+		for (auto x = 0; x < 160; x++)
+		{
+			if (x < 53)
+			{
+				component = 0;
+			}
+			else if (x >= 53 && x < 106)
+			{
+				component = 1;
+			}
+			else if (x >= 106)
+			{
+				component = 2;
+			}
+
+			framebuffer[160 * 3 * y + 3 * x + component] = intensity;
+		}
+
+		if (++intensity == 160)
+		{
+			intensity = 0;
+		}
+	}
+	if (++s_intensity == 160)
+	{
+		s_intensity = 0;
+	}
 
 	glDrawPixels(160, 144, GL_RGB, GL_UNSIGNED_BYTE, framebuffer.data());
 
