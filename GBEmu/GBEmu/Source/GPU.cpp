@@ -6,15 +6,15 @@
 GPU::GPU(MMU &mmu) :
 	states_(InitStateMap()),
 	tileset_(num_tiles_in_set_, tile_width_, tile_height_),
-	mmu_(mmu),
-	framebuffer_(screen_width_ * screen_height_ * components_per_pixel, 0)
+	renderer_(screen_width_, screen_height_),
+	mmu_(mmu)
 {
 	tilemaps_.emplace(std::piecewise_construct, std::forward_as_tuple(TileMap::Number::Zero), std::forward_as_tuple(map_width_, map_height_, tile_width_, tile_height_));
 	tilemaps_.emplace(std::piecewise_construct, std::forward_as_tuple(TileMap::Number::One), std::forward_as_tuple(map_width_, map_height_, tile_width_, tile_height_));
 
 	for (auto i = 0; i < 4; i++)
 	{
-		palette_[i] = Color{ { 0, 0, 0 } };
+		palette_[i] = Color{ 0 };
 	}
 	
 }
@@ -144,16 +144,16 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t addr, uint8_t value)
 				switch ((value >> (i * 2)) & 3)
 				{
 				case 0:
-					palette_[i] = Color{ { 255, 255, 255 } };
+					palette_[i] = Color{ 255 };
 					break;
 				case 1:
-					palette_[i] = Color{ { 192, 192, 192 } };
+					palette_[i] = Color{ 192 };
 					break;
 				case 2:
-					palette_[i] = Color{ { 96, 96, 96 } };
+					palette_[i] = Color{ 96 };
 					break;
 				case 3:
-					palette_[i] = Color{ { 0, 0, 0 } };
+					palette_[i] = Color{ 0 };
 					break;
 				}
 			}
@@ -184,11 +184,8 @@ void GPU::RenderScanLine()
 				{
 					try
 					{
-						const auto rgb = palette_.at(tile.ReadPixel(x_in_tile, line_in_tile));
-						for (int i = 0; i < rgb.size(); i++)
-						{
-							framebuffer_[screen_width_ * current_line_ * 3 + pixels_drawn * 3 + i] = rgb[i];
-						}
+						const auto color = palette_.at(tile.ReadPixel(x_in_tile, line_in_tile));
+						renderer_.RenderPixel(pixels_drawn, current_line_, color);
 					}
 					catch (std::out_of_range &)
 					{
@@ -206,7 +203,7 @@ void GPU::RenderScanLine()
 
 void GPU::RefreshScreen()
 {
-	renderer_.RefreshScreen(framebuffer_);
+	renderer_.RefreshScreen();
 }
 
 void GPU::ResetCurrentLine()

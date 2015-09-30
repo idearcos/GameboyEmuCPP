@@ -2,7 +2,10 @@
 #include <stdexcept>
 #include <string>
 
-Renderer::Renderer()
+Renderer::Renderer(size_t screen_width, size_t screen_height) :
+	framebuffer_(screen_width * screen_height, 0),
+	screen_width_(screen_width),
+	screen_height_(screen_height)
 {
 	glfwSetErrorCallback(GlfwErrorCallback);
 
@@ -44,11 +47,16 @@ void Renderer::GlfwErrorCallback(int error, const char* description)
 	throw std::runtime_error(strError);
 }
 
-void Renderer::RefreshScreen(std::vector<uint8_t> &framebuffer)
+void Renderer::RenderPixel(size_t x, size_t y, uint8_t color)
+{
+	framebuffer_[(screen_height_ - 1 - y) * screen_width_ + x] = color;
+}
+
+void Renderer::RefreshScreen()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glDrawPixels(160, 144, GL_RGB, GL_UNSIGNED_BYTE, framebuffer.data());
+	glDrawPixels(160, 144, GL_LUMINANCE, GL_UNSIGNED_BYTE, framebuffer_.data());
 
 	glfwSwapBuffers(window_);
 

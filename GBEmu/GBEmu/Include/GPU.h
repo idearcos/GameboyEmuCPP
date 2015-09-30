@@ -48,13 +48,11 @@ private:
 	static const size_t tile_height_{ 8 };
 	static const size_t tile_size_{ tile_width_ * tile_height_ };
 	static const size_t num_tiles_in_set_{ 384 };
-	static const size_t components_per_pixel{ 3 };
 
 	TileSet tileset_;
 	std::map<TileMap::Number, TileMap> tilemaps_;
 	Renderer renderer_;
-	std::vector<uint8_t> framebuffer_;
-	using Color = std::array<uint8_t, components_per_pixel>;
+	using Color = uint8_t;
 	std::map<size_t, Color> palette_;
 
 	MMU &mmu_;
