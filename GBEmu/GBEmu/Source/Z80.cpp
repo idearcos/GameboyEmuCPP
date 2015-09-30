@@ -18,11 +18,6 @@ uint8_t Z80::FetchByte()
 
 Clock Z80::Execute(uint8_t opcode)
 {
-	bool b = false;
-	if (registers_.Read(Register16bit::PC) >= 0x95)
-	{
-		b = true;
-	}
 	const auto op_duration = instructions_.at(opcode)();
 	clock_ += op_duration;
 	return op_duration;

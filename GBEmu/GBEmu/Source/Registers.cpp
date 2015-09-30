@@ -147,7 +147,7 @@ void Registers::SetFlag(Flags flag, bool bSet)
 	}
 	else
 	{
-		f_ &= !(static_cast<std::underlying_type_t<Flags>>(flag));
+		f_ &= ~(static_cast<std::underlying_type_t<Flags>>(flag));
 	}
 	
 }

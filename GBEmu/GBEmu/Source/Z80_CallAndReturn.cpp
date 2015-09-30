@@ -43,10 +43,8 @@ Clock Z80::Return()
 {
 	// Flags not affected
 
-	uint16_t value{ 0 };
-	value += static_cast<uint16_t>(mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP))) << 8;
+	uint16_t value{ mmu_.Read16bitFromMemory(registers_.Read(Register16bit::SP)) };
 	registers_.Increment(Register16bit::SP);
-	value += mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP));
 	registers_.Increment(Register16bit::SP);
 
 	registers_.Write(Register16bit::PC, value);
@@ -62,10 +60,8 @@ Clock Z80::ReturnIf(Flags flag, bool flag_value)
 
 	if (registers_.IsFlagSet(flag) == flag_value)
 	{
-		uint16_t value{ 0 };
-		value += static_cast<uint16_t>(mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP))) << 8;
+		uint16_t value{ mmu_.Read16bitFromMemory(registers_.Read(Register16bit::SP)) };
 		registers_.Increment(Register16bit::SP);
-		value += mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP));
 		registers_.Increment(Register16bit::SP);
 
 		registers_.Write(Register16bit::PC, value);
@@ -82,10 +78,8 @@ Clock Z80::ReturnFromInterrupt()
 {
 	// Flags not affected
 
-	uint16_t value{ 0 };
-	value += static_cast<uint16_t>(mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP))) << 8;
+	uint16_t value{ mmu_.Read16bitFromMemory(registers_.Read(Register16bit::SP)) };
 	registers_.Increment(Register16bit::SP);
-	value += mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP));
 	registers_.Increment(Register16bit::SP);
 
 	registers_.Write(Register16bit::PC, value);

@@ -31,6 +31,7 @@ public:
 	uint8_t Read8bitFromMemory(Region region, uint16_t local_address);
 	void Write8bitToMemory(uint16_t absolute_address, uint8_t value);
 	void Write16bitToMemory(uint16_t absolute_address, uint16_t value);
+	void Write8bitToMemory(Region region, uint16_t local_address, uint8_t value);
 
 	void LoadRom(std::string rom_file_path);
 

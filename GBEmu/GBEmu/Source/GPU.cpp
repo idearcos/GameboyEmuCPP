@@ -1,19 +1,20 @@
 #include "GPU.h"
 
 #include <list>
+#include <bitset>
 
 GPU::GPU(MMU &mmu) :
 	states_(InitStateMap()),
 	tileset_(num_tiles_in_set_, tile_width_, tile_height_),
 	mmu_(mmu),
-	framebuffer_(screen_width_ * screen_height_ * 3, 0)
+	framebuffer_(screen_width_ * screen_height_ * components_per_pixel, 0)
 {
 	tilemaps_.emplace(std::piecewise_construct, std::forward_as_tuple(TileMap::Number::Zero), std::forward_as_tuple(map_width_, map_height_, tile_width_, tile_height_));
 	tilemaps_.emplace(std::piecewise_construct, std::forward_as_tuple(TileMap::Number::One), std::forward_as_tuple(map_width_, map_height_, tile_width_, tile_height_));
 
 	for (auto i = 0; i < 4; i++)
 	{
-		palette_[i] = std::array<uint8_t, 3>{{ 0, 0, 0 }};
+		palette_[i] = Color{ { 0, 0, 0 } };
 	}
 	
 }
@@ -69,6 +70,11 @@ void GPU::Lapse(const Clock &clock)
 
 void GPU::OnMemoryWrite(MMU::Region region, uint16_t addr, uint8_t value)
 {
+	if (writing_to_mmu_)
+	{
+		return;
+	}
+
 	if (MMU::Region::VRAM == region)
 	{
 		if (IsAddressInTileSet(addr))
@@ -85,13 +91,14 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t addr, uint8_t value)
 			const uint8_t y{ static_cast<uint8_t>(byte_in_tile >> 1) };
 
 			// Get the address of the first byte in this row (either current address, or the previous byte)
-			const uint16_t row_beginning = (addr & 1) != 0 ? addr - 1 : addr;
+			const uint16_t row_beginning = ((addr & 1) != 0) ? addr - 1 : addr;
 
+			const std::bitset<8> low_bits{ mmu_.Read8bitFromMemory(MMU::Region::VRAM, row_beginning) };
+			const std::bitset<8> high_bits{ mmu_.Read8bitFromMemory(MMU::Region::VRAM, row_beginning + 1) };
 			for (uint8_t x = 0; x < 8; x++)
 			{
-				const uint8_t value = (mmu_.Read8bitFromMemory(MMU::Region::VRAM, row_beginning) & (1 << (7 - x)))
-					| ((mmu_.Read8bitFromMemory(MMU::Region::VRAM, row_beginning + 1) & (1 << (7 - x))) << 1);
-				tileset_.WritePixel(tile_index, x, y, value);
+				const uint8_t pixel_value = (low_bits.test(7 - x) ? 1 : 0) + (high_bits.test(7 - x) ? 2 : 0);
+				tileset_.WritePixel(tile_index, x, y, pixel_value);
 			}
 		}
 		else if (IsAddressInTileMap(addr, TileMap::Number::Zero))
@@ -137,16 +144,16 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t addr, uint8_t value)
 				switch ((value >> (i * 2)) & 3)
 				{
 				case 0:
-					palette_[i] = std::array<uint8_t, 3>{{ 255, 255, 255 }};
+					palette_[i] = Color{ { 255, 255, 255 } };
 					break;
 				case 1:
-					palette_[i] = std::array<uint8_t, 3>{{ 192, 192, 192 }};
+					palette_[i] = Color{ { 192, 192, 192 } };
 					break;
 				case 2:
-					palette_[i] = std::array<uint8_t, 3>{{ 96, 96, 96 }};
+					palette_[i] = Color{ { 96, 96, 96 } };
 					break;
 				case 3:
-					palette_[i] = std::array<uint8_t, 3>{{ 0, 0, 0 }};
+					palette_[i] = Color{ { 0, 0, 0 } };
 					break;
 				}
 			}
@@ -200,4 +207,17 @@ void GPU::RenderScanLine()
 void GPU::RefreshScreen()
 {
 	renderer_.RefreshScreen(framebuffer_);
+}
+
+void GPU::ResetCurrentLine()
+{
+	current_line_ = 0;
+}
+
+size_t GPU::IncrementCurrentLine()
+{
+	writing_to_mmu_ = true;
+	mmu_.Write8bitToMemory(MMU::Region::IO, 0x0044, static_cast<uint8_t>(++current_line_));
+	writing_to_mmu_ = false;
+	return current_line_;
 }

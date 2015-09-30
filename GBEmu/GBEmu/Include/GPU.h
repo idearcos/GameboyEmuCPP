@@ -19,8 +19,8 @@ public:
 	void Lapse(const Clock &clock);
 	void RenderScanLine();
 	void RefreshScreen();
-	void ResetCurrentLine() { current_line_ = 0; }
-	size_t IncrementCurrentLine() { return ++current_line_; }
+	void ResetCurrentLine();
+	size_t IncrementCurrentLine();
 
 	void OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value) override;
 
@@ -48,13 +48,17 @@ private:
 	static const size_t tile_height_{ 8 };
 	static const size_t tile_size_{ tile_width_ * tile_height_ };
 	static const size_t num_tiles_in_set_{ 384 };
+	static const size_t components_per_pixel{ 3 };
 
 	TileSet tileset_;
 	std::map<TileMap::Number, TileMap> tilemaps_;
 	Renderer renderer_;
 	std::vector<uint8_t> framebuffer_;
-	std::map<size_t, std::array<uint8_t, 3>> palette_;
+	using Color = std::array<uint8_t, components_per_pixel>;
+	std::map<size_t, Color> palette_;
+
 	MMU &mmu_;
+	bool writing_to_mmu_{ false };
 
 	Mode current_mode_{ Mode::ReadingOAM };
 	const std::map<Mode, std::unique_ptr<State>> states_;

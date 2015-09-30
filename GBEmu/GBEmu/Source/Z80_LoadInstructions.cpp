@@ -109,10 +109,8 @@ Clock Z80::PushToStack(Register16bit source)
 Clock Z80::PopFromStack(Register16bit dest)
 {
 	// Flags not affected
-	uint16_t value{ 0 };
-	value += static_cast<uint16_t>(mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP))) << 8;
+	uint16_t value{ mmu_.Read16bitFromMemory(registers_.Read(Register16bit::SP)) };
 	registers_.Increment(Register16bit::SP);
-	value += mmu_.Read8bitFromMemory(registers_.Read(Register16bit::SP));
 	registers_.Increment(Register16bit::SP);
 	registers_.Write(dest, value);
 

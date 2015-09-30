@@ -1,6 +1,5 @@
 #include "GameBoy.h"
 #include <iostream>
-#include <conio.h>
 
 GameBoy::GameBoy() :
 	z80_(mmu_),
@@ -13,13 +12,13 @@ GameBoy::GameBoy() :
 void GameBoy::Run()
 {
 	Clock clock;
-	while (!_kbhit())
+	while (true)
 	{
 		const auto opcode = z80_.FetchByte();
 		try
 		{
-			//const auto op_duration = z80_.Execute(opcode);
-			//clock += op_duration;
+			const auto op_duration = z80_.Execute(opcode);
+			clock += op_duration;
 			gpu_.Lapse(Clock(1, 4));
 		}
 		catch (std::out_of_range &)

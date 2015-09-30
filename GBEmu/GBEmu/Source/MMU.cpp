@@ -98,6 +98,11 @@ void MMU::Write16bitToMemory(uint16_t absolute_address, uint16_t value)
 	Write8bitToMemory(absolute_address + 1, static_cast<uint8_t>(value >> 8));
 }
 
+void MMU::Write8bitToMemory(Region region, uint16_t local_address, uint8_t value)
+{
+	Write8bitToMemory(LocalToAbsoluteAddress(region, local_address), value);
+}
+
 void MMU::LoadRom(std::string rom_file_path)
 {
 	try
@@ -137,7 +142,7 @@ std::tuple<MMU::Region, uint16_t> MMU::AbsoluteToLocalAddress(uint16_t absolute_
 {
 	try
 	{
-		for (auto& pair : region_start_addresses_)
+		for (const auto& pair : region_start_addresses_)
 		{
 			if ((absolute_address >= pair.second)
 				&& (absolute_address < (pair.second + memory_regions_.at(pair.first).size())))
