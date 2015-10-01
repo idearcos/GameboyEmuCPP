@@ -2,24 +2,23 @@
 #include <iostream>
 
 GameBoy::GameBoy() :
-	z80_(mmu_),
+	z80_(mmu_, gpu_),
 	gpu_(mmu_)
 {
+	mmu_.AddObserver(&z80_);
 	mmu_.AddObserver(&gpu_);
 	mmu_.LoadRom("tetris.gb");
 }
 
 void GameBoy::Run()
 {
-	Clock clock;
 	while (true)
 	{
 		const auto opcode = z80_.FetchByte();
 		try
 		{
-			const auto op_duration = z80_.Execute(opcode);
-			clock += op_duration;
-			gpu_.Lapse(Clock(1, 4));
+			z80_.Execute(opcode);
+			//z80_.CheckAndHandleInterrupts();
 		}
 		catch (std::out_of_range &)
 		{

@@ -8,23 +8,38 @@
 #include "Registers.h"
 #include "MMU.h"
 #include "Clock.h"
-#include "GPU.h"
 
+class GPU;
 using InstructionMap = std::map<uint8_t, std::function<Clock()>>;
 
-class Z80
+class Z80 : public MMUObserver
 {
 public:
-	Z80(MMU &mmu);
+	enum class Interrupt
+	{
+		VBlank = 0x01,
+		LcdStatus = 0x02,
+		Timer = 0x04,
+		SerialLink = 0x08,
+		Joypad = 0x10
+	};
+
+	Z80(MMU &mmu, GPU &gpu);
 	~Z80() = default;
 
 	uint8_t FetchByte();
-	Clock Execute(uint8_t opcode);
+	void Execute(uint8_t opcode);
+	void CheckAndHandleInterrupts();
+
+	void OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value) override;
 
 private:
 	InstructionMap FillInstructionMap();
 	InstructionMap FillBitInstructionMap();
 
+	Clock WrongOpCode(uint8_t opcode);
+
+#pragma region Instructions
 #pragma region 8-bit load group
 	// LD r, r'
 	Clock LoadRegister(Register8bit dest, Register8bit source);
@@ -254,13 +269,16 @@ private:
 	// ADD rr, n
 	Clock Add(Register16bit dest, int8_t displacement);
 #pragma endregion
-
-	Clock WrongOpCode(uint8_t opcode);
+#pragma endregion
 
 private:
+	static const uint16_t interrupts_enable_register{ 0x007F };
+	static const uint16_t interrupt_flags_register{ 0x000F };
+
 	Registers registers_;
 	Clock clock_;
 	MMU &mmu_;
+	GPU &gpu_;
 
 	const InstructionMap instructions_;
 	const InstructionMap bit_instructions_;
@@ -271,7 +289,10 @@ private:
 		Halted
 	} state_{ State::Running };
 
-	bool interrupt_enabled_{ true };
+	bool interrupt_master_enable_{ true };
+	std::map<Interrupt, bool> interrupts_enabled_;
+	std::map<Interrupt, bool> interrupts_signaled_;
+	std::map<Interrupt, uint16_t> interrupt_handler_addresses_;
 
 private:
 	Z80& operator=(const Z80&) = delete;

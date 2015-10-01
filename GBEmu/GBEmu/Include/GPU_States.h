@@ -3,12 +3,12 @@
 #include <cstdint>
 #include <tuple>
 
-enum class Mode
+enum class Mode : uint8_t
 {
-	ReadingOAM,
-	ReadingVRAM,
-	HBlank,
-	VBlank
+	ReadingOAM = 2,
+	ReadingVRAM = 3,
+	HBlank = 0,
+	VBlank = 1
 };
 
 class GPU;

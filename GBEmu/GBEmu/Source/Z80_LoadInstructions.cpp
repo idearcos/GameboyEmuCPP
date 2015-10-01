@@ -97,9 +97,8 @@ Clock Z80::PushToStack(Register16bit source)
 {
 	// Flags not affected
 	registers_.Decrement(Register16bit::SP);
-	mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(source) >> 8) & 0xFF);
 	registers_.Decrement(Register16bit::SP);
-	mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(source) & 0xFF));
+	mmu_.Write16bitToMemory(registers_.Read(Register16bit::SP), registers_.Read(source));
 
 	return Clock(3, 11);
 }

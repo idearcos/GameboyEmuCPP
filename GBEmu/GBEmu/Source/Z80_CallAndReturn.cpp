@@ -7,9 +7,8 @@ Clock Z80::Call(uint16_t address)
 	// Flags not affected
 
 	registers_.Decrement(Register16bit::SP);
-	mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(Register16bit::PC) >> 8) & 0xFF);
 	registers_.Decrement(Register16bit::SP);
-	mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(Register16bit::PC) & 0xFF));
+	mmu_.Write16bitToMemory(registers_.Read(Register16bit::SP), registers_.Read(Register16bit::PC));
 
 	registers_.Write(Register16bit::PC, address);
 
@@ -25,9 +24,8 @@ Clock Z80::CallIf(uint16_t address, Flags flag, bool flag_value)
 	if (registers_.IsFlagSet(flag) == flag_value)
 	{
 		registers_.Decrement(Register16bit::SP);
-		mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(Register16bit::PC) >> 8) & 0xFF);
 		registers_.Decrement(Register16bit::SP);
-		mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(Register16bit::PC) & 0xFF));
+		mmu_.Write16bitToMemory(registers_.Read(Register16bit::SP), registers_.Read(Register16bit::PC));
 
 		registers_.Write(Register16bit::PC, address);
 
@@ -78,13 +76,11 @@ Clock Z80::ReturnFromInterrupt()
 {
 	// Flags not affected
 
-	uint16_t value{ mmu_.Read16bitFromMemory(registers_.Read(Register16bit::SP)) };
+	registers_.Write(Register16bit::PC, mmu_.Read16bitFromMemory(registers_.Read(Register16bit::SP)));
 	registers_.Increment(Register16bit::SP);
 	registers_.Increment(Register16bit::SP);
 
-	registers_.Write(Register16bit::PC, value);
-
-	interrupt_enabled_ = true;
+	interrupt_master_enable_ = true;
 
 	return Clock(4, 14);
 }
@@ -96,9 +92,9 @@ Clock Z80::Restart(uint16_t address)
 	// Flags not affected
 
 	registers_.Decrement(Register16bit::SP);
-	mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(Register16bit::PC) >> 8) & 0xFF);
 	registers_.Decrement(Register16bit::SP);
-	mmu_.Write8bitToMemory(registers_.Read(Register16bit::SP), (registers_.Read(Register16bit::PC) & 0xFF));
+
+	mmu_.Write16bitToMemory(registers_.Read(Register16bit::SP), registers_.Read(Register16bit::PC));
 
 	registers_.Write(Register16bit::PC, address);
 

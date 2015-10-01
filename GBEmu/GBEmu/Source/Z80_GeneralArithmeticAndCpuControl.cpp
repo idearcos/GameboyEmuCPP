@@ -88,7 +88,7 @@ Clock Z80::Halt()
 // (Z80 p.180)
 Clock Z80::DisableInterrupts()
 {
-	interrupt_enabled_ = false;
+	interrupt_master_enable_ = false;
 
 	return Clock(1, 4);
 }
@@ -97,7 +97,7 @@ Clock Z80::DisableInterrupts()
 // (Z80 p.181)
 Clock Z80::EnableInterrupts()
 {
-	interrupt_enabled_ = true;
+	interrupt_master_enable_ = true;
 
 	return Clock(1, 4);
 }
