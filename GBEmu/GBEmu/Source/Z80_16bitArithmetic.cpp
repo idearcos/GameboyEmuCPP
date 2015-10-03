@@ -15,7 +15,7 @@ Clock Z80::Add(Register16bit dest, Register16bit source)
 
 	registers_.Write(dest, static_cast<uint16_t>(result & 0xFFFF));
 
-	return Clock(3, 11);
+	return Clock(2, 8);
 }
 
 // ADC rr, rr'
@@ -34,7 +34,7 @@ Clock Z80::AddPlusCarry(Register16bit dest, Register16bit source)
 
 	registers_.Write(dest, static_cast<uint16_t>(result & 0xFFFF));
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }
 
 // SBC rr, rr'
@@ -53,7 +53,7 @@ Clock Z80::SubtractMinusCarry(Register16bit dest, Register16bit source)
 
 	registers_.Write(dest, static_cast<uint16_t>(result & 0xFFFF));
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }
 
 // INC rr
@@ -62,7 +62,7 @@ Clock Z80::Increment(Register16bit reg)
 {
 	registers_.Increment(reg);
 
-	return Clock(1, 6);
+	return Clock(2, 8);
 }
 
 // DEC rr
@@ -71,5 +71,5 @@ Clock Z80::Decrement(Register16bit reg)
 {
 	registers_.Decrement(reg);
 
-	return Clock(1, 6);
+	return Clock(2, 8);
 }

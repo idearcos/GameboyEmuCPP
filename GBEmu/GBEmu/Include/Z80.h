@@ -267,7 +267,7 @@ private:
 	// LD rr, rr'+n
 	Clock LoadRegisterFromAddress(Register16bit dest, Register16bit source_addr, int8_t displacement);
 	// ADD rr, n
-	Clock Add(Register16bit dest, int8_t displacement);
+	Clock Add(Register16bit dest, int8_t value);
 #pragma endregion
 #pragma endregion
 

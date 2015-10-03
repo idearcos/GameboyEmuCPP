@@ -33,7 +33,7 @@ Clock Z80::TestBit(uint8_t bit_index, Register16bit reg_addr)
 
 	registers_.SetFlag(Flags::Zero, (mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) & (1 << bit_index)) == 0);
 
-	return Clock(3, 12);
+	return Clock(4, 16);
 }
 
 // SET n, r
@@ -65,7 +65,7 @@ Clock Z80::SetBit(uint8_t bit_index, Register16bit reg_addr)
 
 	mmu_.Write8bitToMemory(registers_.Read(reg_addr), mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) | (1 << bit_index));
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }
 
 // RES n, r
@@ -97,5 +97,5 @@ Clock Z80::ResetBit(uint8_t bit_index, Register16bit reg_addr)
 
 	mmu_.Write8bitToMemory(registers_.Read(reg_addr), mmu_.Read8bitFromMemory(registers_.Read(reg_addr)) & ~(1 << bit_index));
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }

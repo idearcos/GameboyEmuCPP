@@ -7,7 +7,7 @@ GameBoy::GameBoy() :
 {
 	mmu_.AddObserver(&z80_);
 	mmu_.AddObserver(&gpu_);
-	mmu_.LoadRom("tetris.gb");
+	mmu_.LoadRom("opus5.gb");
 }
 
 void GameBoy::Run()
@@ -18,7 +18,7 @@ void GameBoy::Run()
 		try
 		{
 			z80_.Execute(opcode);
-			//z80_.CheckAndHandleInterrupts();
+			z80_.CheckAndHandleInterrupts();
 		}
 		catch (std::out_of_range &)
 		{

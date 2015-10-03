@@ -16,7 +16,7 @@ Clock Z80::LoadRegister(Register8bit dest, uint8_t value)
 {
 	// Flags not affected
 	registers_.Write(dest, value);
-	return Clock(2, 7);
+	return Clock(2, 8);
 }
 
 // LD r, (rr')
@@ -25,7 +25,7 @@ Clock Z80::LoadRegisterFromAddress(Register8bit dest, Register16bit source_addr)
 {
 	// Flags not affected
 	registers_.Write(dest, mmu_.Read8bitFromMemory(registers_.Read(source_addr)));
-	return Clock(2, 7);
+	return Clock(2, 8);
 }
 
 // LD (rr), r'
@@ -34,7 +34,7 @@ Clock Z80::LoadAddressFromRegister(Register16bit dest_addr, Register8bit source)
 {
 	// Flags not affected
 	mmu_.Write8bitToMemory(registers_.Read(dest_addr), registers_.Read(source));
-	return Clock(2, 7);
+	return Clock(2, 8);
 }
 
 // LD (rr), n
@@ -43,7 +43,7 @@ Clock Z80::LoadAddress(Register16bit dest_addr, uint8_t value)
 {
 	// Flags not affected
 	mmu_.Write8bitToMemory(registers_.Read(dest_addr), value);
-	return Clock(3, 10);
+	return Clock(3, 12);
 }
 
 // LD r, (nn)
@@ -52,7 +52,7 @@ Clock Z80::LoadRegisterFromAddress(Register8bit dest, uint16_t addr)
 {
 	// Flags not affected
 	registers_.Write(dest, mmu_.Read8bitFromMemory(addr));
-	return Clock(4, 13);
+	return Clock(4, 16);
 }
 
 // LD (nn), r
@@ -60,7 +60,7 @@ Clock Z80::LoadRegisterFromAddress(Register8bit dest, uint16_t addr)
 Clock Z80::LoadAddressFromRegister(uint16_t addr, Register8bit source)
 {
 	mmu_.Write8bitToMemory(addr, registers_.Read(source));
-	return Clock(4, 13);
+	return Clock(4, 16);
 }
 #pragma endregion
 
@@ -71,7 +71,7 @@ Clock Z80::LoadRegister(Register16bit dest, uint16_t value)
 {
 	// Flags not affected
 	registers_.Write(dest, value);
-	return Clock(2, 10);
+	return Clock(3, 12);
 }
 
 // LD (nn), rr
@@ -79,7 +79,7 @@ Clock Z80::LoadAddressFromRegister(uint16_t addr, Register16bit source)
 {
 	// Flags not affected
 	mmu_.Write16bitToMemory(addr, registers_.Read(source));
-	return Clock(6, 20);
+	return Clock(5, 20);
 }
 
 // LD rr, rr'
@@ -88,7 +88,7 @@ Clock Z80::LoadRegister(Register16bit dest, Register16bit source)
 {
 	// Flags not affected
 	registers_.Write(dest, registers_.Read(source));
-	return Clock(1, 6);
+	return Clock(2, 8);
 }
 
 // PUSH qq
@@ -100,7 +100,7 @@ Clock Z80::PushToStack(Register16bit source)
 	registers_.Decrement(Register16bit::SP);
 	mmu_.Write16bitToMemory(registers_.Read(Register16bit::SP), registers_.Read(source));
 
-	return Clock(3, 11);
+	return Clock(4, 16);
 }
 
 // POP qq
@@ -113,6 +113,6 @@ Clock Z80::PopFromStack(Register16bit dest)
 	registers_.Increment(Register16bit::SP);
 	registers_.Write(dest, value);
 
-	return Clock(3, 10);
+	return Clock(3, 12);
 }
 #pragma endregion

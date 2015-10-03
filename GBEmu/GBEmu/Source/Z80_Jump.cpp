@@ -8,7 +8,7 @@ Clock Z80::Jump(uint16_t address)
 	
 	registers_.Write(Register16bit::PC, address);
 
-	return Clock(3, 10);
+	return Clock(3, 12);
 }
 
 // JP cc, nn
@@ -22,7 +22,7 @@ Clock Z80::JumpIf(uint16_t address, Flags flag, bool flag_value)
 		registers_.Write(Register16bit::PC, address);
 	}
 
-	return Clock(3, 10);
+	return Clock(3, 12);
 }
 
 // JR n
@@ -33,7 +33,7 @@ Clock Z80::Jump(int8_t displacement)
 
 	registers_.Write(Register16bit::PC, registers_.Read(Register16bit::PC) + displacement);
 
-	return Clock(3, 12);
+	return Clock(2, 8);
 }
 
 // JR cc, n
@@ -45,10 +45,10 @@ Clock Z80::JumpIf(int8_t displacement, Flags flag, bool flag_value)
 	if (registers_.IsFlagSet(flag) == flag_value)
 	{
 		registers_.Write(Register16bit::PC, registers_.Read(Register16bit::PC) + displacement);
-		return Clock(3, 12);
+		return Clock(2, 8);
 	}
 
-	return Clock(2, 7);
+	return Clock(2, 8);
 }
 
 // JP (rr)

@@ -99,7 +99,7 @@ Clock Z80::Rlc(Register16bit reg_addr)
 	mmu_.Write8bitToMemory(registers_.Read(reg_addr), rotated_acc);
 	registers_.SetFlag(Flags::Zero, rotated_acc == 0);
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }
 
 // RL r
@@ -133,7 +133,7 @@ Clock Z80::Rl(Register16bit reg_addr)
 	mmu_.Write8bitToMemory(registers_.Read(reg_addr), rotated_acc);
 	registers_.SetFlag(Flags::Zero, rotated_acc == 0);
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }
 
 // RRC r
@@ -167,7 +167,7 @@ Clock Z80::Rrc(Register16bit reg_addr)
 	mmu_.Write8bitToMemory(registers_.Read(reg_addr), rotated_acc);
 	registers_.SetFlag(Flags::Zero, rotated_acc == 0);
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }
 
 // RR r
@@ -201,7 +201,7 @@ Clock Z80::Rr(Register16bit reg_addr)
 	mmu_.Write8bitToMemory(registers_.Read(reg_addr), rotated_acc);
 	registers_.SetFlag(Flags::Zero, rotated_acc == 0);
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }
 
 // SLA r
@@ -235,7 +235,7 @@ Clock Z80::Sla(Register16bit reg_addr)
 	mmu_.Write8bitToMemory(registers_.Read(reg_addr), rotated_acc);
 	registers_.SetFlag(Flags::Zero, rotated_acc == 0);
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }
 
 // SRA r
@@ -271,7 +271,7 @@ Clock Z80::Sra(Register16bit reg_addr)
 	mmu_.Write8bitToMemory(registers_.Read(reg_addr), rotated_acc);
 	registers_.SetFlag(Flags::Zero, rotated_acc == 0);
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }
 
 // SRL r
@@ -305,5 +305,5 @@ Clock Z80::Srl(Register16bit reg_addr)
 	mmu_.Write8bitToMemory(registers_.Read(reg_addr), rotated_acc);
 	registers_.SetFlag(Flags::Zero, rotated_acc == 0);
 
-	return Clock(4, 15);
+	return Clock(4, 16);
 }

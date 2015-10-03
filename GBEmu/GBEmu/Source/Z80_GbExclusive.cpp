@@ -106,15 +106,15 @@ Clock Z80::LoadRegisterFromAddress(Register16bit dest, Register16bit source_addr
 }
 
 // ADD rr, n
-Clock Z80::Add(Register16bit dest, int8_t displacement)
+Clock Z80::Add(Register16bit dest, int8_t value)
 {
 	registers_.SetFlag(Flags::Zero, false);
 	registers_.SetFlag(Flags::Subtract, false);
 
-	{const uint16_t low_12_bits_result = (registers_.Read(dest) & 0x0FFF) + displacement;
+	{const uint16_t low_12_bits_result = (registers_.Read(dest) & 0x0FFF) + value;
 	registers_.SetFlag(Flags::HalfCarry, (low_12_bits_result & 0x1000) != 0); }
 
-	const uint32_t result = registers_.Read(dest) + displacement;
+	const uint32_t result = registers_.Read(dest) + value;
 	registers_.SetFlag(Flags::Carry, (result & 0x10000) != 0);
 
 	registers_.Write(dest, static_cast<uint16_t>(result & 0xFFFF));
