@@ -32,6 +32,8 @@ public:
 	void CheckAndHandleInterrupts();
 
 	void OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value) override;
+	void WriteToMmu(uint16_t address, uint8_t value) const;
+	void WriteToMmu(uint16_t address, uint16_t value) const;
 
 private:
 	InstructionMap FillInstructionMap();
@@ -293,6 +295,8 @@ private:
 	std::map<Interrupt, bool> interrupts_enabled_;
 	std::map<Interrupt, bool> interrupts_signaled_;
 	std::map<Interrupt, uint16_t> interrupt_handler_addresses_;
+
+	mutable bool writing_to_mmu_{ false };
 
 private:
 	Z80& operator=(const Z80&) = delete;

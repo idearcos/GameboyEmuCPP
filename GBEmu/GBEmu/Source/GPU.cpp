@@ -3,10 +3,10 @@
 #include <list>
 #include <bitset>
 
-GPU::GPU(MMU &mmu) :
+GPU::GPU(GLFWwindow* &window, MMU &mmu) :
 	states_(InitStateMap()),
 	tileset_(num_tiles_in_set_, tile_width_, tile_height_),
-	renderer_(screen_width_, screen_height_),
+	renderer_(window, screen_width_, screen_height_),
 	mmu_(mmu)
 {
 	tilemaps_.emplace(std::piecewise_construct, std::forward_as_tuple(TileMap::Number::Zero), std::forward_as_tuple(map_width_, map_height_, tile_width_, tile_height_));
@@ -267,7 +267,8 @@ void GPU::CompareLineAndUpdateRegister()
 {
 	auto lcd_status = mmu_.Read8bitFromMemory(MMU::Region::IO, lcd_status_register);
 	lcd_status &= ~(0x04);
-	if (line_coincidence_ = (current_line_ == line_compare_))
+	line_coincidence_ = (current_line_ == line_compare_);
+	if (line_coincidence_)
 	{
 		lcd_status |= 1 << 2;
 	}

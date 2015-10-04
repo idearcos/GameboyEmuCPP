@@ -26,9 +26,9 @@ public:
 	MMU();
 	~MMU() = default;
 
-	uint8_t Read8bitFromMemory(uint16_t absolute_address);
-	uint16_t Read16bitFromMemory(uint16_t absolute_address);
-	uint8_t Read8bitFromMemory(Region region, uint16_t local_address);
+	uint8_t Read8bitFromMemory(uint16_t absolute_address) const;
+	uint16_t Read16bitFromMemory(uint16_t absolute_address) const;
+	uint8_t Read8bitFromMemory(Region region, uint16_t local_address) const;
 	void Write8bitToMemory(uint16_t absolute_address, uint8_t value);
 	void Write16bitToMemory(uint16_t absolute_address, uint16_t value);
 	void Write8bitToMemory(Region region, uint16_t local_address, uint8_t value);
@@ -55,7 +55,7 @@ private:
 	static const uint16_t start_io_{ 0xFF00 };
 	static const uint16_t start_zero_page_{ 0xFF80 };
 
-	bool bios_loaded_{ true };
+	mutable bool bios_loaded_{ true };
 
 private:
 	MMU(const MMU&) = delete;

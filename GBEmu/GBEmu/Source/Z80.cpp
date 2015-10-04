@@ -60,6 +60,11 @@ void Z80::CheckAndHandleInterrupts()
 
 void Z80::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
 {
+	if (writing_to_mmu_)
+	{
+		return;
+	}
+
 	if (MMU::Region::IO == region)
 	{
 		if (interrupt_flags_register == address)
@@ -80,6 +85,20 @@ void Z80::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
 			}
 		}
 	}
+}
+
+void Z80::WriteToMmu(uint16_t address, uint8_t value) const
+{
+	writing_to_mmu_ = true;
+	mmu_.Write8bitToMemory(address, value);
+	writing_to_mmu_ = false;
+}
+
+void Z80::WriteToMmu(uint16_t address, uint16_t value) const
+{
+	writing_to_mmu_ = true;
+	mmu_.Write16bitToMemory(address, value);
+	writing_to_mmu_ = false;
 }
 
 Clock Z80::WrongOpCode(uint8_t opcode)

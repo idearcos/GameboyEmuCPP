@@ -296,7 +296,7 @@ Clock Z80::IncrementInAddress(Register16bit reg_addr)
 
 	registers_.SetFlag(Flags::Zero, result == 0);
 
-	mmu_.Write8bitToMemory(registers_.Read(reg_addr), result);
+	WriteToMmu(registers_.Read(reg_addr), result);
 
 	return Clock(3, 12);
 }
@@ -332,7 +332,7 @@ Clock Z80::DecrementInAddress(Register16bit reg_addr)
 
 	registers_.SetFlag(Flags::Zero, result == 0);
 
-	mmu_.Write8bitToMemory(registers_.Read(reg_addr), result);
+	WriteToMmu(registers_.Read(reg_addr), result);
 
 	return Clock(3, 12);
 }

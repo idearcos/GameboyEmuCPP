@@ -7,7 +7,7 @@
 class Renderer
 {
 public:
-	Renderer(size_t screen_width, size_t screen_height);
+	Renderer(GLFWwindow* &window, size_t screen_width, size_t screen_height);
 	~Renderer();
 
 	static void GlfwErrorCallback(int error, const char* description);
@@ -16,7 +16,7 @@ public:
 	void RefreshScreen();
 
 private:
-	GLFWwindow* window_;
+	GLFWwindow*& window_;
 	std::vector<uint8_t> framebuffer_;
 
 	const size_t screen_width_;

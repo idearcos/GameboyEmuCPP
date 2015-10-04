@@ -13,7 +13,7 @@
 class GPU : public MMUObserver
 {
 public:
-	GPU(MMU &mmu);
+	GPU(GLFWwindow* &window, MMU &mmu);
 	~GPU() = default;
 
 	void Lapse(const Clock &clock);

@@ -39,7 +39,7 @@ MMU::MMU()
 		0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50 });
 }
 
-uint8_t MMU::Read8bitFromMemory(uint16_t absolute_address)
+uint8_t MMU::Read8bitFromMemory(uint16_t absolute_address) const
 {
 	Region region{ Region::VRAM };
 	uint16_t local_address(absolute_address);
@@ -62,14 +62,14 @@ uint8_t MMU::Read8bitFromMemory(uint16_t absolute_address)
 	}
 }
 
-uint16_t MMU::Read16bitFromMemory(uint16_t absolute_address)
+uint16_t MMU::Read16bitFromMemory(uint16_t absolute_address) const
 {
 	uint16_t value{ Read8bitFromMemory(absolute_address) };
 	value += static_cast<uint16_t>(Read8bitFromMemory(absolute_address + 1)) << 8;
 	return value;
 }
 
-uint8_t MMU::Read8bitFromMemory(Region region, uint16_t local_address)
+uint8_t MMU::Read8bitFromMemory(Region region, uint16_t local_address) const
 {
 	return Read8bitFromMemory(LocalToAbsoluteAddress(region, local_address));
 }

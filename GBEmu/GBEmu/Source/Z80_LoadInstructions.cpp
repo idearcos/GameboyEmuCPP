@@ -33,7 +33,7 @@ Clock Z80::LoadRegisterFromAddress(Register8bit dest, Register16bit source_addr)
 Clock Z80::LoadAddressFromRegister(Register16bit dest_addr, Register8bit source)
 {
 	// Flags not affected
-	mmu_.Write8bitToMemory(registers_.Read(dest_addr), registers_.Read(source));
+	WriteToMmu(registers_.Read(dest_addr), registers_.Read(source));
 	return Clock(2, 8);
 }
 
@@ -42,7 +42,7 @@ Clock Z80::LoadAddressFromRegister(Register16bit dest_addr, Register8bit source)
 Clock Z80::LoadAddress(Register16bit dest_addr, uint8_t value)
 {
 	// Flags not affected
-	mmu_.Write8bitToMemory(registers_.Read(dest_addr), value);
+	WriteToMmu(registers_.Read(dest_addr), value);
 	return Clock(3, 12);
 }
 
@@ -59,7 +59,7 @@ Clock Z80::LoadRegisterFromAddress(Register8bit dest, uint16_t addr)
 // (Z80 p.91)
 Clock Z80::LoadAddressFromRegister(uint16_t addr, Register8bit source)
 {
-	mmu_.Write8bitToMemory(addr, registers_.Read(source));
+	WriteToMmu(addr, registers_.Read(source));
 	return Clock(4, 16);
 }
 #pragma endregion
@@ -78,7 +78,7 @@ Clock Z80::LoadRegister(Register16bit dest, uint16_t value)
 Clock Z80::LoadAddressFromRegister(uint16_t addr, Register16bit source)
 {
 	// Flags not affected
-	mmu_.Write16bitToMemory(addr, registers_.Read(source));
+	WriteToMmu(addr, registers_.Read(source));
 	return Clock(5, 20);
 }
 
@@ -98,7 +98,7 @@ Clock Z80::PushToStack(Register16bit source)
 	// Flags not affected
 	registers_.Decrement(Register16bit::SP);
 	registers_.Decrement(Register16bit::SP);
-	mmu_.Write16bitToMemory(registers_.Read(Register16bit::SP), registers_.Read(source));
+	WriteToMmu(registers_.Read(Register16bit::SP), registers_.Read(source));
 
 	return Clock(4, 16);
 }

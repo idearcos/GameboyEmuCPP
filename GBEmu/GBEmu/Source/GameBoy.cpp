@@ -3,16 +3,21 @@
 
 GameBoy::GameBoy() :
 	z80_(mmu_, gpu_),
-	gpu_(mmu_)
+	gpu_(window_, mmu_),
+	keypad_(mmu_)
 {
 	mmu_.AddObserver(&z80_);
 	mmu_.AddObserver(&gpu_);
-	mmu_.LoadRom("opus5.gb");
+	mmu_.AddObserver(&keypad_);
+	mmu_.LoadRom("ttt.gb");
+
+	glfwSetWindowUserPointer(window_, this);
+	glfwSetKeyCallback(window_, GameBoy::OnKeyEvent);
 }
 
 void GameBoy::Run()
 {
-	while (true)
+	while (!glfwWindowShouldClose(window_))
 	{
 		const auto opcode = z80_.FetchByte();
 		try
@@ -31,4 +36,9 @@ void GameBoy::Run()
 			break;
 		}
 	}
+}
+
+void GameBoy::OnKeyEvent(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
+{
+	reinterpret_cast<GameBoy*>(glfwGetWindowUserPointer(window))->keypad_.HandleKeys(key, action);
 }

@@ -2,7 +2,8 @@
 #include <stdexcept>
 #include <string>
 
-Renderer::Renderer(size_t screen_width, size_t screen_height) :
+Renderer::Renderer(GLFWwindow* &window, size_t screen_width, size_t screen_height) :
+	window_(window),
 	framebuffer_(screen_width * screen_height, 0),
 	screen_width_(screen_width),
 	screen_height_(screen_height)
@@ -18,7 +19,7 @@ Renderer::Renderer(size_t screen_width, size_t screen_height) :
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window_ = glfwCreateWindow(160, 144, "GameBoy :)", NULL, NULL);
+	window_ = glfwCreateWindow(screen_width_, screen_height_, "GameBoy :)", NULL, NULL);
 	if (nullptr == window_)
 	{
 		glfwTerminate();

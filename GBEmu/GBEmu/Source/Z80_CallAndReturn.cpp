@@ -8,7 +8,7 @@ Clock Z80::Call(uint16_t address)
 
 	registers_.Decrement(Register16bit::SP);
 	registers_.Decrement(Register16bit::SP);
-	mmu_.Write16bitToMemory(registers_.Read(Register16bit::SP), registers_.Read(Register16bit::PC));
+	WriteToMmu(registers_.Read(Register16bit::SP), registers_.Read(Register16bit::PC));
 
 	registers_.Write(Register16bit::PC, address);
 
@@ -25,7 +25,7 @@ Clock Z80::CallIf(uint16_t address, Flags flag, bool flag_value)
 	{
 		registers_.Decrement(Register16bit::SP);
 		registers_.Decrement(Register16bit::SP);
-		mmu_.Write16bitToMemory(registers_.Read(Register16bit::SP), registers_.Read(Register16bit::PC));
+		WriteToMmu(registers_.Read(Register16bit::SP), registers_.Read(Register16bit::PC));
 
 		registers_.Write(Register16bit::PC, address);
 
@@ -94,7 +94,7 @@ Clock Z80::Restart(uint16_t address)
 	registers_.Decrement(Register16bit::SP);
 	registers_.Decrement(Register16bit::SP);
 
-	mmu_.Write16bitToMemory(registers_.Read(Register16bit::SP), registers_.Read(Register16bit::PC));
+	WriteToMmu(registers_.Read(Register16bit::SP), registers_.Read(Register16bit::PC));
 
 	registers_.Write(Register16bit::PC, address);
 

@@ -3,7 +3,7 @@
 // LDI (rr), r'
 Clock Z80::LoadAddressAndIncrement(Register16bit dest_addr, Register8bit source)
 {
-	mmu_.Write8bitToMemory(registers_.Read(dest_addr), registers_.Read(source));
+	WriteToMmu(registers_.Read(dest_addr), registers_.Read(source));
 	registers_.Write(dest_addr, registers_.Read(dest_addr) + 1);
 	return Clock(2, 8);
 }
@@ -11,7 +11,7 @@ Clock Z80::LoadAddressAndIncrement(Register16bit dest_addr, Register8bit source)
 // LDD (rr), r'
 Clock Z80::LoadAddressAndDecrement(Register16bit dest_addr, Register8bit source)
 {
-	mmu_.Write8bitToMemory(registers_.Read(dest_addr), registers_.Read(source));
+	WriteToMmu(registers_.Read(dest_addr), registers_.Read(source));
 	registers_.Write(dest_addr, registers_.Read(dest_addr) - 1);
 	return Clock(2, 8);
 }
@@ -54,7 +54,7 @@ Clock Z80::Swap(Register16bit reg_address)
 	registers_.SetFlag(Flags::HalfCarry, false);
 	registers_.SetFlag(Flags::Carry, false);
 
-	mmu_.Write8bitToMemory(registers_.Read(reg_address), (original_value << 4) | (original_value >> 4));
+	WriteToMmu(registers_.Read(reg_address), static_cast<uint8_t>((original_value << 4) | (original_value >> 4)));
 
 	return Clock(4, 16);
 }
@@ -62,7 +62,7 @@ Clock Z80::Swap(Register16bit reg_address)
 // LDIO (n), r
 Clock Z80::LoadIOFromRegister(uint8_t displacement, Register8bit source)
 {
-	mmu_.Write8bitToMemory(0xFF00 + displacement, registers_.Read(source));
+	WriteToMmu(0xFF00 + displacement, registers_.Read(source));
 
 	return Clock(3, 12);
 }
@@ -70,7 +70,7 @@ Clock Z80::LoadIOFromRegister(uint8_t displacement, Register8bit source)
 // LDIO (r), r'
 Clock Z80::LoadIOFromRegister(Register8bit reg_displacement, Register8bit source)
 {
-	mmu_.Write8bitToMemory(0xFF00 + registers_.Read(reg_displacement), registers_.Read(source));
+	WriteToMmu(0xFF00 + registers_.Read(reg_displacement), registers_.Read(source));
 
 	return Clock(3, 12);
 }
