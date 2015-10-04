@@ -1,4 +1,5 @@
 #include "GPU_Tile.h"
+#include <sstream>
 
 Tile::Tile(size_t tile_width, size_t tile_height) :
 	tile_width_(tile_width),
@@ -12,7 +13,9 @@ uint8_t Tile::ReadPixel(size_t x, size_t y) const
 {
 	if ((x >= tile_width_) || (y >= tile_height_))
 	{
-		throw std::out_of_range("Trying to read a pixel out of tile boundaries");
+		std::stringstream msg;
+		msg << "Trying to read a pixel out of tile boundaries: (" << x << "," << y << ")" << std::endl;
+		throw std::logic_error(msg.str());
 	}
 
 	return tile_data_[tile_width_ * y + x];

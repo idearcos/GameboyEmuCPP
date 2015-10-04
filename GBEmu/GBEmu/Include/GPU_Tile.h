@@ -9,6 +9,8 @@ public:
 	Tile(size_t tile_width, size_t tile_height);
 	~Tile() = default;
 
+	size_t GetWidth() const { return tile_width_; }
+	size_t GetHeight() const { return tile_height_; }
 	uint8_t ReadPixel(size_t x, size_t y) const;
 	void WritePixel(size_t x, size_t y, uint8_t value);
 

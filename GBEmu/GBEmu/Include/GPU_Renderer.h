@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdint>
 #include "GLFW/glfw3.h"
+#include "GPU_Color.h"
 
 class Renderer
 {
@@ -12,7 +13,8 @@ public:
 
 	static void GlfwErrorCallback(int error, const char* description);
 
-	void RenderPixel(size_t x, size_t y, uint8_t color);
+	void RenderPixel(size_t x, size_t y, Color color);
+	Color GetPixel(size_t x, size_t y) const;
 	void RefreshScreen();
 
 private:

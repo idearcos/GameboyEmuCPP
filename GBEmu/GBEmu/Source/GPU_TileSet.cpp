@@ -23,7 +23,12 @@ Tile& TileSet::GetTile(size_t tile_number)
 	}
 }
 
-uint8_t TileSet::ReadPixel(size_t tile_number, size_t x, size_t y)
+const Tile& TileSet::GetTile(size_t tile_number) const
+{
+	return const_cast<const Tile&>(const_cast<TileSet*>(this)->GetTile(tile_number));
+}
+
+uint8_t TileSet::ReadPixel(size_t tile_number, size_t x, size_t y) const
 {
 	return GetTile(tile_number).ReadPixel(x, y);
 }

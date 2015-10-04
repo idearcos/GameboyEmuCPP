@@ -167,7 +167,11 @@
     <ClInclude Include="Include\Clock.h" />
     <ClInclude Include="Include\GameBoy.h" />
     <ClInclude Include="Include\GPU.h" />
+    <ClInclude Include="Include\GPU_Background.h" />
+    <ClInclude Include="Include\GPU_Color.h" />
+    <ClInclude Include="Include\GPU_Palette.h" />
     <ClInclude Include="Include\GPU_Renderer.h" />
+    <ClInclude Include="Include\GPU_Sprite.h" />
     <ClInclude Include="Include\GPU_States.h" />
     <ClInclude Include="Include\GPU_Tile.h" />
     <ClInclude Include="Include\GPU_TileMap.h" />
@@ -184,7 +188,9 @@
     <ClCompile Include="Source\GameBoy.cpp" />
     <ClCompile Include="Source\GBEmu.cpp" />
     <ClCompile Include="Source\GPU.cpp" />
+    <ClCompile Include="Source\GPU_Background.cpp" />
     <ClCompile Include="Source\GPU_Renderer.cpp" />
+    <ClCompile Include="Source\GPU_Sprite.cpp" />
     <ClCompile Include="Source\GPU_States.cpp" />
     <ClCompile Include="Source\GPU_Tile.cpp" />
     <ClCompile Include="Source\GPU_TileMap.cpp" />

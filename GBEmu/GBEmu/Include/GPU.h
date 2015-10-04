@@ -9,6 +9,9 @@
 #include "GPU_TileSet.h"
 #include "GPU_TileMap.h"
 #include "GPU_Renderer.h"
+#include "GPU_Palette.h"
+#include "GPU_Background.h"
+#include "GPU_Sprite.h"
 
 class GPU : public MMUObserver
 {
@@ -59,7 +62,7 @@ private:
 	static const uint16_t lcd_status_register{ 0x0041 };
 	static const uint16_t scroll_y_register{ 0x0042 };
 	static const uint16_t scroll_x_register{ 0x0043 };
-	static const uint16_t y_coordinate_register{ 0x0044 };
+	static const uint16_t current_line_register{ 0x0044 };
 	static const uint16_t y_compare_register{ 0x0045 };
 	static const uint16_t bg_palette_register{ 0x0047 };
 	static const uint16_t obj_palette_0_register{ 0x0048 };
@@ -70,8 +73,10 @@ private:
 	TileSet tileset_;
 	std::map<TileMap::Number, TileMap> tilemaps_;
 	Renderer renderer_;
-	using Color = uint8_t;
-	std::map<size_t, Color> palette_;
+	Background background_;
+	std::array<Sprite, 40> sprites_;
+	Palette bg_palette_;
+	std::map<ObjPalette, Palette> obj_palettes_;
 
 	MMU &mmu_;
 	mutable bool writing_to_mmu_{ false };
@@ -81,19 +86,16 @@ private:
 	size_t ticks_current_period_{ 0 };
 
 	uint8_t current_line_{ 0 };
-	uint8_t bg_scroll_x_{ 0 };
-	uint8_t bg_scroll_y_{ 0 };
 	uint8_t line_compare_{ 0 };
 
 	// LCD Control
 	bool lcd_on_{ true };
-	bool background_on_{ true };
 	bool sprites_on_{ true };
 	bool window_on_{ true };
 	TileMap::Number current_bg_tilemap_{ TileMap::Number::Zero };
 	TileSet::Number current_bg_tileset_{ TileSet::Number::Zero };
 	TileMap::Number current_window_tilemap_{ TileMap::Number::Zero };
-	//TODO Sprite size
+	Sprite::Size sprites_size_{ Sprite::Size::Pixels8x8 };
 
 	// LCD Status
 	bool enable_line_compare_interrupt_{ false };

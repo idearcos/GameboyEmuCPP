@@ -7,6 +7,7 @@ GPU::GPU(GLFWwindow* &window, MMU &mmu) :
 	states_(InitStateMap()),
 	tileset_(num_tiles_in_set_, tile_width_, tile_height_),
 	renderer_(window, screen_width_, screen_height_),
+	background_(screen_width_, screen_width_),
 	mmu_(mmu)
 {
 	tilemaps_.emplace(std::piecewise_construct, std::forward_as_tuple(TileMap::Number::Zero), std::forward_as_tuple(map_width_, map_height_, tile_width_, tile_height_));
@@ -14,7 +15,9 @@ GPU::GPU(GLFWwindow* &window, MMU &mmu) :
 
 	for (auto i = 0; i < 4; i++)
 	{
-		palette_[i] = Color{ 0 };
+		bg_palette_.SetColor(i, Color::Transparent);
+		obj_palettes_[ObjPalette::Zero].SetColor(i, Color::Transparent);
+		obj_palettes_[ObjPalette::One].SetColor(i, Color::Transparent);
 	}
 	
 }
@@ -115,13 +118,38 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
 			tilemaps_.at(TileMap::Number::One).SetTileNumber(index, value);
 		}		
 	}
+	else if (MMU::Region::OAM == region)
+	{
+		// 40 Sprites of 4 bytes each
+		const uint8_t sprite_index = static_cast<uint8_t>((address >> 2) & 0xFF);
+
+		switch (address & 0x03)
+		{
+		// Byte 0: Y position
+		case 0:
+			sprites_[sprite_index].SetPositionY(value);
+			break;
+		// Byte 1: X position
+		case 1:
+			sprites_[sprite_index].SetPositionX(value);
+			break;
+		// Byte 2: Tile number
+		case 2:
+			sprites_[sprite_index].SetTileNumber(value);
+			break;
+		// Byte 3: Flags
+		case 3:
+			sprites_[sprite_index].SetFlags(value);
+			break;
+		}
+	}
 	else if (MMU::Region::IO == region)
 	{
 		if (lcd_control_register == address)
 		{
-			background_on_ = (value & 0x01) != 0;
+			background_.EnableBackground((value & 0x01) != 0);
 			sprites_on_ = (value & 0x02) != 0;
-			//TODO sprite_size = value & 0x04
+			sprites_size_ = ((value & 0x04) != 0) ? Sprite::Size::Pixels8x16 : Sprite::Size::Pixels8x8;
 			current_bg_tilemap_ = ((value & 0x08) != 0) ? TileMap::Number::One : TileMap::Number::Zero;
 			current_bg_tileset_ = ((value & 0x10) != 0) ? TileSet::Number::One : TileSet::Number::Zero;
 			window_on_ = (value & 0x20) != 0;
@@ -134,13 +162,13 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
 		}
 		else if (scroll_y_register == address)
 		{
-			bg_scroll_y_ = value;
+			background_.SetScrollY(value);
 		}
 		else if (scroll_x_register == address)
 		{
-			bg_scroll_x_ = value;
+			background_.SetScrollX(value);
 		}
-		else if (y_coordinate_register == address)
+		else if (current_line_register == address)
 		{
 			throw std::runtime_error("Trying to write current scanline (read-only register)");
 		}
@@ -150,32 +178,15 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
 		}
 		else if (bg_palette_register == address)
 		{
-			for (auto i = 0; i < 4; i++)
-			{
-				switch ((value >> (i * 2)) & 3)
-				{
-				case 0:
-					palette_[i] = Color{ 255 };
-					break;
-				case 1:
-					palette_[i] = Color{ 192 };
-					break;
-				case 2:
-					palette_[i] = Color{ 96 };
-					break;
-				case 3:
-					palette_[i] = Color{ 0 };
-					break;
-				}
-			}
+			bg_palette_.SetPaletteData(value);
 		}
 		else if (obj_palette_0_register == address)
 		{
-
+			obj_palettes_[ObjPalette::Zero].SetPaletteData(value);
 		}
 		else if (obj_palette_1_register == address)
 		{
-
+			obj_palettes_[ObjPalette::One].SetPaletteData(value);
 		}
 		else if (window_y_position_register == address)
 		{
@@ -192,37 +203,16 @@ void GPU::RenderScanLine()
 {
 	if (lcd_on_)
 	{
-		if (background_on_)
+		background_.RenderBackground(renderer_, tileset_, tilemaps_.at(current_bg_tilemap_), bg_palette_, current_line_);
+
+		if (sprites_on_)
 		{
-			// The pixel offset inside the first tile to be drawn, depending on the horizontal scroll of the background (last 3 bits, 0-7)
-			auto x_offset_in_tile = bg_scroll_x_ & 0x07;
-
-			// The line (of the tiles) to be drawn, depending on the vertical scroll of the background and the current line being drawn (last 3 bits, 0-7)
-			const uint8_t line_in_tile{ static_cast<uint8_t>((current_line_ + bg_scroll_y_) & 0x07) };
-
-			size_t pixels_drawn = 0;
-			while (pixels_drawn < screen_width_)
+			if (current_line_ < 144)
 			{
-				const auto tile_number = tilemaps_.at(current_bg_tilemap_).GetTileNumber(current_line_ + bg_scroll_y_, pixels_drawn + bg_scroll_x_);
-
-				const auto tile = tileset_.GetTile(tile_number);
-
-				for (auto x_in_tile = x_offset_in_tile; (x_in_tile < tile_width_) && (pixels_drawn < screen_width_); x_in_tile++)
+				for (const auto &sprite : sprites_)
 				{
-					try
-					{
-						const auto color = palette_.at(tile.ReadPixel(x_in_tile, line_in_tile));
-						renderer_.RenderPixel(pixels_drawn, current_line_, color);
-					}
-					catch (std::out_of_range &)
-					{
-						throw std::runtime_error("Trying to access invalid palette");
-					}
-					pixels_drawn += 1;
+					sprite.RenderSprite(renderer_, tileset_, obj_palettes_, sprites_size_, current_line_);
 				}
-
-				x_offset_in_tile += pixels_drawn;
-				x_offset_in_tile &= 0x07;
 			}
 		}
 	}
@@ -240,7 +230,7 @@ void GPU::ResetCurrentLine()
 
 uint8_t GPU::IncrementCurrentLine()
 {
-	WriteToMmu(MMU::Region::IO, y_coordinate_register, ++current_line_);
+	WriteToMmu(MMU::Region::IO, current_line_register, ++current_line_);
 	CompareLineAndUpdateRegister();
 	return current_line_;
 }

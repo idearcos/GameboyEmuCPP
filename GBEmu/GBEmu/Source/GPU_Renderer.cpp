@@ -48,9 +48,14 @@ void Renderer::GlfwErrorCallback(int error, const char* description)
 	throw std::runtime_error(strError);
 }
 
-void Renderer::RenderPixel(size_t x, size_t y, uint8_t color)
+void Renderer::RenderPixel(size_t x, size_t y, Color color)
 {
-	framebuffer_[(screen_height_ - 1 - y) * screen_width_ + x] = color;
+	framebuffer_[(screen_height_ - 1 - y) * screen_width_ + x] = static_cast<std::underlying_type_t<Color>>(color);
+}
+
+Color Renderer::GetPixel(size_t x, size_t y) const
+{
+	return static_cast<Color>(framebuffer_[(screen_height_ - 1 - y) * screen_width_ + x]);
 }
 
 void Renderer::RefreshScreen()
