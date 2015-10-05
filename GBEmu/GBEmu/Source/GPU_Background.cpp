@@ -32,7 +32,7 @@ void Background::RenderBackground(Renderer &renderer, const TileSet &tileset, co
 	if (background_on_)
 	{
 		// The pixel offset inside the first tile to be drawn, depending on the horizontal scroll of the background (last 3 bits, 0-7)
-		auto x_offset_in_tile = bg_scroll_x_ & 0x07;
+		size_t x_offset_in_tile = bg_scroll_x_ & 0x07;
 
 		// The line (of the tiles) to be drawn, depending on the vertical scroll of the background and the current line being drawn (last 3 bits, 0-7)
 		const uint8_t line_in_tile{ static_cast<uint8_t>((current_line + bg_scroll_y_) & 0x07) };

@@ -11,7 +11,7 @@ class MMUObserver;
 class MMU : public Subject<MMUObserver>
 {
 public:
-	enum class Region
+	enum class Region : uint8_t
 	{
 		BIOS,
 		ROM,

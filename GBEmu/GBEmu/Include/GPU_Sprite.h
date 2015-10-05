@@ -7,7 +7,7 @@ class Renderer;
 class TileSet;
 class Palette;
 
-enum class ObjPalette
+enum class ObjPalette : uint8_t
 {
 	Zero = 0,
 	One = 1
@@ -16,7 +16,7 @@ enum class ObjPalette
 class Sprite
 {
 public:
-	enum class Size
+	enum class Size : uint8_t
 	{
 		Pixels8x8,
 		Pixels8x16

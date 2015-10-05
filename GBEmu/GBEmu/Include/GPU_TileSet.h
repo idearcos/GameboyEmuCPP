@@ -8,7 +8,7 @@
 class TileSet
 {
 public:
-	enum class Number
+	enum class Number : uint8_t
 	{
 		Zero,
 		One

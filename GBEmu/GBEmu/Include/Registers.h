@@ -13,7 +13,7 @@ enum class Register8bit : uint8_t
 	A = 7
 };
 
-enum class Register16bit
+enum class Register16bit : uint8_t
 {
 	AF,
 	BC,

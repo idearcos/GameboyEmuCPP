@@ -41,10 +41,22 @@ MMU::MMU()
 
 uint8_t MMU::Read8bitFromMemory(uint16_t absolute_address) const
 {
-	Region region{ Region::VRAM };
-	uint16_t local_address(absolute_address);
+	Region region{ Region::ROM };
+	uint16_t local_address(0);
 	std::tie(region, local_address) = AbsoluteToLocalAddress(absolute_address);
 
+	return Read8bitFromMemory(region, local_address);
+}
+
+uint16_t MMU::Read16bitFromMemory(uint16_t absolute_address) const
+{
+	uint16_t value{ Read8bitFromMemory(absolute_address) };
+	value += static_cast<uint16_t>(Read8bitFromMemory(absolute_address + 1)) << 8;
+	return value;
+}
+
+uint8_t MMU::Read8bitFromMemory(Region region, uint16_t local_address) const
+{
 	try
 	{
 		if (Region::BIOS == region)
@@ -60,18 +72,6 @@ uint8_t MMU::Read8bitFromMemory(uint16_t absolute_address) const
 	{
 		throw std::logic_error("Trying to read from non-implemented memory region, or out of memory region range");
 	}
-}
-
-uint16_t MMU::Read16bitFromMemory(uint16_t absolute_address) const
-{
-	uint16_t value{ Read8bitFromMemory(absolute_address) };
-	value += static_cast<uint16_t>(Read8bitFromMemory(absolute_address + 1)) << 8;
-	return value;
-}
-
-uint8_t MMU::Read8bitFromMemory(Region region, uint16_t local_address) const
-{
-	return Read8bitFromMemory(LocalToAbsoluteAddress(region, local_address));
 }
 
 void MMU::Write8bitToMemory(uint16_t absolute_address, uint8_t value)

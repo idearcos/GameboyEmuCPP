@@ -8,7 +8,7 @@ class TileMap
 public:
 	using TileNumber = uint8_t;
 
-	enum class Number
+	enum class Number : uint8_t
 	{
 		Zero,
 		One

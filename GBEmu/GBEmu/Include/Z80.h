@@ -15,7 +15,7 @@ using InstructionMap = std::map<uint8_t, std::function<Clock()>>;
 class Z80 : public MMUObserver
 {
 public:
-	enum class Interrupt
+	enum class Interrupt : uint8_t
 	{
 		VBlank = 0x01,
 		LcdStatus = 0x02,
@@ -285,7 +285,7 @@ private:
 	const InstructionMap instructions_;
 	const InstructionMap bit_instructions_;
 
-	enum class State
+	enum class State : uint8_t
 	{
 		Running,
 		Halted

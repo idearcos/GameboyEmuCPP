@@ -41,15 +41,19 @@ void Sprite::RenderSprite(Renderer &renderer, const TileSet &tileset, const std:
 				(tile_number_ & (~0x01)) + (line_in_sprite / 8);
 			
 			const auto tile = tileset.GetTile(affected_tile_number);
-			const auto line_in_tile = (Sprite::Size::Pixels8x16 == sprite_size) ? (line_in_sprite % 8) : line_in_sprite;
+			const auto line_in_tile = line_in_sprite % 8;
 			for (auto x = 0; x < tile.GetWidth(); x++)
 			{
-				if (is_above_background_ || (Color::Transparent == renderer.GetPixel(x_position_ + x, y_position_ + line_in_tile)))
+				// Check if current sprite is inside the screen
+				if (((x_position_ + x) >= 0) && ((x_position_ + x) < 160))
 				{
-					renderer.RenderPixel(x_position_ + x, y_position_ + line_in_tile, obj_palettes.at(obj_palette_).GetColor(tile.ReadPixel(x, line_in_tile)));
+					if (is_above_background_ || (Color::Transparent == renderer.GetPixel(x_position_ + x, current_line)))
+					{
+						renderer.RenderPixel(x_position_ + x, current_line, obj_palettes.at(obj_palette_).GetColor(tile.ReadPixel(x, line_in_tile)));
+					}
 				}
 			}
-		}	
+		}
 	}
 	catch (std::out_of_range &)
 	{

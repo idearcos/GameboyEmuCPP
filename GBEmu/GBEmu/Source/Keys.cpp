@@ -1,6 +1,5 @@
 #include "Keys.h"
 #include <type_traits>
-#include <sstream>
 
 KeyPad::KeyPad(MMU &mmu) :
 	mmu_(mmu)
@@ -67,9 +66,7 @@ uint8_t KeyPad::KeyStatusToByte(KeyColumn requested_column) const
 	}
 	catch (std::out_of_range &)
 	{
-		std::stringstream msg;
-		msg << "Trying to access wrong column (" << static_cast<size_t>(requested_column) << ") in keys status" << std::endl;
-		throw std::logic_error(msg.str());
+		
 	}
 }
 
