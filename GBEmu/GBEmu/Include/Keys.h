@@ -3,7 +3,8 @@
 #include <cstdint>
 #include <map>
 #include "GLFW/glfw3.h"
-#include "MMU.h"
+#include "IMMU.h"
+#include "MMUObserver.h"
 
 enum class Keys : uint8_t
 {
@@ -26,24 +27,24 @@ enum class KeyColumn : uint8_t
 class KeyPad : public MMUObserver
 {
 public:
-	KeyPad(MMU &mmu);
+	KeyPad(IMMU &mmu);
 	~KeyPad() = default;
 
 	void HandleKeys(int key, int action);
 
 	uint8_t KeyStatusToByte(KeyColumn requested_column) const;
 
-	void OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value) override;
+	void OnMemoryWrite(Region region, uint16_t address, uint8_t value) override;
 
 private:
-	void WriteToMmu(MMU::Region region, uint16_t address, uint8_t value) const;
+	void WriteToMmu(Region region, uint16_t address, uint8_t value) const;
 
 private:
 	static const uint16_t keypad_control_register{ 0x0000 };
 
 	using KeyStatus = std::map<Keys, bool>;
 	std::map<KeyColumn, KeyStatus> keys_pressed_;
-	MMU &mmu_;
+	IMMU &mmu_;
 
 	mutable bool writing_to_mmu_{ false };
 

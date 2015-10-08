@@ -176,10 +176,13 @@
     <ClInclude Include="Include\GPU_Tile.h" />
     <ClInclude Include="Include\GPU_TileMap.h" />
     <ClInclude Include="Include\GPU_TileSet.h" />
+    <ClInclude Include="Include\IMMU.h" />
     <ClInclude Include="Include\Keys.h" />
+    <ClInclude Include="Include\MemoryMap.h" />
     <ClInclude Include="Include\MMU.h" />
-    <ClInclude Include="Include\Observer.h" />
+    <ClInclude Include="Include\MMUObserver.h" />
     <ClInclude Include="Include\Registers.h" />
+    <ClInclude Include="Include\Subject.h" />
     <ClInclude Include="Include\Z80.h" />
   </ItemGroup>
   <ItemGroup>

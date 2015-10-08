@@ -1,7 +1,7 @@
 #include "Keys.h"
 #include <type_traits>
 
-KeyPad::KeyPad(MMU &mmu) :
+KeyPad::KeyPad(IMMU &mmu) :
 	mmu_(mmu)
 {
 	keys_pressed_[KeyColumn::Bit5][Keys::Up] = false;
@@ -70,25 +70,25 @@ uint8_t KeyPad::KeyStatusToByte(KeyColumn requested_column) const
 	}
 }
 
-void KeyPad::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
+void KeyPad::OnMemoryWrite(Region region, uint16_t address, uint8_t value)
 {
 	if (writing_to_mmu_)
 	{
 		return;
 	}
 
-	if (MMU::Region::IO == region)
+	if (Region::IO == region)
 	{
 		if (keypad_control_register == address)
 		{
 			const auto new_value = KeyStatusToByte(static_cast<KeyColumn>(value & 0x30));
 			
-			WriteToMmu(MMU::Region::IO, keypad_control_register, new_value);
+			WriteToMmu(Region::IO, keypad_control_register, new_value);
 		}
 	}
 }
 
-void KeyPad::WriteToMmu(MMU::Region region, uint16_t address, uint8_t value) const
+void KeyPad::WriteToMmu(Region region, uint16_t address, uint8_t value) const
 {
 	writing_to_mmu_ = true;
 	mmu_.Write8bitToMemory(region, address, value);

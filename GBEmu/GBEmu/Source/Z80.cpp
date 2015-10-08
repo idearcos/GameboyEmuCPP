@@ -3,7 +3,7 @@
 #include <type_traits>
 #include "GPU.h"
 
-Z80::Z80(MMU &mmu, GPU &gpu) :
+Z80::Z80(IMMU &mmu, GPU &gpu) :
 	instructions_(FillInstructionMap()),
 	bit_instructions_(FillBitInstructionMap()),
 	mmu_(mmu),
@@ -58,14 +58,14 @@ void Z80::CheckAndHandleInterrupts()
 	}
 }
 
-void Z80::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
+void Z80::OnMemoryWrite(Region region, uint16_t address, uint8_t value)
 {
 	if (writing_to_mmu_)
 	{
 		return;
 	}
 
-	if (MMU::Region::IO == region)
+	if (Region::IO == region)
 	{
 		if (interrupt_flags_register == address)
 		{
@@ -75,7 +75,7 @@ void Z80::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
 			}
 		}
 	}
-	else if (MMU::Region::ZeroPage == region)
+	else if (Region::ZeroPage == region)
 	{
 		if (interrupts_enable_register == address)
 		{

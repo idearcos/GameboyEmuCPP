@@ -4,7 +4,8 @@
 #include <memory>
 #include <array>
 #include "Clock.h"
-#include "MMU.h"
+#include "IMMU.h"
+#include "MMUObserver.h"
 #include "GPU_States.h"
 #include "GPU_TileSet.h"
 #include "GPU_TileMap.h"
@@ -16,7 +17,7 @@
 class GPU : public MMUObserver
 {
 public:
-	GPU(GLFWwindow* &window, MMU &mmu);
+	GPU(GLFWwindow* &window, IMMU &mmu);
 	~GPU() = default;
 
 	void Lapse(const Clock &clock);
@@ -28,7 +29,7 @@ public:
 	void SetCurrentMode(Mode new_mode);
 	void SetLineCompare(uint8_t line);
 
-	void OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value) override;
+	void OnMemoryWrite(Region region, uint16_t address, uint8_t value) override;
 
 private:
 	static std::map<Mode, std::unique_ptr<State>> InitStateMap();
@@ -37,7 +38,7 @@ private:
 	size_t GetAbsoluteTileNumber(TileMap::TileNumber tile_number, TileSet::Number tileset_number) const;
 
 	void CompareLineAndUpdateRegister();
-	void WriteToMmu(MMU::Region region, uint16_t address, uint8_t value) const;
+	void WriteToMmu(Region region, uint16_t address, uint8_t value) const;
 
 private:
 	// All addresses are relative to the beginning of VRAM
@@ -78,7 +79,7 @@ private:
 	Palette bg_palette_;
 	std::map<ObjPalette, Palette> obj_palettes_;
 
-	MMU &mmu_;
+	IMMU &mmu_;
 	mutable bool writing_to_mmu_{ false };
 
 	Mode current_mode_{ Mode::ReadingOAM };

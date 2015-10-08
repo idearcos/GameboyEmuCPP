@@ -3,7 +3,7 @@
 #include <list>
 #include <bitset>
 
-GPU::GPU(GLFWwindow* &window, MMU &mmu) :
+GPU::GPU(GLFWwindow* &window, IMMU &mmu) :
 	states_(InitStateMap()),
 	tileset_(num_tiles_in_set_, tile_width_, tile_height_),
 	renderer_(window, screen_width_, screen_height_),
@@ -74,14 +74,14 @@ void GPU::Lapse(const Clock &clock)
 	SetCurrentMode(new_mode);
 }
 
-void GPU::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
+void GPU::OnMemoryWrite(Region region, uint16_t address, uint8_t value)
 {
 	if (writing_to_mmu_)
 	{
 		return;
 	}
 
-	if (MMU::Region::VRAM == region)
+	if (Region::VRAM == region)
 	{
 		if (IsAddressInTileSet(address))
 		{
@@ -99,8 +99,8 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
 			// Get the address of the first byte in this row (either current address, or the previous byte)
 			const uint16_t row_beginning = ((address & 1) != 0) ? address - 1 : address;
 
-			const std::bitset<8> low_bits{ mmu_.Read8bitFromMemory(MMU::Region::VRAM, row_beginning) };
-			const std::bitset<8> high_bits{ mmu_.Read8bitFromMemory(MMU::Region::VRAM, row_beginning + 1) };
+			const std::bitset<8> low_bits{ mmu_.Read8bitFromMemory(Region::VRAM, row_beginning) };
+			const std::bitset<8> high_bits{ mmu_.Read8bitFromMemory(Region::VRAM, row_beginning + 1) };
 			for (uint8_t x = 0; x < 8; x++)
 			{
 				const uint8_t pixel_value = (low_bits.test(7 - x) ? 1 : 0) + (high_bits.test(7 - x) ? 2 : 0);
@@ -118,7 +118,7 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
 			tilemaps_.at(TileMap::Number::One).SetTileNumber(index, value);
 		}		
 	}
-	else if (MMU::Region::OAM == region)
+	else if (Region::OAM == region)
 	{
 		// 40 Sprites of 4 bytes each
 		const uint8_t sprite_index = static_cast<uint8_t>((address >> 2) & 0xFF);
@@ -143,7 +143,7 @@ void GPU::OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value)
 			break;
 		}
 	}
-	else if (MMU::Region::IO == region)
+	else if (Region::IO == region)
 	{
 		if (lcd_control_register == address)
 		{
@@ -230,7 +230,7 @@ void GPU::ResetCurrentLine()
 
 uint8_t GPU::IncrementCurrentLine()
 {
-	WriteToMmu(MMU::Region::IO, current_line_register, ++current_line_);
+	WriteToMmu(Region::IO, current_line_register, ++current_line_);
 	CompareLineAndUpdateRegister();
 	return current_line_;
 }
@@ -239,10 +239,10 @@ void GPU::SetCurrentMode(Mode new_mode)
 {
 	if (new_mode != current_mode_)
 	{
-		auto lcd_status = mmu_.Read8bitFromMemory(MMU::Region::IO, lcd_status_register);
+		auto lcd_status = mmu_.Read8bitFromMemory(Region::IO, lcd_status_register);
 		lcd_status &= ~(0x03);
 		lcd_status |= static_cast<std::underlying_type_t<Mode>>(new_mode);
-		WriteToMmu(MMU::Region::IO, lcd_status_register, lcd_status);
+		WriteToMmu(Region::IO, lcd_status_register, lcd_status);
 	}
 	current_mode_ = new_mode;
 }
@@ -255,7 +255,7 @@ void GPU::SetLineCompare(uint8_t line)
 
 void GPU::CompareLineAndUpdateRegister()
 {
-	auto lcd_status = mmu_.Read8bitFromMemory(MMU::Region::IO, lcd_status_register);
+	auto lcd_status = mmu_.Read8bitFromMemory(Region::IO, lcd_status_register);
 	lcd_status &= ~(0x04);
 	line_coincidence_ = (current_line_ == line_compare_);
 	if (line_coincidence_)
@@ -266,7 +266,7 @@ void GPU::CompareLineAndUpdateRegister()
 	{
 		lcd_status &= ~(1 << 2);
 	}
-	WriteToMmu(MMU::Region::IO, lcd_status_register, lcd_status);
+	WriteToMmu(Region::IO, lcd_status_register, lcd_status);
 
 	if (enable_line_compare_interrupt_)
 	{
@@ -274,7 +274,7 @@ void GPU::CompareLineAndUpdateRegister()
 	}
 }
 
-void GPU::WriteToMmu(MMU::Region region, uint16_t address, uint8_t value) const
+void GPU::WriteToMmu(Region region, uint16_t address, uint8_t value) const
 {
 	writing_to_mmu_ = true;
 	mmu_.Write8bitToMemory(region, address, value);

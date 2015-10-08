@@ -18,7 +18,7 @@ public:
 
 protected:
 	template <typename Function, typename... Args>
-	void Notify(Function func, Args&&... args)
+	void Notify(Function func, Args&&... args) const
 	{
 		for (auto& observer : observers_)
 		{

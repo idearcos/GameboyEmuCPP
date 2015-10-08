@@ -4,34 +4,25 @@
 #include <array>
 #include <vector>
 #include <map>
-#include "Observer.h"
+#include "IMMU.h"
+#include "Subject.h"
+#include "MMUObserver.h"
+#include "MemoryMap.h"
 
 class MMUObserver;
 
-class MMU : public Subject<MMUObserver>
+class MMU final : public IMMU, public Subject<MMUObserver>
 {
 public:
-	enum class Region : uint8_t
-	{
-		BIOS,
-		ROM,
-		VRAM,
-		ERAM,
-		WRAM,
-		OAM,
-		IO,
-		ZeroPage
-	};
-
 	MMU();
 	~MMU() = default;
 
-	uint8_t Read8bitFromMemory(uint16_t absolute_address) const;
-	uint16_t Read16bitFromMemory(uint16_t absolute_address) const;
-	uint8_t Read8bitFromMemory(Region region, uint16_t local_address) const;
-	void Write8bitToMemory(uint16_t absolute_address, uint8_t value);
-	void Write16bitToMemory(uint16_t absolute_address, uint16_t value);
-	void Write8bitToMemory(Region region, uint16_t local_address, uint8_t value);
+	uint8_t Read8bitFromMemory(uint16_t absolute_address) const override;
+	uint16_t Read16bitFromMemory(uint16_t absolute_address) const override;
+	uint8_t Read8bitFromMemory(Region region, uint16_t local_address) const override;
+	void Write8bitToMemory(uint16_t absolute_address, uint8_t value) override;
+	void Write16bitToMemory(uint16_t absolute_address, uint16_t value) override;
+	void Write8bitToMemory(Region region, uint16_t local_address, uint8_t value) override;
 
 	void LoadRom(std::string rom_file_path);
 
@@ -62,10 +53,4 @@ private:
 	MMU(MMU&&) = delete;
 	MMU& operator=(const MMU&) = delete;
 	MMU& operator=(MMU&&) = delete;
-};
-
-class MMUObserver
-{
-public:
-	virtual void OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value) = 0;
 };

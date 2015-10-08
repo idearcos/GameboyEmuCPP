@@ -6,7 +6,8 @@
 #include <atomic>
 
 #include "Registers.h"
-#include "MMU.h"
+#include "IMMU.h"
+#include "MMUObserver.h"
 #include "Clock.h"
 
 class GPU;
@@ -24,16 +25,18 @@ public:
 		Joypad = 0x10
 	};
 
-	Z80(MMU &mmu, GPU &gpu);
+	Z80(IMMU &mmu, GPU &gpu);
 	~Z80() = default;
 
 	uint8_t FetchByte();
 	void Execute(uint8_t opcode);
 	void CheckAndHandleInterrupts();
 
-	void OnMemoryWrite(MMU::Region region, uint16_t address, uint8_t value) override;
+	void OnMemoryWrite(Region region, uint16_t address, uint8_t value) override;
 	void WriteToMmu(uint16_t address, uint8_t value) const;
 	void WriteToMmu(uint16_t address, uint16_t value) const;
+
+	const Registers& GetRegisters() { return registers_; }
 
 private:
 	InstructionMap FillInstructionMap();
@@ -279,7 +282,7 @@ private:
 
 	Registers registers_;
 	Clock clock_;
-	MMU &mmu_;
+	IMMU &mmu_;
 	GPU &gpu_;
 
 	const InstructionMap instructions_;
@@ -301,4 +304,10 @@ private:
 private:
 	Z80& operator=(const Z80&) = delete;
 	Z80& operator=(Z80&&) = delete;
+};
+
+class Z80Observer
+{
+public:
+	virtual void OnClockLapse(const Clock &op_duration) = 0;
 };

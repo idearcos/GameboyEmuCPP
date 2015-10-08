@@ -16,6 +16,9 @@
     <Filter Include="Source Under Test">
       <UniqueIdentifier>{e7942133-dc2a-460c-9683-d9307d9e49e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Z80 Instructions">
+      <UniqueIdentifier>{3d0dd7a3-3ee8-4fde-9cbb-90cc10d7ce41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -30,5 +33,13 @@
     <ClCompile Include="..\GBEmu\Source\Registers.cpp">
       <Filter>Source Under Test</Filter>
     </ClCompile>
+    <ClCompile Include="Source\TesterMMU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\TesterMMU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

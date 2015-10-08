@@ -16,7 +16,7 @@ MMU::MMU()
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::VRAM), std::forward_as_tuple(0x2000, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ERAM), std::forward_as_tuple(0x2000, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::WRAM), std::forward_as_tuple(0x3E00, 0));
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::OAM), std::forward_as_tuple(0x0100, 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::OAM), std::forward_as_tuple(0x00A0, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::IO), std::forward_as_tuple(0x0080, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ZeroPage), std::forward_as_tuple(0x0080, 0));
 
@@ -138,7 +138,7 @@ void MMU::LoadRom(std::string rom_file_path)
 	}
 }
 
-std::tuple<MMU::Region, uint16_t> MMU::AbsoluteToLocalAddress(uint16_t absolute_address) const
+std::tuple<Region, uint16_t> MMU::AbsoluteToLocalAddress(uint16_t absolute_address) const
 {
 	try
 	{

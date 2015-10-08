@@ -16,11 +16,11 @@
     <Filter Include="Source Files\GPU">
       <UniqueIdentifier>{1d055f85-7055-477b-b7c3-6a70b6ddecce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Z80">
-      <UniqueIdentifier>{2505db08-6a83-4f4c-97ec-de22024f0b00}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GPU">
       <UniqueIdentifier>{54212410-9c84-4f83-90ab-c85a0c9805d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Z80 Instructions">
+      <UniqueIdentifier>{2505db08-6a83-4f4c-97ec-de22024f0b00}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -37,9 +37,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Clock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\GameBoy.h">
@@ -78,6 +75,18 @@
     <ClInclude Include="Include\GPU_Color.h">
       <Filter>Header Files\GPU</Filter>
     </ClInclude>
+    <ClInclude Include="Include\IMMU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Subject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MMUObserver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\MemoryMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GBEmu.cpp">
@@ -114,46 +123,46 @@
       <Filter>Source Files\GPU</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_RotateAndShift.cpp">
-      <Filter>Source Files\Z80</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Z80.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_8bitArithmetic.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_16bitArithmetic.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_BitOperations.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_CallAndReturn.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_FillBitInstructionMap.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_FillInstructionMap.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_GbExclusive.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_GeneralArithmeticAndCpuControl.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_Jump.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\Z80_LoadInstructions.cpp">
-      <Filter>Source Files\Z80</Filter>
+      <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
     <ClCompile Include="Source\GPU_Background.cpp">
       <Filter>Source Files\GPU</Filter>
     </ClCompile>
     <ClCompile Include="Source\GPU_Sprite.cpp">
       <Filter>Source Files\GPU</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Z80.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
