@@ -1,8 +1,10 @@
 *.suo
 *.sdf
 *.opensdf
-GBEmu/GBEmu/GBEmu.vcxproj.user
+*.vcxproj.user
 GBEmu/Release/
 GBEmu/Debug/
 GBEmu/GBEmu/Release/
 GBEmu/GBEmu/Debug/
+GBEmu/GBEmuTest/Release/
+GBEmu/GBEmuTest/Debug/

@@ -11,6 +11,9 @@ uint8_t Registers::Read(Register8bit reg) const
 	case Register8bit::A:
 		value = a_;
 		break;
+	case Register8bit::F:
+		value = f_;
+		break;
 	case Register8bit::B:
 		value = b_;
 		break;

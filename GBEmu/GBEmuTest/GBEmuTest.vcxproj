@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C09B13F0-753A-4287-95A9-01B3799C9B15}</ProjectGuid>
+    <ProjectGuid>{70B1D2C0-0440-4505-82C5-454E7D7F9235}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>GBEmu</RootNamespace>
+    <RootNamespace>GBEmuTest</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -90,124 +90,81 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(SolutionDir)Dependencies/GLFW/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(SolutionDir)GBEmu/Include;$(SolutionDir)Dependencies/gtest/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/GLFW/lib/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/gtest/lib/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(SolutionDir)Dependencies/GLFW/include</AdditionalIncludeDirectories>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(SolutionDir)GBEmu/Include;$(SolutionDir)Dependencies/gtest/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/GLFW/lib/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/gtest/lib/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(SolutionDir)Dependencies/GLFW/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(SolutionDir)GBEmu/Include;$(SolutionDir)Dependencies/gtest/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/GLFW/lib/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/gtest/lib/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(SolutionDir)Dependencies/GLFW/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(SolutionDir)GBEmu/Include;$(SolutionDir)Dependencies/gtest/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/GLFW/lib/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/gtest/lib/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Clock.h" />
-    <ClInclude Include="Include\GameBoy.h" />
-    <ClInclude Include="Include\GPU.h" />
-    <ClInclude Include="Include\GPU_Background.h" />
-    <ClInclude Include="Include\GPU_Color.h" />
-    <ClInclude Include="Include\GPU_Palette.h" />
-    <ClInclude Include="Include\GPU_Renderer.h" />
-    <ClInclude Include="Include\GPU_Sprite.h" />
-    <ClInclude Include="Include\GPU_States.h" />
-    <ClInclude Include="Include\GPU_Tile.h" />
-    <ClInclude Include="Include\GPU_TileMap.h" />
-    <ClInclude Include="Include\GPU_TileSet.h" />
-    <ClInclude Include="Include\Keys.h" />
-    <ClInclude Include="Include\MMU.h" />
-    <ClInclude Include="Include\Observer.h" />
-    <ClInclude Include="Include\Registers.h" />
-    <ClInclude Include="Include\Z80.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\GameBoy.cpp" />
-    <ClCompile Include="Source\GBEmu.cpp" />
-    <ClCompile Include="Source\GPU.cpp" />
-    <ClCompile Include="Source\GPU_Background.cpp" />
-    <ClCompile Include="Source\GPU_Renderer.cpp" />
-    <ClCompile Include="Source\GPU_Sprite.cpp" />
-    <ClCompile Include="Source\GPU_States.cpp" />
-    <ClCompile Include="Source\GPU_Tile.cpp" />
-    <ClCompile Include="Source\GPU_TileMap.cpp" />
-    <ClCompile Include="Source\GPU_TileSet.cpp" />
-    <ClCompile Include="Source\Keys.cpp" />
-    <ClCompile Include="Source\Z80_CallAndReturn.cpp" />
-    <ClCompile Include="Source\Z80_FillBitInstructionMap.cpp" />
-    <ClCompile Include="Source\Z80_FillInstructionMap.cpp" />
-    <ClCompile Include="Source\Z80_GbExclusive.cpp" />
-    <ClCompile Include="Source\Z80_Jump.cpp" />
-    <ClCompile Include="Source\MMU.cpp" />
-    <ClCompile Include="Source\Registers.cpp" />
-    <ClCompile Include="Source\Z80.cpp" />
-    <ClCompile Include="Source\Z80_16bitArithmetic.cpp" />
-    <ClCompile Include="Source\Z80_8bitArithmetic.cpp" />
-    <ClCompile Include="Source\Z80_BitOperations.cpp" />
-    <ClCompile Include="Source\Z80_GeneralArithmeticAndCpuControl.cpp" />
-    <ClCompile Include="Source\Z80_LoadInstructions.cpp" />
-    <ClCompile Include="Source\Z80_RotateAndShift.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Registers.cpp" />
+    <ClCompile Include="Source\GBEmuTest.cpp" />
+    <ClCompile Include="Source\RegistersTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

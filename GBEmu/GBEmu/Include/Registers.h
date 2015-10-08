@@ -10,7 +10,8 @@ enum class Register8bit : uint8_t
 	E = 3,
 	H = 4,
 	L = 5,
-	A = 7
+	A = 7,
+	F
 };
 
 enum class Register16bit : uint8_t
@@ -58,8 +59,6 @@ private:
 	uint8_t e_{ 0 };
 	uint8_t h_{ 0 };
 	uint8_t l_{ 0 };
-	uint8_t i_{ 0 };
-	uint8_t r_{ 0 };
 
 	uint16_t sp_{ 0 };
 	uint16_t pc_{ 0 };
