@@ -1,5 +1,6 @@
 #include "Keys.h"
 #include <type_traits>
+#include <sstream>
 
 KeyPad::KeyPad(IMMU &mmu) :
 	mmu_(mmu)
@@ -61,12 +62,14 @@ uint8_t KeyPad::KeyStatusToByte(KeyColumn requested_column) const
 				value &= ~(static_cast<std::underlying_type_t<Keys>>(pair.first));
 			}
 		}
-
 		return value;
 	}
 	catch (std::out_of_range &)
 	{
-		
+		std::stringstream msg;
+		msg << "Trying to access invalid keypad column: " << static_cast<size_t>(requested_column);
+		throw std::logic_error(msg.str());
+		//return 0x0F;
 	}
 }
 

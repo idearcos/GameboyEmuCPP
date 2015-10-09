@@ -184,6 +184,7 @@
     <ClInclude Include="Include\Registers.h" />
     <ClInclude Include="Include\Subject.h" />
     <ClInclude Include="Include\Z80.h" />
+    <ClInclude Include="Include\Z80Observer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GameBoy.cpp" />

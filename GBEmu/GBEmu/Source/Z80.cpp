@@ -3,11 +3,11 @@
 #include <type_traits>
 #include "GPU.h"
 
-Z80::Z80(IMMU &mmu, GPU &gpu) :
+Z80::Z80(IMMU &mmu) :
 	instructions_(FillInstructionMap()),
 	bit_instructions_(FillBitInstructionMap()),
-	mmu_(mmu),
-	gpu_(gpu)
+	interrupt_instructions_(FillInterruptInstructionMap()),
+	mmu_(mmu)
 {
 	interrupts_enabled_[Interrupt::VBlank] = false;
 	interrupts_enabled_[Interrupt::LcdStatus] = false;
@@ -20,12 +20,19 @@ Z80::Z80(IMMU &mmu, GPU &gpu) :
 	interrupts_signaled_[Interrupt::Timer] = false;
 	interrupts_signaled_[Interrupt::SerialLink] = false;
 	interrupts_signaled_[Interrupt::Joypad] = false;
+}
 
-	interrupt_handler_addresses_[Interrupt::VBlank] = 0x0040;
-	interrupt_handler_addresses_[Interrupt::LcdStatus] = 0x0048;
-	interrupt_handler_addresses_[Interrupt::Timer] = 0x0050;
-	interrupt_handler_addresses_[Interrupt::SerialLink] = 0x0058;
-	interrupt_handler_addresses_[Interrupt::Joypad] = 0x0060;
+std::map<Z80::Interrupt, Instruction> Z80::FillInterruptInstructionMap()
+{
+	std::map<Interrupt, Instruction> interrupt_instructions;
+
+	interrupt_instructions[Interrupt::VBlank] = [this](){ return this->Restart(0x0040); };
+	interrupt_instructions[Interrupt::LcdStatus] = [this](){ return this->Restart(0x0048); };
+	interrupt_instructions[Interrupt::Timer] = [this](){ return this->Restart(0x0050); };
+	interrupt_instructions[Interrupt::SerialLink] = [this](){ return this->Restart(0x0058); };
+	interrupt_instructions[Interrupt::Joypad] = [this](){ return this->Restart(0x0060); };
+
+	return interrupt_instructions;
 }
 
 uint8_t Z80::FetchByte()
@@ -37,9 +44,37 @@ uint8_t Z80::FetchByte()
 
 void Z80::Execute(uint8_t opcode)
 {
-	const auto op_duration = instructions_.at(opcode)();
+	try
+	{
+		Execute(instructions_.at(opcode));
+	}
+	catch (std::out_of_range &)
+	{
+		std::stringstream msg;
+		msg << "Exception caught: No instruction for op code 0x" << std::hex << static_cast<size_t>(opcode);
+		throw std::runtime_error(msg.str());
+	}
+}
+
+void Z80::Execute(Interrupt interrupt)
+{
+	try
+	{
+		Execute(interrupt_instructions_.at(interrupt));
+	}
+	catch (std::out_of_range &)
+	{
+		std::stringstream msg;
+		msg << "Exception caught: No instruction for interrupt " << static_cast<size_t>(interrupt);
+		throw std::runtime_error(msg.str());
+	}
+}
+
+void Z80::Execute(Instruction instruction)
+{
+	const auto op_duration = instruction();
 	clock_ += op_duration;
-	gpu_.Lapse(op_duration);
+	Notify(&Z80Observer::OnClockLapse, op_duration);
 }
 
 void Z80::CheckAndHandleInterrupts()
@@ -51,9 +86,7 @@ void Z80::CheckAndHandleInterrupts()
 			interrupt_master_enable_ = false;
 			pair.second = false;
 
-			Clock handling_duration(Restart(interrupt_handler_addresses_[pair.first]));
-			clock_ += handling_duration;
-			gpu_.Lapse(handling_duration);
+			Execute(pair.first);
 		}
 	}
 }
@@ -103,7 +136,7 @@ void Z80::WriteToMmu(uint16_t address, uint16_t value) const
 
 Clock Z80::WrongOpCode(uint8_t opcode)
 {
-	std::stringstream error_msg;
-	error_msg << "Wrong operation code 0x" << std::hex << static_cast<size_t>(opcode) << std::endl;
-	throw std::runtime_error(error_msg.str());
+	std::stringstream msg;
+	msg << "Wrong operation code 0x" << std::hex << static_cast<size_t>(opcode);
+	throw std::runtime_error(msg.str());
 }

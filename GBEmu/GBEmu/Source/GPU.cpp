@@ -64,7 +64,7 @@ size_t GPU::GetAbsoluteTileNumber(uint8_t tile_number, TileSet::Number tileset_n
 	}
 }
 
-void GPU::Lapse(const Clock &clock)
+void GPU::OnClockLapse(const Clock &clock)
 {
 	ticks_current_period_ += clock.GetTicks();
 

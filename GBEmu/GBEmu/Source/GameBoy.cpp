@@ -2,10 +2,11 @@
 #include <iostream>
 
 GameBoy::GameBoy() :
-	z80_(mmu_, gpu_),
+	z80_(mmu_),
 	gpu_(window_, mmu_),
 	keypad_(mmu_)
 {
+	z80_.AddObserver(&gpu_);
 	mmu_.AddObserver(&z80_);
 	mmu_.AddObserver(&gpu_);
 	mmu_.AddObserver(&keypad_);
@@ -24,11 +25,6 @@ void GameBoy::Run()
 		{
 			z80_.Execute(opcode);
 			z80_.CheckAndHandleInterrupts();
-		}
-		catch (std::out_of_range &)
-		{
-			std::cout << "Exception caught: No instruction for op code 0x" << std::hex << static_cast<uint32_t>(opcode) << std::endl;
-			break;
 		}
 		catch (std::exception &exc)
 		{

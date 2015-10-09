@@ -6,14 +6,16 @@
 #include <atomic>
 
 #include "Registers.h"
+#include "Clock.h"
+#include "Subject.h"
+#include "Z80Observer.h"
 #include "IMMU.h"
 #include "MMUObserver.h"
-#include "Clock.h"
 
-class GPU;
-using InstructionMap = std::map<uint8_t, std::function<Clock()>>;
+using Instruction = std::function<Clock()>;
+using InstructionMap = std::map<uint8_t, Instruction>;
 
-class Z80 : public MMUObserver
+class Z80 : public Subject<Z80Observer>, public MMUObserver
 {
 public:
 	enum class Interrupt : uint8_t
@@ -25,7 +27,7 @@ public:
 		Joypad = 0x10
 	};
 
-	Z80(IMMU &mmu, GPU &gpu);
+	Z80(IMMU &mmu);
 	~Z80() = default;
 
 	uint8_t FetchByte();
@@ -41,6 +43,10 @@ public:
 private:
 	InstructionMap FillInstructionMap();
 	InstructionMap FillBitInstructionMap();
+	std::map<Interrupt, Instruction> FillInterruptInstructionMap();
+
+	void Execute(Interrupt interrupt);
+	void Execute(Instruction instruction);
 
 	Clock WrongOpCode(uint8_t opcode);
 
@@ -283,7 +289,6 @@ private:
 	Registers registers_;
 	Clock clock_;
 	IMMU &mmu_;
-	GPU &gpu_;
 
 	const InstructionMap instructions_;
 	const InstructionMap bit_instructions_;
@@ -297,17 +302,11 @@ private:
 	bool interrupt_master_enable_{ true };
 	std::map<Interrupt, bool> interrupts_enabled_;
 	std::map<Interrupt, bool> interrupts_signaled_;
-	std::map<Interrupt, uint16_t> interrupt_handler_addresses_;
+	std::map<Interrupt, Instruction> interrupt_instructions_;
 
 	mutable bool writing_to_mmu_{ false };
 
 private:
 	Z80& operator=(const Z80&) = delete;
 	Z80& operator=(Z80&&) = delete;
-};
-
-class Z80Observer
-{
-public:
-	virtual void OnClockLapse(const Clock &op_duration) = 0;
 };

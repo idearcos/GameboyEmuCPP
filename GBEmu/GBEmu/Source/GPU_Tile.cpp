@@ -14,7 +14,7 @@ uint8_t Tile::ReadPixel(size_t x, size_t y) const
 	if ((x >= tile_width_) || (y >= tile_height_))
 	{
 		std::stringstream msg;
-		msg << "Trying to read a pixel out of tile boundaries: (" << x << "," << y << ")" << std::endl;
+		msg << "Trying to read a pixel out of tile boundaries: (" << x << "," << y << ")";
 		throw std::logic_error(msg.str());
 	}
 

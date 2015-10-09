@@ -3,9 +3,9 @@
 #include <map>
 #include <memory>
 #include <array>
-#include "Clock.h"
 #include "IMMU.h"
 #include "MMUObserver.h"
+#include "Z80Observer.h"
 #include "GPU_States.h"
 #include "GPU_TileSet.h"
 #include "GPU_TileMap.h"
@@ -14,13 +14,13 @@
 #include "GPU_Background.h"
 #include "GPU_Sprite.h"
 
-class GPU : public MMUObserver
+class GPU : public MMUObserver, public Z80Observer
 {
 public:
 	GPU(GLFWwindow* &window, IMMU &mmu);
 	~GPU() = default;
 
-	void Lapse(const Clock &clock);
+	void OnClockLapse(const Clock &clock) override;
 	void RenderScanLine();
 	void RefreshScreen();
 

@@ -58,7 +58,7 @@ void Sprite::RenderSprite(Renderer &renderer, const TileSet &tileset, const std:
 	catch (std::out_of_range &)
 	{
 		std::stringstream msg;
-		msg << "Trying to access invalid object palette " << static_cast<size_t>(obj_palette_) << std::endl;
+		msg << "Trying to access invalid object palette " << static_cast<size_t>(obj_palette_);
 		throw std::logic_error(msg.str());
 	}
 }
