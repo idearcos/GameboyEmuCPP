@@ -38,7 +38,8 @@ public:
 	void WriteToMmu(uint16_t address, uint8_t value) const;
 	void WriteToMmu(uint16_t address, uint16_t value) const;
 
-	const Registers& GetRegisters() { return registers_; }
+	Registers& GetRegisters() { return registers_; }
+	Clock& GetClock() { return clock_; }
 
 private:
 	InstructionMap FillInstructionMap();
@@ -276,7 +277,7 @@ private:
 	// LDIO r, (r')
 	Clock LoadRegisterFromIO(Register8bit dest, Register8bit reg_displacement);
 	// LD rr, rr'+n
-	Clock LoadRegisterFromAddress(Register16bit dest, Register16bit source_addr, int8_t displacement);
+	Clock LoadRegisterFromRegisterPlusDisplacement(Register16bit dest, Register16bit source, int8_t displacement);
 	// ADD rr, n
 	Clock Add(Register16bit dest, int8_t value);
 #pragma endregion

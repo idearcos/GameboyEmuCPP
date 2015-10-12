@@ -72,7 +72,7 @@ Clock Z80::LoadIOFromRegister(Register8bit reg_displacement, Register8bit source
 {
 	WriteToMmu(0xFF00 + registers_.Read(reg_displacement), registers_.Read(source));
 
-	return Clock(3, 12);
+	return Clock(2, 8);
 }
 
 // LDIO r, (n)
@@ -92,15 +92,18 @@ Clock Z80::LoadRegisterFromIO(Register8bit dest, Register8bit reg_displacement)
 }
 
 // LD rr, rr'+n
-Clock Z80::LoadRegisterFromAddress(Register16bit dest, Register16bit source_addr, int8_t displacement)
+Clock Z80::LoadRegisterFromRegisterPlusDisplacement(Register16bit dest, Register16bit source, int8_t displacement)
 {
 	registers_.SetFlag(Flags::Zero, false);
 	registers_.SetFlag(Flags::Subtract, false);
-	//TODO how are carry and half carry affected?
-	//registers_.SetFlag(Flags::HalfCarry, false);
-	//registers_.SetFlag(Flags::Carry, false);
+	
+	{const uint16_t low_12_bits_result = (registers_.Read(source) & 0x0FFF) + displacement;
+	registers_.SetFlag(Flags::HalfCarry, (low_12_bits_result & 0x1000) != 0); }
 
-	registers_.Write(dest, mmu_.Read16bitFromMemory(registers_.Read(source_addr) + displacement));
+	const uint32_t result = registers_.Read(source) + displacement;
+	registers_.SetFlag(Flags::Carry, (result & 0x10000) != 0);
+
+	registers_.Write(dest, static_cast<uint16_t>(result & 0xFFFF));
 
 	return Clock(3, 12);
 }

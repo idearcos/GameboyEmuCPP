@@ -162,10 +162,25 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\GBEmu\Source\Clock.cpp" />
     <ClCompile Include="..\GBEmu\Source\Registers.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_16bitArithmetic.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_8bitArithmetic.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_BitOperations.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_CallAndReturn.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_FillBitInstructionMap.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_FillInstructionMap.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_GbExclusive.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_GeneralArithmeticAndCpuControl.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_Jump.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_LoadInstructions.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Z80_RotateAndShift.cpp" />
     <ClCompile Include="Source\GBEmuTest.cpp" />
     <ClCompile Include="Source\RegistersTest.cpp" />
     <ClCompile Include="Source\TesterMMU.cpp" />
+    <ClCompile Include="Source\Z80_16bitLoadTest.cpp" />
+    <ClCompile Include="Source\Z80_8bitLoadTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\TesterMMU.h" />

@@ -1,7 +1,6 @@
 #include "Z80.h"
 #include <sstream>
 #include <type_traits>
-#include "GPU.h"
 
 Z80::Z80(IMMU &mmu) :
 	instructions_(FillInstructionMap()),

@@ -14,11 +14,12 @@ uint16_t TesterMMU::Read16bitFromMemory(uint16_t absolute_address) const
 {
 	uint16_t value = Read8bitFromMemory(absolute_address);
 	value += (Read8bitFromMemory(absolute_address + 1) << 8);
+	return value;
 }
 
 uint8_t TesterMMU::Read8bitFromMemory(Region region, uint16_t local_address) const
 {
-	throw std::logic_error("Read8bitFromMemory is out of testing scope");
+	throw std::logic_error("Overload of Read8bitFromMemory is out of testing scope");
 }
 
 void TesterMMU::Write8bitToMemory(uint16_t absolute_address, uint8_t value)
@@ -34,5 +35,5 @@ void TesterMMU::Write16bitToMemory(uint16_t absolute_address, uint16_t value)
 
 void TesterMMU::Write8bitToMemory(Region region, uint16_t local_address, uint8_t value)
 {
-	throw std::logic_error("Write8bitToMemory is out of testing scope");
+	throw std::logic_error("Overload of Write8bitToMemory is out of testing scope");
 }

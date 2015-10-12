@@ -187,6 +187,7 @@
     <ClInclude Include="Include\Z80Observer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Clock.cpp" />
     <ClCompile Include="Source\GameBoy.cpp" />
     <ClCompile Include="Source\GBEmu.cpp" />
     <ClCompile Include="Source\GPU.cpp" />

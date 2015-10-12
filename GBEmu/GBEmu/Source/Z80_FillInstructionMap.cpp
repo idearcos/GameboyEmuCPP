@@ -595,7 +595,7 @@ InstructionMap Z80::FillInstructionMap()
 	// RST 30h
 	instructions[0xF7] = [this](){ return this->Restart(0x30); };
 	// LD HL, SP+n
-	instructions[0xF8] = [this](){ return this->WrongOpCode(0xF8); };
+	instructions[0xF8] = [this](){ return this->LoadRegisterFromRegisterPlusDisplacement(Register16bit::HL, Register16bit::SP, this->FetchByte()); };
 	// LD SP, HL
 	instructions[0xF9] = [this](){ return this->LoadRegister(Register16bit::SP, Register16bit::HL); };
 	// LD A, (nn)
