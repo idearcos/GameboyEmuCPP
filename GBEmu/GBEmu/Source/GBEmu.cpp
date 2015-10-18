@@ -13,7 +13,7 @@ int main(int /*argc*/, char* /*argv*/[])
 	}
 	catch (std::exception &e)
 	{
-		std::cout << "Exception caught: " << e.what();
+		std::cout << "Unhandled exception caught: " << e.what();
 	}
 
 	return 0;

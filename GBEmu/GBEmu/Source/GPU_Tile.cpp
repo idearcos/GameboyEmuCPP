@@ -25,7 +25,9 @@ void Tile::WritePixel(size_t x, size_t y, uint8_t value)
 {
 	if ((x >= tile_width_) || (y >= tile_height_))
 	{
-		throw std::out_of_range("Trying to write a pixel out of tile boundaries");
+		std::stringstream msg;
+		msg << "Trying to write a pixel out of tile boundaries: (" << x << "," << y << ")";
+		throw std::logic_error(msg.str());
 	}
 
 	tile_data_[tile_width_ * y + x] = value;

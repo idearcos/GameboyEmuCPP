@@ -1,5 +1,7 @@
 #include "Registers.h"
 
+#include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <type_traits>
 
@@ -33,8 +35,9 @@ uint8_t Registers::Read(Register8bit reg) const
 		value = l_;
 		break;
 	default:
-		throw std::logic_error("Read: invalid register");
-		break;
+		std::stringstream msg;
+		msg << "Trying to read invalid register: " << reg;
+		throw std::logic_error(msg.str());
 	}
 	return value;
 }
@@ -65,8 +68,9 @@ void Registers::Write(Register8bit reg, uint8_t value)
 		l_ = value;
 		break;
 	default:
-		throw std::logic_error("Write: invalid register");
-		break;
+		std::stringstream msg;
+		msg << "Trying to write invalid register: " << reg;
+		throw std::logic_error(msg.str());
 	}
 }
 
@@ -94,8 +98,9 @@ uint16_t Registers::Read(Register16bit reg) const
 		value = sp_;
 		break;
 	default:
-		throw std::logic_error("Read (16 bit): invalid register");
-		break;
+		std::stringstream msg;
+		msg << "Trying to read invalid register: " << reg;
+		throw std::logic_error(msg.str());
 	}
 	return value;
 }
@@ -127,8 +132,9 @@ void Registers::Write(Register16bit reg, uint16_t value)
 		sp_ = value;
 		break;
 	default:
-		throw std::logic_error("Write (16 bit): invalid register");
-		break;
+		std::stringstream msg;
+		msg << "Trying to write invalid register: " << reg;
+		throw std::logic_error(msg.str());
 	}
 }
 
@@ -158,4 +164,94 @@ void Registers::SetFlag(Flags flag, bool bSet)
 bool Registers::IsFlagSet(Flags flag) const
 {
 	return (f_ & static_cast<std::underlying_type_t<Flags>>(flag)) != 0;
+}
+
+std::ostream& operator << (std::ostream& os, const Flags& flag)
+{
+	switch (flag)
+	{
+	case Flags::Zero:
+		os << "Zero";
+		break;
+	case Flags::Subtract:
+		os << "Subtract";
+		break;
+	case Flags::HalfCarry:
+		os << "HalfCarry";
+		break;
+	case Flags::Carry:
+		os << "Carry";
+		break;
+	default:
+		os << static_cast<size_t>(flag);
+		break;
+	}
+
+	return os;
+}
+
+std::ostream& operator << (std::ostream& os, const Register8bit& reg)
+{
+	switch (reg)
+	{
+	case Register8bit::A:
+		os << "A";
+		break;
+	case Register8bit::F:
+		os << "F";
+		break;
+	case Register8bit::B:
+		os << "B";
+		break;
+	case Register8bit::C:
+		os << "C";
+		break;
+	case Register8bit::D:
+		os << "D";
+		break;
+	case Register8bit::E:
+		os << "E";
+		break;
+	case Register8bit::H:
+		os << "H";
+		break;
+	case Register8bit::L:
+		os << "L";
+		break;
+	default:
+		os << static_cast<size_t>(reg);
+		break;
+	}
+
+	return os;
+}
+
+std::ostream& operator << (std::ostream& os, const Register16bit& reg)
+{
+	switch (reg)
+	{
+	case Register16bit::AF:
+		os << "AF";
+		break;
+	case Register16bit::BC:
+		os << "BC";
+		break;
+	case Register16bit::DE:
+		os << "DE";
+		break;
+	case Register16bit::HL:
+		os << "HL";
+		break;
+	case Register16bit::PC:
+		os << "PC";
+		break;
+	case Register16bit::SP:
+		os << "SP";
+		break;
+	default:
+		os << static_cast<size_t>(reg);
+		break;
+	}
+
+	return os;
 }

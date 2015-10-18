@@ -27,7 +27,7 @@ TEST(RegistersTest, 8bitWriteRegA)
 
 	for (size_t i = 0; i <= UINT8_MAX; i++)
 	{
-		registers.Write(Register8bit::A, i);
+		registers.Write(Register8bit::A, static_cast<uint8_t>(i));
 
 		ASSERT_EQ(i, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -52,7 +52,7 @@ TEST(RegistersTest, 8bitWriteRegF)
 
 	for (size_t i = 0; i <= UINT8_MAX; i++)
 	{
-		ASSERT_THROW(registers.Write(Register8bit::F, i), std::logic_error);
+		ASSERT_THROW(registers.Write(Register8bit::F, static_cast<uint8_t>(i)), std::logic_error);
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -77,7 +77,7 @@ TEST(RegistersTest, 8bitWriteRegB)
 
 	for (size_t i = 0; i <= UINT8_MAX; i++)
 	{
-		registers.Write(Register8bit::B, i);
+		registers.Write(Register8bit::B, static_cast<uint8_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -102,7 +102,7 @@ TEST(RegistersTest, 8bitWriteRegC)
 
 	for (size_t i = 0; i <= UINT8_MAX; i++)
 	{
-		registers.Write(Register8bit::C, i);
+		registers.Write(Register8bit::C, static_cast<uint8_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -127,7 +127,7 @@ TEST(RegistersTest, 8bitWriteRegD)
 
 	for (size_t i = 0; i <= UINT8_MAX; i++)
 	{
-		registers.Write(Register8bit::D, i);
+		registers.Write(Register8bit::D, static_cast<uint8_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -152,7 +152,7 @@ TEST(RegistersTest, 8bitWriteRegE)
 
 	for (size_t i = 0; i <= UINT8_MAX; i++)
 	{
-		registers.Write(Register8bit::E, i);
+		registers.Write(Register8bit::E, static_cast<uint8_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -177,7 +177,7 @@ TEST(RegistersTest, 8bitWriteRegH)
 
 	for (size_t i = 0; i <= UINT8_MAX; i++)
 	{
-		registers.Write(Register8bit::H, i);
+		registers.Write(Register8bit::H, static_cast<uint8_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -202,7 +202,7 @@ TEST(RegistersTest, 8bitWriteRegL)
 
 	for (size_t i = 0; i <= UINT8_MAX; i++)
 	{
-		registers.Write(Register8bit::L, i);
+		registers.Write(Register8bit::L, static_cast<uint8_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -227,7 +227,7 @@ TEST(RegistersTest, 16bitWriteRegAF)
 
 	for (size_t i = 0; i <= UINT16_MAX; i++)
 	{
-		registers.Write(Register16bit::AF, i);
+		registers.Write(Register16bit::AF, static_cast<uint16_t>(i));
 
 		ASSERT_EQ(i >> 8, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(i & 0xFF, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -252,7 +252,7 @@ TEST(RegistersTest, 16bitWriteRegBC)
 
 	for (size_t i = 0; i <= UINT16_MAX; i++)
 	{
-		registers.Write(Register16bit::BC, i);
+		registers.Write(Register16bit::BC, static_cast<uint16_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -277,7 +277,7 @@ TEST(RegistersTest, 16bitWriteRegDE)
 
 	for (size_t i = 0; i <= UINT16_MAX; i++)
 	{
-		registers.Write(Register16bit::DE, i);
+		registers.Write(Register16bit::DE, static_cast<uint16_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -302,7 +302,7 @@ TEST(RegistersTest, 16bitWriteRegHL)
 
 	for (size_t i = 0; i <= UINT16_MAX; i++)
 	{
-		registers.Write(Register16bit::HL, i);
+		registers.Write(Register16bit::HL, static_cast<uint16_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -327,7 +327,7 @@ TEST(RegistersTest, 16bitWriteRegPC)
 
 	for (size_t i = 0; i <= UINT16_MAX; i++)
 	{
-		registers.Write(Register16bit::PC, i);
+		registers.Write(Register16bit::PC, static_cast<uint16_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));
@@ -352,7 +352,7 @@ TEST(RegistersTest, 16bitWriteRegSP)
 
 	for (size_t i = 0; i <= UINT16_MAX; i++)
 	{
-		registers.Write(Register16bit::SP, i);
+		registers.Write(Register16bit::SP, static_cast<uint16_t>(i));
 
 		ASSERT_EQ(0, registers.Read(Register8bit::A)) << "Testing input value " << i << ", Register A read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::A));
 		ASSERT_EQ(0, registers.Read(Register8bit::F)) << "Testing input value " << i << ", Register F read unexpected value: " << static_cast<size_t>(registers.Read(Register8bit::F));

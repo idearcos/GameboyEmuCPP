@@ -21,7 +21,7 @@ Z80::Z80(IMMU &mmu) :
 	interrupts_signaled_[Interrupt::Joypad] = false;
 }
 
-std::map<Z80::Interrupt, Instruction> Z80::FillInterruptInstructionMap()
+std::map<Z80::Interrupt, Z80::Instruction> Z80::FillInterruptInstructionMap()
 {
 	std::map<Interrupt, Instruction> interrupt_instructions;
 
@@ -64,7 +64,7 @@ void Z80::Execute(Interrupt interrupt)
 	catch (std::out_of_range &)
 	{
 		std::stringstream msg;
-		msg << "Exception caught: No instruction for interrupt " << static_cast<size_t>(interrupt);
+		msg << "Exception caught: No instruction for interrupt: " << interrupt;
 		throw std::runtime_error(msg.str());
 	}
 }
@@ -138,4 +138,31 @@ Clock Z80::WrongOpCode(uint8_t opcode)
 	std::stringstream msg;
 	msg << "Wrong operation code 0x" << std::hex << static_cast<size_t>(opcode);
 	throw std::runtime_error(msg.str());
+}
+
+std::ostream& operator << (std::ostream& os, const Z80::Interrupt& interrupt)
+{
+	switch (interrupt)
+	{
+	case Z80::Interrupt::VBlank:
+		os << "VBlank";
+		break;
+	case Z80::Interrupt::LcdStatus:
+		os << "LcdStatus";
+		break;
+	case Z80::Interrupt::Timer:
+		os << "Timer";
+		break;
+	case Z80::Interrupt::SerialLink:
+		os << "SerialLink";
+		break;
+	case Z80::Interrupt::Joypad:
+		os << "Joypad";
+		break;
+	default:
+		os << static_cast<size_t>(interrupt);
+		break;
+	}
+
+	return os;
 }

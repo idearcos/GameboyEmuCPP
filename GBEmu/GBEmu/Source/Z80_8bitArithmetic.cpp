@@ -112,7 +112,7 @@ Clock Z80::SubMinusCarry(uint8_t value)
 		- (registers_.IsFlagSet(Flags::Carry) ? 1 : 0);
 	registers_.SetFlag(Flags::HalfCarry, (low_nibble_result & 0x10) != 0); }
 	
-	const uint16_t result = registers_.Read(Register8bit::A) - value - (registers_.Read(Register8bit::A) ? 1 : 0);
+	const uint16_t result = registers_.Read(Register8bit::A) - value - (registers_.IsFlagSet(Flags::Carry) ? 1 : 0);
 
 	registers_.SetFlag(Flags::Carry, (result & 0x0100) != 0);
 	registers_.SetFlag(Flags::Zero, (result & 0xFF) == 0);

@@ -20,37 +20,37 @@ void Load8bitRegFromValue(uint8_t opcode, Register8bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegAFromValue)
+TEST(Z80_8bitLoadTest, LoadRegAFromValue)
 {
 	Load8bitRegFromValue(0x3E, Register8bit::A);
 }
 
-TEST(Z80Test, LoadRegBFromValue)
+TEST(Z80_8bitLoadTest, LoadRegBFromValue)
 {
 	Load8bitRegFromValue(0x06, Register8bit::B);
 }
 
-TEST(Z80Test, LoadRegCFromValue)
+TEST(Z80_8bitLoadTest, LoadRegCFromValue)
 {
 	Load8bitRegFromValue(0x0E, Register8bit::C);
 }
 
-TEST(Z80Test, LoadRegDFromValue)
+TEST(Z80_8bitLoadTest, LoadRegDFromValue)
 {
 	Load8bitRegFromValue(0x16, Register8bit::D);
 }
 
-TEST(Z80Test, LoadRegEFromValue)
+TEST(Z80_8bitLoadTest, LoadRegEFromValue)
 {
 	Load8bitRegFromValue(0x1E, Register8bit::E);
 }
 
-TEST(Z80Test, LoadRegHFromValue)
+TEST(Z80_8bitLoadTest, LoadRegHFromValue)
 {
 	Load8bitRegFromValue(0x26, Register8bit::H);
 }
 
-TEST(Z80Test, LoadRegLFromValue)
+TEST(Z80_8bitLoadTest, LoadRegLFromValue)
 {
 	Load8bitRegFromValue(0x2E, Register8bit::L);
 }
@@ -73,247 +73,247 @@ void Load8bitRegFrom8bitReg(uint8_t opcode, Register8bit dest, Register8bit sour
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegAFromRegA)
+TEST(Z80_8bitLoadTest, LoadRegAFromRegA)
 {
 	Load8bitRegFrom8bitReg(0x7F, Register8bit::A, Register8bit::A);
 }
 
-TEST(Z80Test, LoadRegAFromRegB)
+TEST(Z80_8bitLoadTest, LoadRegAFromRegB)
 {
 	Load8bitRegFrom8bitReg(0x78, Register8bit::A, Register8bit::B);
 }
 
-TEST(Z80Test, LoadRegAFromRegC)
+TEST(Z80_8bitLoadTest, LoadRegAFromRegC)
 {
 	Load8bitRegFrom8bitReg(0x79, Register8bit::A, Register8bit::C);
 }
 
-TEST(Z80Test, LoadRegAFromRegD)
+TEST(Z80_8bitLoadTest, LoadRegAFromRegD)
 {
 	Load8bitRegFrom8bitReg(0x7A, Register8bit::A, Register8bit::D);
 }
 
-TEST(Z80Test, LoadRegAFromRegE)
+TEST(Z80_8bitLoadTest, LoadRegAFromRegE)
 {
 	Load8bitRegFrom8bitReg(0x7B, Register8bit::A, Register8bit::E);
 }
 
-TEST(Z80Test, LoadRegAFromRegH)
+TEST(Z80_8bitLoadTest, LoadRegAFromRegH)
 {
 	Load8bitRegFrom8bitReg(0x7C, Register8bit::A, Register8bit::H);
 }
 
-TEST(Z80Test, LoadRegAFromRegL)
+TEST(Z80_8bitLoadTest, LoadRegAFromRegL)
 {
 	Load8bitRegFrom8bitReg(0x7D, Register8bit::A, Register8bit::L);
 }
 
-TEST(Z80Test, LoadRegBFromRegA)
+TEST(Z80_8bitLoadTest, LoadRegBFromRegA)
 {
 	Load8bitRegFrom8bitReg(0x47, Register8bit::B, Register8bit::A);
 }
 
-TEST(Z80Test, LoadRegBFromRegB)
+TEST(Z80_8bitLoadTest, LoadRegBFromRegB)
 {
 	Load8bitRegFrom8bitReg(0x40, Register8bit::B, Register8bit::B);
 }
 
-TEST(Z80Test, LoadRegBFromRegC)
+TEST(Z80_8bitLoadTest, LoadRegBFromRegC)
 {
 	Load8bitRegFrom8bitReg(0x41, Register8bit::B, Register8bit::C);
 }
 
-TEST(Z80Test, LoadRegBFromRegD)
+TEST(Z80_8bitLoadTest, LoadRegBFromRegD)
 {
 	Load8bitRegFrom8bitReg(0x42, Register8bit::B, Register8bit::D);
 }
 
-TEST(Z80Test, LoadRegBFromRegE)
+TEST(Z80_8bitLoadTest, LoadRegBFromRegE)
 {
 	Load8bitRegFrom8bitReg(0x43, Register8bit::B, Register8bit::E);
 }
 
-TEST(Z80Test, LoadRegBFromRegH)
+TEST(Z80_8bitLoadTest, LoadRegBFromRegH)
 {
 	Load8bitRegFrom8bitReg(0x44, Register8bit::B, Register8bit::H);
 }
 
-TEST(Z80Test, LoadRegBFromRegL)
+TEST(Z80_8bitLoadTest, LoadRegBFromRegL)
 {
 	Load8bitRegFrom8bitReg(0x45, Register8bit::B, Register8bit::L);
 }
 
-TEST(Z80Test, LoadRegCFromRegA)
+TEST(Z80_8bitLoadTest, LoadRegCFromRegA)
 {
 	Load8bitRegFrom8bitReg(0x4F, Register8bit::C, Register8bit::A);
 }
 
-TEST(Z80Test, LoadRegCFromRegB)
+TEST(Z80_8bitLoadTest, LoadRegCFromRegB)
 {
 	Load8bitRegFrom8bitReg(0x48, Register8bit::C, Register8bit::B);
 }
 
-TEST(Z80Test, LoadRegCFromRegC)
+TEST(Z80_8bitLoadTest, LoadRegCFromRegC)
 {
 	Load8bitRegFrom8bitReg(0x49, Register8bit::C, Register8bit::C);
 }
 
-TEST(Z80Test, LoadRegCFromRegD)
+TEST(Z80_8bitLoadTest, LoadRegCFromRegD)
 {
 	Load8bitRegFrom8bitReg(0x4A, Register8bit::C, Register8bit::D);
 }
 
-TEST(Z80Test, LoadRegCFromRegE)
+TEST(Z80_8bitLoadTest, LoadRegCFromRegE)
 {
 	Load8bitRegFrom8bitReg(0x4B, Register8bit::C, Register8bit::E);
 }
 
-TEST(Z80Test, LoadRegCFromRegH)
+TEST(Z80_8bitLoadTest, LoadRegCFromRegH)
 {
 	Load8bitRegFrom8bitReg(0x4C, Register8bit::C, Register8bit::H);
 }
 
-TEST(Z80Test, LoadRegCFromRegL)
+TEST(Z80_8bitLoadTest, LoadRegCFromRegL)
 {
 	Load8bitRegFrom8bitReg(0x4D, Register8bit::C, Register8bit::L);
 }
 
-TEST(Z80Test, LoadRegDFromRegA)
+TEST(Z80_8bitLoadTest, LoadRegDFromRegA)
 {
 	Load8bitRegFrom8bitReg(0x57, Register8bit::D, Register8bit::A);
 }
 
-TEST(Z80Test, LoadRegDFromRegB)
+TEST(Z80_8bitLoadTest, LoadRegDFromRegB)
 {
 	Load8bitRegFrom8bitReg(0x50, Register8bit::D, Register8bit::B);
 }
 
-TEST(Z80Test, LoadRegDFromRegC)
+TEST(Z80_8bitLoadTest, LoadRegDFromRegC)
 {
 	Load8bitRegFrom8bitReg(0x51, Register8bit::D, Register8bit::C);
 }
 
-TEST(Z80Test, LoadRegDFromRegD)
+TEST(Z80_8bitLoadTest, LoadRegDFromRegD)
 {
 	Load8bitRegFrom8bitReg(0x52, Register8bit::D, Register8bit::D);
 }
 
-TEST(Z80Test, LoadRegDFromRegE)
+TEST(Z80_8bitLoadTest, LoadRegDFromRegE)
 {
 	Load8bitRegFrom8bitReg(0x53, Register8bit::D, Register8bit::E);
 }
 
-TEST(Z80Test, LoadRegDFromRegH)
+TEST(Z80_8bitLoadTest, LoadRegDFromRegH)
 {
 	Load8bitRegFrom8bitReg(0x54, Register8bit::D, Register8bit::H);
 }
 
-TEST(Z80Test, LoadRegDFromRegL)
+TEST(Z80_8bitLoadTest, LoadRegDFromRegL)
 {
 	Load8bitRegFrom8bitReg(0x55, Register8bit::D, Register8bit::L);
 }
 
-TEST(Z80Test, LoadRegEFromRegA)
+TEST(Z80_8bitLoadTest, LoadRegEFromRegA)
 {
 	Load8bitRegFrom8bitReg(0x5F, Register8bit::E, Register8bit::A);
 }
 
-TEST(Z80Test, LoadRegEFromRegB)
+TEST(Z80_8bitLoadTest, LoadRegEFromRegB)
 {
 	Load8bitRegFrom8bitReg(0x58, Register8bit::E, Register8bit::B);
 }
 
-TEST(Z80Test, LoadRegEFromRegC)
+TEST(Z80_8bitLoadTest, LoadRegEFromRegC)
 {
 	Load8bitRegFrom8bitReg(0x59, Register8bit::E, Register8bit::C);
 }
 
-TEST(Z80Test, LoadRegEFromRegD)
+TEST(Z80_8bitLoadTest, LoadRegEFromRegD)
 {
 	Load8bitRegFrom8bitReg(0x5A, Register8bit::E, Register8bit::D);
 }
 
-TEST(Z80Test, LoadRegEFromRegE)
+TEST(Z80_8bitLoadTest, LoadRegEFromRegE)
 {
 	Load8bitRegFrom8bitReg(0x5B, Register8bit::E, Register8bit::E);
 }
 
-TEST(Z80Test, LoadRegEFromRegH)
+TEST(Z80_8bitLoadTest, LoadRegEFromRegH)
 {
 	Load8bitRegFrom8bitReg(0x5C, Register8bit::E, Register8bit::H);
 }
 
-TEST(Z80Test, LoadRegEFromRegL)
+TEST(Z80_8bitLoadTest, LoadRegEFromRegL)
 {
 	Load8bitRegFrom8bitReg(0x5D, Register8bit::E, Register8bit::L);
 }
 
-TEST(Z80Test, LoadRegHFromRegA)
+TEST(Z80_8bitLoadTest, LoadRegHFromRegA)
 {
 	Load8bitRegFrom8bitReg(0x67, Register8bit::H, Register8bit::A);
 }
 
-TEST(Z80Test, LoadRegHFromRegB)
+TEST(Z80_8bitLoadTest, LoadRegHFromRegB)
 {
 	Load8bitRegFrom8bitReg(0x60, Register8bit::H, Register8bit::B);
 }
 
-TEST(Z80Test, LoadRegHFromRegC)
+TEST(Z80_8bitLoadTest, LoadRegHFromRegC)
 {
 	Load8bitRegFrom8bitReg(0x61, Register8bit::H, Register8bit::C);
 }
 
-TEST(Z80Test, LoadRegHFromRegD)
+TEST(Z80_8bitLoadTest, LoadRegHFromRegD)
 {
 	Load8bitRegFrom8bitReg(0x62, Register8bit::H, Register8bit::D);
 }
 
-TEST(Z80Test, LoadRegHFromRegE)
+TEST(Z80_8bitLoadTest, LoadRegHFromRegE)
 {
 	Load8bitRegFrom8bitReg(0x63, Register8bit::H, Register8bit::E);
 }
 
-TEST(Z80Test, LoadRegHFromRegH)
+TEST(Z80_8bitLoadTest, LoadRegHFromRegH)
 {
 	Load8bitRegFrom8bitReg(0x64, Register8bit::H, Register8bit::H);
 }
 
-TEST(Z80Test, LoadRegHFromRegL)
+TEST(Z80_8bitLoadTest, LoadRegHFromRegL)
 {
 	Load8bitRegFrom8bitReg(0x65, Register8bit::H, Register8bit::L);
 }
 
-TEST(Z80Test, LoadRegLFromRegA)
+TEST(Z80_8bitLoadTest, LoadRegLFromRegA)
 {
 	Load8bitRegFrom8bitReg(0x6F, Register8bit::L, Register8bit::A);
 }
 
-TEST(Z80Test, LoadRegLFromRegB)
+TEST(Z80_8bitLoadTest, LoadRegLFromRegB)
 {
 	Load8bitRegFrom8bitReg(0x68, Register8bit::L, Register8bit::B);
 }
 
-TEST(Z80Test, LoadRegLFromRegC)
+TEST(Z80_8bitLoadTest, LoadRegLFromRegC)
 {
 	Load8bitRegFrom8bitReg(0x69, Register8bit::L, Register8bit::C);
 }
 
-TEST(Z80Test, LoadRegLFromRegD)
+TEST(Z80_8bitLoadTest, LoadRegLFromRegD)
 {
 	Load8bitRegFrom8bitReg(0x6A, Register8bit::L, Register8bit::D);
 }
 
-TEST(Z80Test, LoadRegLFromRegE)
+TEST(Z80_8bitLoadTest, LoadRegLFromRegE)
 {
 	Load8bitRegFrom8bitReg(0x6B, Register8bit::L, Register8bit::E);
 }
 
-TEST(Z80Test, LoadRegLFromRegH)
+TEST(Z80_8bitLoadTest, LoadRegLFromRegH)
 {
 	Load8bitRegFrom8bitReg(0x6C, Register8bit::L, Register8bit::H);
 }
 
-TEST(Z80Test, LoadRegLFromRegL)
+TEST(Z80_8bitLoadTest, LoadRegLFromRegL)
 {
 	Load8bitRegFrom8bitReg(0x6D, Register8bit::L, Register8bit::L);
 }
@@ -337,47 +337,47 @@ void Load8bitRegFromAddressIn16bitReg(uint8_t opcode, Register8bit dest, Registe
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegAFromAddressInRegHL)
+TEST(Z80_8bitLoadTest, LoadRegAFromAddressInRegHL)
 {
 	Load8bitRegFromAddressIn16bitReg(0x7E, Register8bit::A, Register16bit::HL);
 }
 
-TEST(Z80Test, LoadRegBFromAddressInRegHL)
+TEST(Z80_8bitLoadTest, LoadRegBFromAddressInRegHL)
 {
 	Load8bitRegFromAddressIn16bitReg(0x46, Register8bit::B, Register16bit::HL);
 }
 
-TEST(Z80Test, LoadRegCFromAddressInRegHL)
+TEST(Z80_8bitLoadTest, LoadRegCFromAddressInRegHL)
 {
 	Load8bitRegFromAddressIn16bitReg(0x4E, Register8bit::C, Register16bit::HL);
 }
 
-TEST(Z80Test, LoadRegDFromAddressInRegHL)
+TEST(Z80_8bitLoadTest, LoadRegDFromAddressInRegHL)
 {
 	Load8bitRegFromAddressIn16bitReg(0x56, Register8bit::D, Register16bit::HL);
 }
 
-TEST(Z80Test, LoadRegEFromAddressInRegHL)
+TEST(Z80_8bitLoadTest, LoadRegEFromAddressInRegHL)
 {
 	Load8bitRegFromAddressIn16bitReg(0x5E, Register8bit::E, Register16bit::HL);
 }
 
-TEST(Z80Test, LoadRegHFromAddressInRegHL)
+TEST(Z80_8bitLoadTest, LoadRegHFromAddressInRegHL)
 {
 	Load8bitRegFromAddressIn16bitReg(0x66, Register8bit::H, Register16bit::HL);
 }
 
-TEST(Z80Test, LoadRegLFromAddressInRegHL)
+TEST(Z80_8bitLoadTest, LoadRegLFromAddressInRegHL)
 {
 	Load8bitRegFromAddressIn16bitReg(0x6E, Register8bit::L, Register16bit::HL);
 }
 
-TEST(Z80Test, LoadRegAFromAddressInRegBC)
+TEST(Z80_8bitLoadTest, LoadRegAFromAddressInRegBC)
 {
 	Load8bitRegFromAddressIn16bitReg(0x0A, Register8bit::A, Register16bit::BC);
 }
 
-TEST(Z80Test, LoadRegAFromAddressInRegDE)
+TEST(Z80_8bitLoadTest, LoadRegAFromAddressInRegDE)
 {
 	Load8bitRegFromAddressIn16bitReg(0x1A, Register8bit::A, Register16bit::DE);
 }
@@ -403,47 +403,47 @@ void LoadAddressIn16bitRegFrom8bitReg(uint8_t opcode, Register16bit dest_addr, R
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadAddressInRegHLFromRegB)
+TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromRegB)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x70, Register16bit::HL, Register8bit::B);
 }
 
-TEST(Z80Test, LoadAddressInRegHLFromRegC)
+TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromRegC)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x71, Register16bit::HL, Register8bit::C);
 }
 
-TEST(Z80Test, LoadAddressInRegHLFromRegD)
+TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromRegD)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x72, Register16bit::HL, Register8bit::D);
 }
 
-TEST(Z80Test, LoadAddressInRegHLFromRegE)
+TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromRegE)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x73, Register16bit::HL, Register8bit::E);
 }
 
-TEST(Z80Test, LoadAddressInRegHLFromRegH)
+TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromRegH)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x74, Register16bit::HL, Register8bit::H);
 }
 
-TEST(Z80Test, LoadAddressInRegHLFromRegL)
+TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromRegL)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x75, Register16bit::HL, Register8bit::L);
 }
 
-TEST(Z80Test, LoadAddressInRegBCFromRegA)
+TEST(Z80_8bitLoadTest, LoadAddressInRegBCFromRegA)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x02, Register16bit::BC, Register8bit::A);
 }
 
-TEST(Z80Test, LoadAddressInRegDEFromRegA)
+TEST(Z80_8bitLoadTest, LoadAddressInRegDEFromRegA)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x12, Register16bit::DE, Register8bit::A);
 }
 
-TEST(Z80Test, LoadAddressInRegHLFromRegA)
+TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromRegA)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x77, Register16bit::HL, Register8bit::A);
 }
@@ -467,7 +467,7 @@ void LoadAddressIn16bitRegFromValue(uint8_t opcode, Register16bit dest_addr)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadAddressInRegHLFromValue)
+TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromValue)
 {
 	LoadAddressIn16bitRegFromValue(0x36, Register16bit::HL);
 }
@@ -491,7 +491,7 @@ void Load8bitRegFromValueInAddress(uint8_t opcode, Register8bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegAFromValueInAddress)
+TEST(Z80_8bitLoadTest, LoadRegAFromValueInAddress)
 {
 	Load8bitRegFromValueInAddress(0xFA, Register8bit::A);
 }
@@ -515,7 +515,7 @@ void LoadAddressFrom8bitReg(uint8_t opcode, Register8bit source)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadAddressFromRegA)
+TEST(Z80_8bitLoadTest, LoadAddressFromRegA)
 {
 	LoadAddressFrom8bitReg(0xEA, Register8bit::A);
 }
@@ -539,7 +539,7 @@ void Load8bitRegFromIOAddress(uint8_t opcode, Register8bit dest, Register8bit re
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegAFromIOAddressPlusReg)
+TEST(Z80_8bitLoadTest, LoadRegAFromIOAddressPlusReg)
 {
 	Load8bitRegFromIOAddress(0xF2, Register8bit::A, Register8bit::C);
 }
@@ -563,7 +563,7 @@ void LoadIOAddressFrom8bitReg(uint8_t opcode, Register8bit reg_displacement, Reg
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadIOAddressPlusRegFromRegA)
+TEST(Z80_8bitLoadTest, LoadIOAddressPlusRegFromRegA)
 {
 	LoadIOAddressFrom8bitReg(0xE2, Register8bit::C, Register8bit::A);
 }
@@ -589,7 +589,7 @@ void Load8bitRegAndDecrement(uint8_t opcode, Register8bit dest, Register16bit so
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegAAndDecrement)
+TEST(Z80_8bitLoadTest, LoadRegAAndDecrement)
 {
 	Load8bitRegAndDecrement(0x3A, Register8bit::A, Register16bit::HL);
 }
@@ -615,7 +615,7 @@ void LoadAddressAndDecrement(uint8_t opcode, Register16bit dest_addr, Register8b
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadAddressAndDecrement)
+TEST(Z80_8bitLoadTest, LoadAddressAndDecrement)
 {
 	LoadAddressAndDecrement(0x32, Register16bit::HL, Register8bit::A);
 }
@@ -641,7 +641,7 @@ void Load8bitRegAndIncrement(uint8_t opcode, Register8bit dest, Register16bit so
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegAAndIncrement)
+TEST(Z80_8bitLoadTest, LoadRegAAndIncrement)
 {
 	Load8bitRegAndIncrement(0x2A, Register8bit::A, Register16bit::HL);
 }
@@ -667,7 +667,7 @@ void LoadAddressAndIncrement(uint8_t opcode, Register16bit dest_addr, Register8b
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadAddressAndIncrement)
+TEST(Z80_8bitLoadTest, LoadAddressAndIncrement)
 {
 	LoadAddressAndIncrement(0x22, Register16bit::HL, Register8bit::A);
 }
@@ -691,7 +691,7 @@ void Load8bitRegFromIOAddress(uint8_t opcode, Register8bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegAFromIOAddressPlusValue)
+TEST(Z80_8bitLoadTest, LoadRegAFromIOAddressPlusValue)
 {
 	Load8bitRegFromIOAddress(0xF0, Register8bit::A);
 }
@@ -715,7 +715,7 @@ void LoadIOAddressFrom8bitReg(uint8_t opcode, Register8bit source)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadIOAddressPlusValueFromRegA)
+TEST(Z80_8bitLoadTest, LoadIOAddressPlusValueFromRegA)
 {
 	LoadIOAddressFrom8bitReg(0xE0, Register8bit::A);
 }

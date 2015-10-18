@@ -20,22 +20,22 @@ void Load16bitRegFromValue(uint8_t opcode, Register16bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegBCFromValue)
+TEST(Z80_16bitLoadTest, LoadRegBCFromValue)
 {
 	Load16bitRegFromValue(0x01, Register16bit::BC);
 }
 
-TEST(Z80Test, LoadRegDEFromValue)
+TEST(Z80_16bitLoadTest, LoadRegDEFromValue)
 {
 	Load16bitRegFromValue(0x11, Register16bit::DE);
 }
 
-TEST(Z80Test, LoadRegHLFromValue)
+TEST(Z80_16bitLoadTest, LoadRegHLFromValue)
 {
 	Load16bitRegFromValue(0x21, Register16bit::HL);
 }
 
-TEST(Z80Test, LoadRegSPFromValue)
+TEST(Z80_16bitLoadTest, LoadRegSPFromValue)
 {
 	Load16bitRegFromValue(0x31, Register16bit::SP);
 }
@@ -58,12 +58,12 @@ void Load16bitRegFrom16bitReg(uint8_t opcode, Register16bit dest, Register16bit 
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadRegSPFromRegHL)
+TEST(Z80_16bitLoadTest, LoadRegSPFromRegHL)
 {
 	Load16bitRegFrom16bitReg(0xF9, Register16bit::SP, Register16bit::HL);
 }
 
-TEST(Z80Test, LoadRegHLFromRegSPPlusDisplacement)
+TEST(Z80_16bitLoadTest, LoadRegHLFromRegSPPlusDisplacement)
 {
 	TesterMMU mmu;
 	Z80 z80(mmu);
@@ -82,7 +82,7 @@ TEST(Z80Test, LoadRegHLFromRegSPPlusDisplacement)
 	ASSERT_EQ(true, z80.GetRegisters().IsFlagSet(Flags::Carry)) << "Carry flag is not set";
 }
 
-TEST(Z80Test, LoadRegHLFromRegSPMinusDisplacement)
+TEST(Z80_16bitLoadTest, LoadRegHLFromRegSPMinusDisplacement)
 {
 	TesterMMU mmu;
 	Z80 z80(mmu);
@@ -120,7 +120,7 @@ void LoadAddressFrom16bitReg(uint8_t opcode, Register16bit source)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, LoadAddressFromRegSP)
+TEST(Z80_16bitLoadTest, LoadAddressFromRegSP)
 {
 	LoadAddressFrom16bitReg(0x08, Register16bit::SP);
 }
@@ -146,22 +146,22 @@ void Push(uint8_t opcode, Register16bit source)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, PushRegAF)
+TEST(Z80_16bitLoadTest, PushRegAF)
 {
 	Push(0xF5, Register16bit::AF);
 }
 
-TEST(Z80Test, PushRegBC)
+TEST(Z80_16bitLoadTest, PushRegBC)
 {
 	Push(0xC5, Register16bit::BC);
 }
 
-TEST(Z80Test, PushRegDE)
+TEST(Z80_16bitLoadTest, PushRegDE)
 {
 	Push(0xD5, Register16bit::DE);
 }
 
-TEST(Z80Test, PushRegHL)
+TEST(Z80_16bitLoadTest, PushRegHL)
 {
 	Push(0xE5, Register16bit::HL);
 }
@@ -187,22 +187,22 @@ void Pop(uint8_t opcode, Register16bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
-TEST(Z80Test, PopRegAF)
+TEST(Z80_16bitLoadTest, PopRegAF)
 {
 	Pop(0xF1, Register16bit::AF);
 }
 
-TEST(Z80Test, PopRegBC)
+TEST(Z80_16bitLoadTest, PopRegBC)
 {
 	Pop(0xC1, Register16bit::BC);
 }
 
-TEST(Z80Test, PopRegDE)
+TEST(Z80_16bitLoadTest, PopRegDE)
 {
 	Pop(0xD1, Register16bit::DE);
 }
 
-TEST(Z80Test, PopRegHL)
+TEST(Z80_16bitLoadTest, PopRegHL)
 {
 	Pop(0xE1, Register16bit::HL);
 }

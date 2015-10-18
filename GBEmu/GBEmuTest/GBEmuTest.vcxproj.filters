@@ -81,6 +81,9 @@
     <ClCompile Include="Source\Z80_16bitLoadTest.cpp">
       <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Z80_8bitArithmeticTest.cpp">
+      <Filter>Source Files\Z80 Instructions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\TesterMMU.h">

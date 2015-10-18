@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <iostream>
 #include <map>
 #include <functional>
 #include <atomic>
@@ -12,12 +13,12 @@
 #include "IMMU.h"
 #include "MMUObserver.h"
 
-using Instruction = std::function<Clock()>;
-using InstructionMap = std::map<uint8_t, Instruction>;
-
 class Z80 : public Subject<Z80Observer>, public MMUObserver
 {
 public:
+	using Instruction = std::function<Clock()>;
+	using InstructionMap = std::map<uint8_t, Instruction>;
+
 	enum class Interrupt : uint8_t
 	{
 		VBlank = 0x01,
@@ -311,3 +312,5 @@ private:
 	Z80& operator=(const Z80&) = delete;
 	Z80& operator=(Z80&&) = delete;
 };
+
+std::ostream& operator << (std::ostream& os, const Z80::Interrupt& interrupt);

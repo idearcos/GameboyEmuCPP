@@ -1,6 +1,6 @@
 #include "Z80.h"
 
-InstructionMap Z80::FillBitInstructionMap()
+Z80::InstructionMap Z80::FillBitInstructionMap()
 {
 	InstructionMap bit_instructions;
 

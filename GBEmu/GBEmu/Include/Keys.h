@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <iostream>
 #include <map>
 #include "GLFW/glfw3.h"
 #include "IMMU.h"
@@ -23,6 +24,8 @@ enum class KeyColumn : uint8_t
 	Bit4 = 0x10,
 	Bit5 = 0x20
 };
+
+std::ostream& operator << (std::ostream& os, const KeyColumn& key_column);
 
 class KeyPad : public MMUObserver
 {

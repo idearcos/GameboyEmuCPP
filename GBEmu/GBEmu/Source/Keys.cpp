@@ -1,5 +1,6 @@
 #include "Keys.h"
 #include <type_traits>
+#include <iostream>
 #include <sstream>
 
 KeyPad::KeyPad(IMMU &mmu) :
@@ -67,7 +68,7 @@ uint8_t KeyPad::KeyStatusToByte(KeyColumn requested_column) const
 	catch (std::out_of_range &)
 	{
 		std::stringstream msg;
-		msg << "Trying to access invalid keypad column: " << static_cast<size_t>(requested_column);
+		msg << "Trying to access invalid keypad column: " << requested_column;
 		throw std::logic_error(msg.str());
 		//return 0x0F;
 	}
@@ -96,4 +97,22 @@ void KeyPad::WriteToMmu(Region region, uint16_t address, uint8_t value) const
 	writing_to_mmu_ = true;
 	mmu_.Write8bitToMemory(region, address, value);
 	writing_to_mmu_ = false;
+}
+
+std::ostream& operator << (std::ostream& os, const KeyColumn& key_column)
+{
+	switch (key_column)
+	{
+	case KeyColumn::Bit4:
+		os << "Bit4";
+		break;
+	case KeyColumn::Bit5:
+		os << "Bit5";
+		break;
+	default:
+		os << static_cast<size_t>(key_column);
+		break;
+	}
+
+	return os;
 }

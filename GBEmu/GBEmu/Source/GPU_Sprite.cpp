@@ -1,8 +1,27 @@
 #include "GPU_Sprite.h"
+#include <iostream>
 #include <sstream>
 #include "GPU_Renderer.h"
 #include "GPU_TileSet.h"
 #include "GPU_Palette.h"
+
+std::ostream& operator << (std::ostream& os, const ObjPalette& obj_palette)
+{
+	switch (obj_palette)
+	{
+	case ObjPalette::Zero:
+		os << "ObjPalette::Zero";
+		break;
+	case ObjPalette::One:
+		os << "ObjPalette::One";
+		break;
+	default:
+		os << static_cast<size_t>(obj_palette);
+		break;
+	}
+
+	return os;
+}
 
 void Sprite::SetPositionY(uint8_t y_position)
 {
@@ -58,7 +77,7 @@ void Sprite::RenderSprite(Renderer &renderer, const TileSet &tileset, const std:
 	catch (std::out_of_range &)
 	{
 		std::stringstream msg;
-		msg << "Trying to access invalid object palette " << static_cast<size_t>(obj_palette_);
+		msg << "Trying to access invalid object palette: " << obj_palette_;
 		throw std::logic_error(msg.str());
 	}
 }

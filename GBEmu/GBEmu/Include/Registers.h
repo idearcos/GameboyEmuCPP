@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <iostream>
 
 enum class Register8bit : uint8_t
 {	
@@ -14,6 +15,8 @@ enum class Register8bit : uint8_t
 	F
 };
 
+std::ostream& operator << (std::ostream& os, const Register8bit& reg);
+
 enum class Register16bit : uint8_t
 {
 	AF,
@@ -24,6 +27,8 @@ enum class Register16bit : uint8_t
 	SP
 };
 
+std::ostream& operator << (std::ostream& os, const Register16bit& reg);
+
 // Z S H C X X X X
 enum class Flags : uint8_t
 {
@@ -32,6 +37,8 @@ enum class Flags : uint8_t
 	HalfCarry = 0x20,
 	Carry = 0x10,
 };
+
+std::ostream& operator << (std::ostream& os, const Flags& flag);
 
 class Registers
 {
