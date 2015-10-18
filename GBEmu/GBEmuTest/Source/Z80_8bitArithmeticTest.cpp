@@ -763,50 +763,49 @@ TEST(Z80_8bitArithmeticTest, IncAddressInRegHL)
 #pragma region DEC
 TEST(Z80_8bitArithmeticTest, DecRegA)
 {
-	Test8bitArithmeticOperation(0x3D, Register8bit::A, 0xFF, 0, { Flags::Zero, Flags::HalfCarry }, false);
-	Test8bitArithmeticOperation(0x3D, Register8bit::A, 0x50, 0x51, { Flags::Carry }, true);
+	Test8bitArithmeticOperation(0x3D, Register8bit::A, 0x01, 0, { Flags::Zero, Flags::Subtract }, false);
+	Test8bitArithmeticOperation(0x3D, Register8bit::A, 0, 0xFF, { Flags::Subtract, Flags::HalfCarry, Flags::Carry }, true);
 }
 
 TEST(Z80_8bitArithmeticTest, DecRegB)
 {
-	Test8bitArithmeticOperation(0x05, Register8bit::B, 0xFF, 0, { Flags::Zero, Flags::HalfCarry }, false);
-	Test8bitArithmeticOperation(0x05, Register8bit::B, 0x50, 0x51, { Flags::Carry }, true);
+	Test8bitArithmeticOperation(0x05, Register8bit::B, 0x01, 0, { Flags::Zero, Flags::Subtract }, false);
+	Test8bitArithmeticOperation(0x05, Register8bit::B, 0, 0xFF, { Flags::Subtract, Flags::HalfCarry, Flags::Carry }, true);
 }
 
 TEST(Z80_8bitArithmeticTest, DecRegC)
 {
-	Test8bitArithmeticOperation(0x0D, Register8bit::C, 0xFF, 0, { Flags::Zero, Flags::HalfCarry }, false);
-	Test8bitArithmeticOperation(0x0D, Register8bit::C, 0x50, 0x51, { Flags::Carry }, true);
+	Test8bitArithmeticOperation(0x0D, Register8bit::C, 0x01, 0, { Flags::Zero, Flags::Subtract }, false);
+	Test8bitArithmeticOperation(0x0D, Register8bit::C, 0, 0xFF, { Flags::Subtract, Flags::HalfCarry, Flags::Carry }, true);
 }
 
 TEST(Z80_8bitArithmeticTest, DecRegD)
 {
-	Test8bitArithmeticOperation(0x15, Register8bit::D, 0xFF, 0, { Flags::Zero, Flags::HalfCarry }, false);
-	Test8bitArithmeticOperation(0x15, Register8bit::D, 0x50, 0x51, { Flags::Carry }, true);
+	Test8bitArithmeticOperation(0x15, Register8bit::D, 0x01, 0, { Flags::Zero, Flags::Subtract }, false);
+	Test8bitArithmeticOperation(0x15, Register8bit::D, 0, 0xFF, { Flags::Subtract, Flags::HalfCarry, Flags::Carry }, true);
 }
 
 TEST(Z80_8bitArithmeticTest, DecRegE)
 {
-	Test8bitArithmeticOperation(0x1D, Register8bit::E, 0xFF, 0, { Flags::Zero, Flags::HalfCarry }, false);
-	Test8bitArithmeticOperation(0x1D, Register8bit::E, 0x50, 0x51, { Flags::Carry }, true);
+	Test8bitArithmeticOperation(0x1D, Register8bit::E, 0x01, 0, { Flags::Zero, Flags::Subtract }, false);
+	Test8bitArithmeticOperation(0x1D, Register8bit::E, 0, 0xFF, { Flags::Subtract, Flags::HalfCarry, Flags::Carry }, true);
 }
 
 TEST(Z80_8bitArithmeticTest, DecRegH)
 {
-	Test8bitArithmeticOperation(0x25, Register8bit::H, 0xFF, 0, { Flags::Zero, Flags::HalfCarry }, false);
-	Test8bitArithmeticOperation(0x25, Register8bit::H, 0x50, 0x51, { Flags::Carry }, true);
+	Test8bitArithmeticOperation(0x25, Register8bit::H, 0x01, 0, { Flags::Zero, Flags::Subtract }, false);
+	Test8bitArithmeticOperation(0x25, Register8bit::H, 0, 0xFF, { Flags::Subtract, Flags::HalfCarry, Flags::Carry }, true);
 }
 
 TEST(Z80_8bitArithmeticTest, DecRegL)
 {
-	Test8bitArithmeticOperation(0x2D, Register8bit::L, 0xFF, 0, { Flags::Zero, Flags::HalfCarry }, false);
-	Test8bitArithmeticOperation(0x2D, Register8bit::L, 0x50, 0x51, { Flags::Carry }, true);
+	Test8bitArithmeticOperation(0x2D, Register8bit::L, 0x01, 0, { Flags::Zero, Flags::Subtract }, false);
+	Test8bitArithmeticOperation(0x2D, Register8bit::L, 0, 0xFF, { Flags::Subtract, Flags::HalfCarry, Flags::Carry }, true);
 }
 
 TEST(Z80_8bitArithmeticTest, DecAddressInRegHL)
 {
-	Test8bitArithmeticOperation(0x35, Register16bit::HL, 0xFF, 0, { Flags::Zero, Flags::HalfCarry }, false);
-	Test8bitArithmeticOperation(0x35, Register16bit::HL, 0x50, 0x51, { Flags::Carry }, true);
+	Test8bitArithmeticOperation(0x35, Register16bit::HL, 0x01, 0, { Flags::Zero, Flags::Subtract }, false);
+	Test8bitArithmeticOperation(0x35, Register16bit::HL, 0, 0xFF, { Flags::Subtract, Flags::HalfCarry, Flags::Carry }, true);
 }
 #pragma endregion
-

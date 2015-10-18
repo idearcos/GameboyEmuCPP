@@ -179,6 +179,7 @@
     <ClCompile Include="Source\GBEmuTest.cpp" />
     <ClCompile Include="Source\RegistersTest.cpp" />
     <ClCompile Include="Source\TesterMMU.cpp" />
+    <ClCompile Include="Source\Z80_16bitArithmeticTest.cpp" />
     <ClCompile Include="Source\Z80_16bitLoadTest.cpp" />
     <ClCompile Include="Source\Z80_8bitArithmeticTest.cpp" />
     <ClCompile Include="Source\Z80_8bitLoadTest.cpp" />
