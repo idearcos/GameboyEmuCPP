@@ -90,6 +90,9 @@
     <ClCompile Include="Source\Z80_RotateAndShiftTest.cpp">
       <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Z80_BitOperationsTest.cpp">
+      <Filter>Source Files\Z80 Instructions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\TesterMMU.h">

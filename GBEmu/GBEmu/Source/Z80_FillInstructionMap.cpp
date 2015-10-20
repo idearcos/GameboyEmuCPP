@@ -1,3 +1,4 @@
+#include <sstream>
 #include "Z80.h"
 
 Z80::InstructionMap Z80::FillInstructionMap()
@@ -475,7 +476,18 @@ Z80::InstructionMap Z80::FillInstructionMap()
 		address += static_cast<uint16_t>(this->FetchByte()) << 8;
 		return this->JumpIf(address, Flags::Zero, true); };
 	// BITS
-	instructions[0xCB] = [this](){ return this->bit_instructions_.at(this->FetchByte())(); };
+	instructions[0xCB] = [this](){
+		const uint8_t bit_op_code = this->FetchByte();
+		try
+		{
+			return this->bit_instructions_.at(bit_op_code)();
+		}
+		catch (std::out_of_range &)
+		{
+			std::stringstream msg;
+			msg << "No bit instruction for bit op code 0x" << std::hex << static_cast<size_t>(bit_op_code);
+			throw std::runtime_error(msg.str());
+		} };
 	// CALL Z, nn
 	instructions[0xCC] = [this](){
 		uint16_t address{ this->FetchByte() };

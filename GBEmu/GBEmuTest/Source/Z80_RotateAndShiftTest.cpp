@@ -82,7 +82,7 @@ TEST(Z80_RotateAndShiftTest, Rra)
 	TestRotateOperationWithAccumulator(0x1F, 0, 0, {}, false);
 }
 
-void TestRotateOperation(uint8_t opcode, uint8_t bc_opcode, Register8bit reg, uint8_t value, uint8_t expected_result, std::list<Flags> &&expected_flags, bool set_carry = false)
+void TestRotateOperation(uint8_t opcode, uint8_t cb_opcode, Register8bit reg, uint8_t value, uint8_t expected_result, std::list<Flags> &&expected_flags, bool set_carry = false)
 {
 	std::list<Flags> all_flags{ Flags::Zero, Flags::Subtract, Flags::HalfCarry, Flags::Carry };
 	all_flags.sort();
@@ -98,7 +98,7 @@ void TestRotateOperation(uint8_t opcode, uint8_t bc_opcode, Register8bit reg, ui
 		z80.GetRegisters().SetFlag(Flags::Carry, true);
 	}
 	z80.GetRegisters().Write(reg, value);
-	mmu.Write8bitToMemory(0, bc_opcode);
+	mmu.Write8bitToMemory(0, cb_opcode);
 	z80.Execute(opcode);
 
 	ASSERT_EQ(expected_result, z80.GetRegisters().Read(reg)) << "Register read unexpected value: "
@@ -117,7 +117,7 @@ void TestRotateOperation(uint8_t opcode, uint8_t bc_opcode, Register8bit reg, ui
 	}
 }
 
-void TestRotateOperation(uint8_t opcode, uint8_t bc_opcode, Register16bit addr_reg, uint8_t value, uint8_t expected_result, std::list<Flags> &&expected_flags, bool set_carry = false)
+void TestRotateOperation(uint8_t opcode, uint8_t cb_opcode, Register16bit addr_reg, uint8_t value, uint8_t expected_result, std::list<Flags> &&expected_flags, bool set_carry = false)
 {
 	std::list<Flags> all_flags{ Flags::Zero, Flags::Subtract, Flags::HalfCarry, Flags::Carry };
 	all_flags.sort();
@@ -134,7 +134,7 @@ void TestRotateOperation(uint8_t opcode, uint8_t bc_opcode, Register16bit addr_r
 	}
 	z80.GetRegisters().Write(addr_reg, 0x1234);
 	mmu.Write8bitToMemory(0x1234, value);
-	mmu.Write8bitToMemory(0, bc_opcode);
+	mmu.Write8bitToMemory(0, cb_opcode);
 	z80.Execute(opcode);
 
 	ASSERT_EQ(expected_result, mmu.Read8bitFromMemory(0x1234)) << "Memory read unexpected value: "

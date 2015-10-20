@@ -286,142 +286,142 @@ Z80::InstructionMap Z80::FillBitInstructionMap()
 
 #pragma region Bit instructions 0x80 - 0x8F
 	// RES 0, B
-	bit_instructions[0xC0] = [this](){ return this->ResetBit(0, Register8bit::B); };
+	bit_instructions[0x80] = [this](){ return this->ResetBit(0, Register8bit::B); };
 	// RES 0, C
-	bit_instructions[0xC1] = [this](){ return this->ResetBit(0, Register8bit::C); };
+	bit_instructions[0x81] = [this](){ return this->ResetBit(0, Register8bit::C); };
 	// RES 0, D
-	bit_instructions[0xC2] = [this](){ return this->ResetBit(0, Register8bit::D); };
+	bit_instructions[0x82] = [this](){ return this->ResetBit(0, Register8bit::D); };
 	// RES 0, E
-	bit_instructions[0xC3] = [this](){ return this->ResetBit(0, Register8bit::E); };
+	bit_instructions[0x83] = [this](){ return this->ResetBit(0, Register8bit::E); };
 	// RES 0, H
-	bit_instructions[0xC4] = [this](){ return this->ResetBit(0, Register8bit::H); };
+	bit_instructions[0x84] = [this](){ return this->ResetBit(0, Register8bit::H); };
 	// RES 0, L
-	bit_instructions[0xC5] = [this](){ return this->ResetBit(0, Register8bit::L); };
+	bit_instructions[0x85] = [this](){ return this->ResetBit(0, Register8bit::L); };
 	// RES 0, (HL)
-	bit_instructions[0xC6] = [this](){ return this->ResetBit(0, Register16bit::HL); };
+	bit_instructions[0x86] = [this](){ return this->ResetBit(0, Register16bit::HL); };
 	// RES 0, A
-	bit_instructions[0xC7] = [this](){ return this->ResetBit(0, Register8bit::A); };
+	bit_instructions[0x87] = [this](){ return this->ResetBit(0, Register8bit::A); };
 	// RES 1, B
-	bit_instructions[0xC8] = [this](){ return this->ResetBit(1, Register8bit::B); };
+	bit_instructions[0x88] = [this](){ return this->ResetBit(1, Register8bit::B); };
 	// RES 1, C
-	bit_instructions[0xC9] = [this](){ return this->ResetBit(1, Register8bit::C); };
+	bit_instructions[0x89] = [this](){ return this->ResetBit(1, Register8bit::C); };
 	// RES 1, D
-	bit_instructions[0xCA] = [this](){ return this->ResetBit(1, Register8bit::D); };
+	bit_instructions[0x8A] = [this](){ return this->ResetBit(1, Register8bit::D); };
 	// RES 1, E
-	bit_instructions[0xCB] = [this](){ return this->ResetBit(1, Register8bit::E); };
+	bit_instructions[0x8B] = [this](){ return this->ResetBit(1, Register8bit::E); };
 	// RES 1, H
-	bit_instructions[0xCC] = [this](){ return this->ResetBit(1, Register8bit::H); };
+	bit_instructions[0x8C] = [this](){ return this->ResetBit(1, Register8bit::H); };
 	// RES 1, L
-	bit_instructions[0xCD] = [this](){ return this->ResetBit(1, Register8bit::L); };
+	bit_instructions[0x8D] = [this](){ return this->ResetBit(1, Register8bit::L); };
 	// RES 1, (HL)
-	bit_instructions[0xCE] = [this](){ return this->ResetBit(1, Register16bit::HL); };
+	bit_instructions[0x8E] = [this](){ return this->ResetBit(1, Register16bit::HL); };
 	// RES 1, A
-	bit_instructions[0xCF] = [this](){ return this->ResetBit(1, Register8bit::A); };
+	bit_instructions[0x8F] = [this](){ return this->ResetBit(1, Register8bit::A); };
 #pragma endregion
 
 #pragma region Bit instructions 0x90 - 0x9F
 	// RES 2, B
-	bit_instructions[0xD0] = [this](){ return this->ResetBit(2, Register8bit::B); };
+	bit_instructions[0x90] = [this](){ return this->ResetBit(2, Register8bit::B); };
 	// RES 2, C
-	bit_instructions[0xD1] = [this](){ return this->ResetBit(2, Register8bit::C); };
+	bit_instructions[0x91] = [this](){ return this->ResetBit(2, Register8bit::C); };
 	// RES 2, D
-	bit_instructions[0xD2] = [this](){ return this->ResetBit(2, Register8bit::D); };
+	bit_instructions[0x92] = [this](){ return this->ResetBit(2, Register8bit::D); };
 	// RES 2, E
-	bit_instructions[0xD3] = [this](){ return this->ResetBit(2, Register8bit::E); };
+	bit_instructions[0x93] = [this](){ return this->ResetBit(2, Register8bit::E); };
 	// RES 2, H
-	bit_instructions[0xD4] = [this](){ return this->ResetBit(2, Register8bit::H); };
+	bit_instructions[0x94] = [this](){ return this->ResetBit(2, Register8bit::H); };
 	// RES 2, L
-	bit_instructions[0xD5] = [this](){ return this->ResetBit(2, Register8bit::L); };
+	bit_instructions[0x95] = [this](){ return this->ResetBit(2, Register8bit::L); };
 	// RES 2, (HL)
-	bit_instructions[0xD6] = [this](){ return this->ResetBit(2, Register16bit::HL); };
+	bit_instructions[0x96] = [this](){ return this->ResetBit(2, Register16bit::HL); };
 	// RES 2, A
-	bit_instructions[0xD7] = [this](){ return this->ResetBit(2, Register8bit::A); };
+	bit_instructions[0x97] = [this](){ return this->ResetBit(2, Register8bit::A); };
 	// RES 3, B
-	bit_instructions[0xD8] = [this](){ return this->ResetBit(3, Register8bit::B); };
+	bit_instructions[0x98] = [this](){ return this->ResetBit(3, Register8bit::B); };
 	// RES 3, C
-	bit_instructions[0xD9] = [this](){ return this->ResetBit(3, Register8bit::C); };
+	bit_instructions[0x99] = [this](){ return this->ResetBit(3, Register8bit::C); };
 	// RES 3, D
-	bit_instructions[0xDA] = [this](){ return this->ResetBit(3, Register8bit::D); };
+	bit_instructions[0x9A] = [this](){ return this->ResetBit(3, Register8bit::D); };
 	// RES 3, E
-	bit_instructions[0xDB] = [this](){ return this->ResetBit(3, Register8bit::E); };
+	bit_instructions[0x9B] = [this](){ return this->ResetBit(3, Register8bit::E); };
 	// RES 3, H
-	bit_instructions[0xDC] = [this](){ return this->ResetBit(3, Register8bit::H); };
+	bit_instructions[0x9C] = [this](){ return this->ResetBit(3, Register8bit::H); };
 	// RES 3, L
-	bit_instructions[0xDD] = [this](){ return this->ResetBit(3, Register8bit::L); };
+	bit_instructions[0x9D] = [this](){ return this->ResetBit(3, Register8bit::L); };
 	// RES 3, (HL)
-	bit_instructions[0xDE] = [this](){ return this->ResetBit(3, Register16bit::HL); };
+	bit_instructions[0x9E] = [this](){ return this->ResetBit(3, Register16bit::HL); };
 	// RES 3, A
-	bit_instructions[0xDF] = [this](){ return this->ResetBit(3, Register8bit::A); };
+	bit_instructions[0x9F] = [this](){ return this->ResetBit(3, Register8bit::A); };
 #pragma endregion
 
 #pragma region Bit instructions 0xA0 - 0xAF
 	// RES 4, B
-	bit_instructions[0xE0] = [this](){ return this->ResetBit(4, Register8bit::B); };
+	bit_instructions[0xA0] = [this](){ return this->ResetBit(4, Register8bit::B); };
 	// RES 4, C
-	bit_instructions[0xE1] = [this](){ return this->ResetBit(4, Register8bit::C); };
+	bit_instructions[0xA1] = [this](){ return this->ResetBit(4, Register8bit::C); };
 	// RES 4, D
-	bit_instructions[0xE2] = [this](){ return this->ResetBit(4, Register8bit::D); };
+	bit_instructions[0xA2] = [this](){ return this->ResetBit(4, Register8bit::D); };
 	// RES 4, E
-	bit_instructions[0xE3] = [this](){ return this->ResetBit(4, Register8bit::E); };
+	bit_instructions[0xA3] = [this](){ return this->ResetBit(4, Register8bit::E); };
 	// RES 4, H
-	bit_instructions[0xE4] = [this](){ return this->ResetBit(4, Register8bit::H); };
+	bit_instructions[0xA4] = [this](){ return this->ResetBit(4, Register8bit::H); };
 	// RES 4, L
-	bit_instructions[0xE5] = [this](){ return this->ResetBit(4, Register8bit::L); };
+	bit_instructions[0xA5] = [this](){ return this->ResetBit(4, Register8bit::L); };
 	// RES 4, (HL)
-	bit_instructions[0xE6] = [this](){ return this->ResetBit(4, Register16bit::HL); };
+	bit_instructions[0xA6] = [this](){ return this->ResetBit(4, Register16bit::HL); };
 	// RES 4, A
-	bit_instructions[0xE7] = [this](){ return this->ResetBit(4, Register8bit::A); };
+	bit_instructions[0xA7] = [this](){ return this->ResetBit(4, Register8bit::A); };
 	// RES 5, B
-	bit_instructions[0xE8] = [this](){ return this->ResetBit(5, Register8bit::B); };
+	bit_instructions[0xA8] = [this](){ return this->ResetBit(5, Register8bit::B); };
 	// RES 5, C
-	bit_instructions[0xE9] = [this](){ return this->ResetBit(5, Register8bit::C); };
+	bit_instructions[0xA9] = [this](){ return this->ResetBit(5, Register8bit::C); };
 	// RES 5, D
-	bit_instructions[0xEA] = [this](){ return this->ResetBit(5, Register8bit::D); };
+	bit_instructions[0xAA] = [this](){ return this->ResetBit(5, Register8bit::D); };
 	// RES 5, E
-	bit_instructions[0xEB] = [this](){ return this->ResetBit(5, Register8bit::E); };
+	bit_instructions[0xAB] = [this](){ return this->ResetBit(5, Register8bit::E); };
 	// RES 5, H
-	bit_instructions[0xEC] = [this](){ return this->ResetBit(5, Register8bit::H); };
+	bit_instructions[0xAC] = [this](){ return this->ResetBit(5, Register8bit::H); };
 	// RES 5, L
-	bit_instructions[0xED] = [this](){ return this->ResetBit(5, Register8bit::L); };
+	bit_instructions[0xAD] = [this](){ return this->ResetBit(5, Register8bit::L); };
 	// RES 5, (HL)
-	bit_instructions[0xEE] = [this](){ return this->ResetBit(5, Register16bit::HL); };
+	bit_instructions[0xAE] = [this](){ return this->ResetBit(5, Register16bit::HL); };
 	// RES 5, A
-	bit_instructions[0xEF] = [this](){ return this->ResetBit(5, Register8bit::A); };
+	bit_instructions[0xAF] = [this](){ return this->ResetBit(5, Register8bit::A); };
 #pragma endregion
 
 #pragma region Bit instructions 0xB0 - 0xBF
 	// RES 6, B
-	bit_instructions[0xF0] = [this](){ return this->ResetBit(6, Register8bit::B); };
+	bit_instructions[0xB0] = [this](){ return this->ResetBit(6, Register8bit::B); };
 	// RES 6, C
-	bit_instructions[0xF1] = [this](){ return this->ResetBit(6, Register8bit::C); };
+	bit_instructions[0xB1] = [this](){ return this->ResetBit(6, Register8bit::C); };
 	// RES 6, D
-	bit_instructions[0xF2] = [this](){ return this->ResetBit(6, Register8bit::D); };
+	bit_instructions[0xB2] = [this](){ return this->ResetBit(6, Register8bit::D); };
 	// RES 6, E
-	bit_instructions[0xF3] = [this](){ return this->ResetBit(6, Register8bit::E); };
+	bit_instructions[0xB3] = [this](){ return this->ResetBit(6, Register8bit::E); };
 	// RES 6, H
-	bit_instructions[0xF4] = [this](){ return this->ResetBit(6, Register8bit::H); };
+	bit_instructions[0xB4] = [this](){ return this->ResetBit(6, Register8bit::H); };
 	// RES 6, L
-	bit_instructions[0xF5] = [this](){ return this->ResetBit(6, Register8bit::L); };
+	bit_instructions[0xB5] = [this](){ return this->ResetBit(6, Register8bit::L); };
 	// RES 6, (HL)
-	bit_instructions[0xF6] = [this](){ return this->ResetBit(6, Register16bit::HL); };
+	bit_instructions[0xB6] = [this](){ return this->ResetBit(6, Register16bit::HL); };
 	// RES 6, A
-	bit_instructions[0xF7] = [this](){ return this->ResetBit(6, Register8bit::A); };
+	bit_instructions[0xB7] = [this](){ return this->ResetBit(6, Register8bit::A); };
 	// RES 7, B
-	bit_instructions[0xF8] = [this](){ return this->ResetBit(7, Register8bit::B); };
+	bit_instructions[0xB8] = [this](){ return this->ResetBit(7, Register8bit::B); };
 	// RES 7, C
-	bit_instructions[0xF9] = [this](){ return this->ResetBit(7, Register8bit::C); };
+	bit_instructions[0xB9] = [this](){ return this->ResetBit(7, Register8bit::C); };
 	// RES 7, D
-	bit_instructions[0xFA] = [this](){ return this->ResetBit(7, Register8bit::D); };
+	bit_instructions[0xBA] = [this](){ return this->ResetBit(7, Register8bit::D); };
 	// RES 7, E
-	bit_instructions[0xFB] = [this](){ return this->ResetBit(7, Register8bit::E); };
+	bit_instructions[0xBB] = [this](){ return this->ResetBit(7, Register8bit::E); };
 	// RES 7, H
-	bit_instructions[0xFC] = [this](){ return this->ResetBit(7, Register8bit::H); };
+	bit_instructions[0xBC] = [this](){ return this->ResetBit(7, Register8bit::H); };
 	// RES 7, L
-	bit_instructions[0xFD] = [this](){ return this->ResetBit(7, Register8bit::L); };
+	bit_instructions[0xBD] = [this](){ return this->ResetBit(7, Register8bit::L); };
 	// RES 7, (HL)
-	bit_instructions[0xFE] = [this](){ return this->ResetBit(7, Register16bit::HL); };
+	bit_instructions[0xBE] = [this](){ return this->ResetBit(7, Register16bit::HL); };
 	// RES 7, A
-	bit_instructions[0xFF] = [this](){ return this->ResetBit(7, Register8bit::A); };
+	bit_instructions[0xBF] = [this](){ return this->ResetBit(7, Register8bit::A); };
 #pragma endregion
 
 #pragma region Bit instructions 0xC0 - 0xCF
