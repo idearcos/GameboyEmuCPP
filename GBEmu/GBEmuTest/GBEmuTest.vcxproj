@@ -183,6 +183,7 @@
     <ClCompile Include="Source\Z80_16bitLoadTest.cpp" />
     <ClCompile Include="Source\Z80_8bitArithmeticTest.cpp" />
     <ClCompile Include="Source\Z80_8bitLoadTest.cpp" />
+    <ClCompile Include="Source\Z80_RotateAndShiftTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\TesterMMU.h" />
