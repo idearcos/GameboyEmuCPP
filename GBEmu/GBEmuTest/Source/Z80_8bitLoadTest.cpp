@@ -20,6 +20,7 @@ void Load8bitRegFromValue(uint8_t opcode, Register8bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD r, n
 TEST(Z80_8bitLoadTest, LoadRegAFromValue)
 {
 	Load8bitRegFromValue(0x3E, Register8bit::A);
@@ -54,6 +55,7 @@ TEST(Z80_8bitLoadTest, LoadRegLFromValue)
 {
 	Load8bitRegFromValue(0x2E, Register8bit::L);
 }
+#pragma endregion
 
 void Load8bitRegFrom8bitReg(uint8_t opcode, Register8bit dest, Register8bit source)
 {
@@ -73,6 +75,7 @@ void Load8bitRegFrom8bitReg(uint8_t opcode, Register8bit dest, Register8bit sour
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD r, r*
 TEST(Z80_8bitLoadTest, LoadRegAFromRegA)
 {
 	Load8bitRegFrom8bitReg(0x7F, Register8bit::A, Register8bit::A);
@@ -317,6 +320,7 @@ TEST(Z80_8bitLoadTest, LoadRegLFromRegL)
 {
 	Load8bitRegFrom8bitReg(0x6D, Register8bit::L, Register8bit::L);
 }
+#pragma endregion
 
 void Load8bitRegFromAddressIn16bitReg(uint8_t opcode, Register8bit dest, Register16bit source_addr)
 {
@@ -337,6 +341,7 @@ void Load8bitRegFromAddressIn16bitReg(uint8_t opcode, Register8bit dest, Registe
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD r, (rr)
 TEST(Z80_8bitLoadTest, LoadRegAFromAddressInRegHL)
 {
 	Load8bitRegFromAddressIn16bitReg(0x7E, Register8bit::A, Register16bit::HL);
@@ -381,6 +386,7 @@ TEST(Z80_8bitLoadTest, LoadRegAFromAddressInRegDE)
 {
 	Load8bitRegFromAddressIn16bitReg(0x1A, Register8bit::A, Register16bit::DE);
 }
+#pragma endregion
 
 void LoadAddressIn16bitRegFrom8bitReg(uint8_t opcode, Register16bit dest_addr, Register8bit source)
 {
@@ -403,6 +409,7 @@ void LoadAddressIn16bitRegFrom8bitReg(uint8_t opcode, Register16bit dest_addr, R
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD (rr), r
 TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromRegB)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x70, Register16bit::HL, Register8bit::B);
@@ -447,6 +454,7 @@ TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromRegA)
 {
 	LoadAddressIn16bitRegFrom8bitReg(0x77, Register16bit::HL, Register8bit::A);
 }
+#pragma endregion
 
 void LoadAddressIn16bitRegFromValue(uint8_t opcode, Register16bit dest_addr)
 {
@@ -467,10 +475,12 @@ void LoadAddressIn16bitRegFromValue(uint8_t opcode, Register16bit dest_addr)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD (rr), n
 TEST(Z80_8bitLoadTest, LoadAddressInRegHLFromValue)
 {
 	LoadAddressIn16bitRegFromValue(0x36, Register16bit::HL);
 }
+#pragma endregion
 
 void Load8bitRegFromValueInAddress(uint8_t opcode, Register8bit dest)
 {
@@ -491,10 +501,12 @@ void Load8bitRegFromValueInAddress(uint8_t opcode, Register8bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD r, (nn)
 TEST(Z80_8bitLoadTest, LoadRegAFromValueInAddress)
 {
 	Load8bitRegFromValueInAddress(0xFA, Register8bit::A);
 }
+#pragma endregion
 
 void LoadAddressFrom8bitReg(uint8_t opcode, Register8bit source)
 {
@@ -515,10 +527,12 @@ void LoadAddressFrom8bitReg(uint8_t opcode, Register8bit source)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD (nn), r
 TEST(Z80_8bitLoadTest, LoadAddressFromRegA)
 {
 	LoadAddressFrom8bitReg(0xEA, Register8bit::A);
 }
+#pragma endregion
 
 void Load8bitRegFromIOAddress(uint8_t opcode, Register8bit dest, Register8bit reg_displacement)
 {
@@ -539,10 +553,12 @@ void Load8bitRegFromIOAddress(uint8_t opcode, Register8bit dest, Register8bit re
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LDIO r, (r*)
 TEST(Z80_8bitLoadTest, LoadRegAFromIOAddressPlusReg)
 {
 	Load8bitRegFromIOAddress(0xF2, Register8bit::A, Register8bit::C);
 }
+#pragma endregion
 
 void LoadIOAddressFrom8bitReg(uint8_t opcode, Register8bit reg_displacement, Register8bit source)
 {
@@ -563,10 +579,12 @@ void LoadIOAddressFrom8bitReg(uint8_t opcode, Register8bit reg_displacement, Reg
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LDIO (r), r*
 TEST(Z80_8bitLoadTest, LoadIOAddressPlusRegFromRegA)
 {
 	LoadIOAddressFrom8bitReg(0xE2, Register8bit::C, Register8bit::A);
 }
+#pragma endregion
 
 void Load8bitRegAndDecrement(uint8_t opcode, Register8bit dest, Register16bit source_addr)
 {
@@ -589,10 +607,12 @@ void Load8bitRegAndDecrement(uint8_t opcode, Register8bit dest, Register16bit so
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LDD r, (rr)
 TEST(Z80_8bitLoadTest, LoadRegAAndDecrement)
 {
 	Load8bitRegAndDecrement(0x3A, Register8bit::A, Register16bit::HL);
 }
+#pragma endregion
 
 void LoadAddressAndDecrement(uint8_t opcode, Register16bit dest_addr, Register8bit source)
 {
@@ -615,10 +635,12 @@ void LoadAddressAndDecrement(uint8_t opcode, Register16bit dest_addr, Register8b
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LDD (rr),r
 TEST(Z80_8bitLoadTest, LoadAddressAndDecrement)
 {
 	LoadAddressAndDecrement(0x32, Register16bit::HL, Register8bit::A);
 }
+#pragma endregion
 
 void Load8bitRegAndIncrement(uint8_t opcode, Register8bit dest, Register16bit source_addr)
 {
@@ -641,10 +663,12 @@ void Load8bitRegAndIncrement(uint8_t opcode, Register8bit dest, Register16bit so
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LDI r, (rr)
 TEST(Z80_8bitLoadTest, LoadRegAAndIncrement)
 {
 	Load8bitRegAndIncrement(0x2A, Register8bit::A, Register16bit::HL);
 }
+#pragma endregion
 
 void LoadAddressAndIncrement(uint8_t opcode, Register16bit dest_addr, Register8bit source)
 {
@@ -667,10 +691,12 @@ void LoadAddressAndIncrement(uint8_t opcode, Register16bit dest_addr, Register8b
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LDI (rr), r
 TEST(Z80_8bitLoadTest, LoadAddressAndIncrement)
 {
 	LoadAddressAndIncrement(0x22, Register16bit::HL, Register8bit::A);
 }
+#pragma endregion
 
 void Load8bitRegFromIOAddress(uint8_t opcode, Register8bit dest)
 {
@@ -691,10 +717,12 @@ void Load8bitRegFromIOAddress(uint8_t opcode, Register8bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LDIO r, (n)
 TEST(Z80_8bitLoadTest, LoadRegAFromIOAddressPlusValue)
 {
 	Load8bitRegFromIOAddress(0xF0, Register8bit::A);
 }
+#pragma endregion
 
 void LoadIOAddressFrom8bitReg(uint8_t opcode, Register8bit source)
 {
@@ -715,7 +743,9 @@ void LoadIOAddressFrom8bitReg(uint8_t opcode, Register8bit source)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LDIO (n), r
 TEST(Z80_8bitLoadTest, LoadIOAddressPlusValueFromRegA)
 {
 	LoadIOAddressFrom8bitReg(0xE0, Register8bit::A);
 }
+#pragma endregion

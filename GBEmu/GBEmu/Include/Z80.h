@@ -28,6 +28,13 @@ public:
 		Joypad = 0x10
 	};
 
+	enum class State : uint8_t
+	{
+		Running,
+		Halted,
+		Stopped
+	};
+
 	Z80(IMMU &mmu);
 	~Z80() = default;
 
@@ -41,6 +48,9 @@ public:
 
 	Registers& GetRegisters() { return registers_; }
 	Clock& GetClock() { return clock_; }
+	bool GetInterruptMasterEnable() { return interrupt_master_enable_; }
+	void SetInterruptMasterEnable(bool enable) { interrupt_master_enable_ = enable; }
+	State GetState() { return state_; }
 
 private:
 	InstructionMap FillInstructionMap();
@@ -295,11 +305,7 @@ private:
 	const InstructionMap instructions_;
 	const InstructionMap bit_instructions_;
 
-	enum class State : uint8_t
-	{
-		Running,
-		Halted
-	} state_{ State::Running };
+	State state_{ State::Running };
 
 	bool interrupt_master_enable_{ true };
 	std::map<Interrupt, bool> interrupts_enabled_;
@@ -314,3 +320,4 @@ private:
 };
 
 std::ostream& operator << (std::ostream& os, const Z80::Interrupt& interrupt);
+std::ostream& operator << (std::ostream& os, const Z80::State& state);

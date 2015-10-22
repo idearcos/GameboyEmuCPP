@@ -184,6 +184,9 @@
     <ClCompile Include="Source\Z80_8bitArithmeticTest.cpp" />
     <ClCompile Include="Source\Z80_8bitLoadTest.cpp" />
     <ClCompile Include="Source\Z80_BitOperationsTest.cpp" />
+    <ClCompile Include="Source\Z80_CallAndReturnTest.cpp" />
+    <ClCompile Include="Source\Z80_GbExclusiveTest.cpp" />
+    <ClCompile Include="Source\Z80_GeneralArithmeticAndCpuControlTest.cpp" />
     <ClCompile Include="Source\Z80_JumpTest.cpp" />
     <ClCompile Include="Source\Z80_RotateAndShiftTest.cpp" />
   </ItemGroup>

@@ -12,7 +12,7 @@ Clock Z80::Call(uint16_t address)
 
 	registers_.Write(Register16bit::PC, address);
 
-	return Clock(3, 12);
+	return Clock(6, 24);
 }
 
 // CALL cc, nn
@@ -29,7 +29,7 @@ Clock Z80::CallIf(uint16_t address, Flags flag, bool flag_value)
 
 		registers_.Write(Register16bit::PC, address);
 
-		return Clock(3, 12);
+		return Clock(6, 24);
 	}
 
 	return Clock(3, 12);
@@ -47,7 +47,7 @@ Clock Z80::Return()
 
 	registers_.Write(Register16bit::PC, value);
 
-	return Clock(2, 8);
+	return Clock(4, 16);
 }
 
 // RET cc
@@ -64,7 +64,7 @@ Clock Z80::ReturnIf(Flags flag, bool flag_value)
 
 		registers_.Write(Register16bit::PC, value);
 
-		return Clock(2, 8);
+		return Clock(5, 20);
 	}
 
 	return Clock(2, 8);
@@ -82,7 +82,7 @@ Clock Z80::ReturnFromInterrupt()
 
 	interrupt_master_enable_ = true;
 
-	return Clock(2, 8);
+	return Clock(4, 16);
 }
 
 // RST p
@@ -98,5 +98,5 @@ Clock Z80::Restart(uint16_t address)
 
 	registers_.Write(Register16bit::PC, address);
 
-	return Clock(8, 32);
+	return Clock(4, 16);
 }

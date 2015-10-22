@@ -774,3 +774,85 @@ TEST(Z80_RotateAndShiftTest, SrlAddressInRegHL)
 	TestRotateOperation(0xCB, 0x3E, Register16bit::HL, 0, 0, { Flags::Zero }, false);
 }
 #pragma endregion
+
+#pragma region SWAP
+TEST(Z80_GbExclusiveTest, SwapRegA)
+{
+	TestRotateOperation(0xCB, 0x37, Register8bit::A, 0, 0, { Flags::Zero });
+	TestRotateOperation(0xCB, 0x37, Register8bit::A, 0xFF, 0xFF, {});
+	TestRotateOperation(0xCB, 0x37, Register8bit::A, 0xF0, 0x0F, {});
+	TestRotateOperation(0xCB, 0x37, Register8bit::A, 0x0F, 0xF0, {});
+	TestRotateOperation(0xCB, 0x37, Register8bit::A, 0xA5, 0x5A, {});
+	TestRotateOperation(0xCB, 0x37, Register8bit::A, 0x81, 0x18, {});
+}
+
+TEST(Z80_GbExclusiveTest, SwapRegB)
+{
+	TestRotateOperation(0xCB, 0x30, Register8bit::B, 0, 0, { Flags::Zero });
+	TestRotateOperation(0xCB, 0x30, Register8bit::B, 0xFF, 0xFF, {});
+	TestRotateOperation(0xCB, 0x30, Register8bit::B, 0xF0, 0x0F, {});
+	TestRotateOperation(0xCB, 0x30, Register8bit::B, 0x0F, 0xF0, {});
+	TestRotateOperation(0xCB, 0x30, Register8bit::B, 0xA5, 0x5A, {});
+	TestRotateOperation(0xCB, 0x30, Register8bit::B, 0x81, 0x18, {});
+}
+
+TEST(Z80_GbExclusiveTest, SwapRegC)
+{
+	TestRotateOperation(0xCB, 0x31, Register8bit::C, 0, 0, { Flags::Zero });
+	TestRotateOperation(0xCB, 0x31, Register8bit::C, 0xFF, 0xFF, {});
+	TestRotateOperation(0xCB, 0x31, Register8bit::C, 0xF0, 0x0F, {});
+	TestRotateOperation(0xCB, 0x31, Register8bit::C, 0x0F, 0xF0, {});
+	TestRotateOperation(0xCB, 0x31, Register8bit::C, 0xA5, 0x5A, {});
+	TestRotateOperation(0xCB, 0x31, Register8bit::C, 0x81, 0x18, {});
+}
+
+TEST(Z80_GbExclusiveTest, SwapRegD)
+{
+	TestRotateOperation(0xCB, 0x32, Register8bit::D, 0, 0, { Flags::Zero });
+	TestRotateOperation(0xCB, 0x32, Register8bit::D, 0xFF, 0xFF, {});
+	TestRotateOperation(0xCB, 0x32, Register8bit::D, 0xF0, 0x0F, {});
+	TestRotateOperation(0xCB, 0x32, Register8bit::D, 0x0F, 0xF0, {});
+	TestRotateOperation(0xCB, 0x32, Register8bit::D, 0xA5, 0x5A, {});
+	TestRotateOperation(0xCB, 0x32, Register8bit::D, 0x81, 0x18, {});
+}
+
+TEST(Z80_GbExclusiveTest, SwapRegE)
+{
+	TestRotateOperation(0xCB, 0x33, Register8bit::E, 0, 0, { Flags::Zero });
+	TestRotateOperation(0xCB, 0x33, Register8bit::E, 0xFF, 0xFF, {});
+	TestRotateOperation(0xCB, 0x33, Register8bit::E, 0xF0, 0x0F, {});
+	TestRotateOperation(0xCB, 0x33, Register8bit::E, 0x0F, 0xF0, {});
+	TestRotateOperation(0xCB, 0x33, Register8bit::E, 0xA5, 0x5A, {});
+	TestRotateOperation(0xCB, 0x33, Register8bit::E, 0x81, 0x18, {});
+}
+
+TEST(Z80_GbExclusiveTest, SwapRegH)
+{
+	TestRotateOperation(0xCB, 0x34, Register8bit::H, 0, 0, { Flags::Zero });
+	TestRotateOperation(0xCB, 0x34, Register8bit::H, 0xFF, 0xFF, {});
+	TestRotateOperation(0xCB, 0x34, Register8bit::H, 0xF0, 0x0F, {});
+	TestRotateOperation(0xCB, 0x34, Register8bit::H, 0x0F, 0xF0, {});
+	TestRotateOperation(0xCB, 0x34, Register8bit::H, 0xA5, 0x5A, {});
+	TestRotateOperation(0xCB, 0x34, Register8bit::H, 0x81, 0x18, {});
+}
+
+TEST(Z80_GbExclusiveTest, SwapRegL)
+{
+	TestRotateOperation(0xCB, 0x35, Register8bit::L, 0, 0, { Flags::Zero });
+	TestRotateOperation(0xCB, 0x35, Register8bit::L, 0xFF, 0xFF, {});
+	TestRotateOperation(0xCB, 0x35, Register8bit::L, 0xF0, 0x0F, {});
+	TestRotateOperation(0xCB, 0x35, Register8bit::L, 0x0F, 0xF0, {});
+	TestRotateOperation(0xCB, 0x35, Register8bit::L, 0xA5, 0x5A, {});
+	TestRotateOperation(0xCB, 0x35, Register8bit::L, 0x81, 0x18, {});
+}
+
+TEST(Z80_GbExclusiveTest, SwapAddressInRegHL)
+{
+	TestRotateOperation(0xCB, 0x36, Register16bit::HL, 0, 0, { Flags::Zero });
+	TestRotateOperation(0xCB, 0x36, Register16bit::HL, 0xFF, 0xFF, {});
+	TestRotateOperation(0xCB, 0x36, Register16bit::HL, 0xF0, 0x0F, {});
+	TestRotateOperation(0xCB, 0x36, Register16bit::HL, 0x0F, 0xF0, {});
+	TestRotateOperation(0xCB, 0x36, Register16bit::HL, 0xA5, 0x5A, {});
+	TestRotateOperation(0xCB, 0x36, Register16bit::HL, 0x81, 0x18, {});
+}
+#pragma endregion

@@ -20,6 +20,7 @@ void Load16bitRegFromValue(uint8_t opcode, Register16bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD rr, nn
 TEST(Z80_16bitLoadTest, LoadRegBCFromValue)
 {
 	Load16bitRegFromValue(0x01, Register16bit::BC);
@@ -39,6 +40,7 @@ TEST(Z80_16bitLoadTest, LoadRegSPFromValue)
 {
 	Load16bitRegFromValue(0x31, Register16bit::SP);
 }
+#pragma endregion
 
 void Load16bitRegFrom16bitReg(uint8_t opcode, Register16bit dest, Register16bit source)
 {
@@ -58,6 +60,7 @@ void Load16bitRegFrom16bitReg(uint8_t opcode, Register16bit dest, Register16bit 
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD rr, rr*
 TEST(Z80_16bitLoadTest, LoadRegSPFromRegHL)
 {
 	Load16bitRegFrom16bitReg(0xF9, Register16bit::SP, Register16bit::HL);
@@ -100,6 +103,7 @@ TEST(Z80_16bitLoadTest, LoadRegHLFromRegSPMinusDisplacement)
 	ASSERT_EQ(false, z80.GetRegisters().IsFlagSet(Flags::HalfCarry)) << "Half-carry flag is not set";
 	ASSERT_EQ(false, z80.GetRegisters().IsFlagSet(Flags::Carry)) << "Carry flag is not set";
 }
+#pragma endregion
 
 void LoadAddressFrom16bitReg(uint8_t opcode, Register16bit source)
 {
@@ -120,10 +124,12 @@ void LoadAddressFrom16bitReg(uint8_t opcode, Register16bit source)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region LD (nn), rr
 TEST(Z80_16bitLoadTest, LoadAddressFromRegSP)
 {
 	LoadAddressFrom16bitReg(0x08, Register16bit::SP);
 }
+#pragma endregion
 
 void Push(uint8_t opcode, Register16bit source)
 {
@@ -146,6 +152,7 @@ void Push(uint8_t opcode, Register16bit source)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region PUSH rr
 TEST(Z80_16bitLoadTest, PushRegAF)
 {
 	Push(0xF5, Register16bit::AF);
@@ -165,6 +172,7 @@ TEST(Z80_16bitLoadTest, PushRegHL)
 {
 	Push(0xE5, Register16bit::HL);
 }
+#pragma endregion
 
 void Pop(uint8_t opcode, Register16bit dest)
 {
@@ -187,6 +195,7 @@ void Pop(uint8_t opcode, Register16bit dest)
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register8bit::F));
 }
 
+#pragma region POP rr
 TEST(Z80_16bitLoadTest, PopRegAF)
 {
 	Pop(0xF1, Register16bit::AF);
@@ -206,3 +215,4 @@ TEST(Z80_16bitLoadTest, PopRegHL)
 {
 	Pop(0xE1, Register16bit::HL);
 }
+#pragma endregion

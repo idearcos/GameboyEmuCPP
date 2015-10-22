@@ -20,12 +20,11 @@ Clock Z80::DAA()
 	{
 		correction_factor |= 0x06;
 	}
+	registers_.SetFlag(Flags::HalfCarry, (correction_factor & 0x0F) != 0);
 
 	{const uint8_t result = registers_.IsFlagSet(Flags::Subtract) ? original_value - correction_factor :
 		original_value + correction_factor;
 
-	// If borrow/carry from bit 3 to 4 has been caused because of the operation, set half carry flag
-	registers_.SetFlag(Flags::HalfCarry, (~(original_value & result) & 0x10) != 0);
 	registers_.SetFlag(Flags::Zero, result == 0);
 
 	registers_.Write(Register8bit::A, result); }

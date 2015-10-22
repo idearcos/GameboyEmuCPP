@@ -50,7 +50,7 @@ void Z80::Execute(uint8_t opcode)
 	catch (std::out_of_range &)
 	{
 		std::stringstream msg;
-		msg << "Exception caught: No instruction for op code 0x" << std::hex << static_cast<size_t>(opcode);
+		msg << "No instruction for op code 0x" << std::hex << static_cast<size_t>(opcode);
 		throw std::runtime_error(msg.str());
 	}
 }
@@ -64,7 +64,7 @@ void Z80::Execute(Interrupt interrupt)
 	catch (std::out_of_range &)
 	{
 		std::stringstream msg;
-		msg << "Exception caught: No instruction for interrupt: " << interrupt;
+		msg << "No instruction for interrupt: " << interrupt;
 		throw std::runtime_error(msg.str());
 	}
 }
@@ -161,6 +161,27 @@ std::ostream& operator << (std::ostream& os, const Z80::Interrupt& interrupt)
 		break;
 	default:
 		os << static_cast<size_t>(interrupt);
+		break;
+	}
+
+	return os;
+}
+
+std::ostream& operator << (std::ostream& os, const Z80::State& state)
+{
+	switch (state)
+	{
+	case Z80::State::Running:
+		os << "Running";
+		break;
+	case Z80::State::Halted:
+		os << "Halted";
+		break;
+	case Z80::State::Stopped:
+		os << "Stopped";
+		break;
+	default:
+		os << static_cast<size_t>(state);
 		break;
 	}
 
