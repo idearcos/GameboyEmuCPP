@@ -67,10 +67,10 @@ uint8_t KeyPad::KeyStatusToByte(KeyColumn requested_column) const
 	}
 	catch (std::out_of_range &)
 	{
-		std::stringstream msg;
-		msg << "Trying to access invalid keypad column: " << requested_column;
-		throw std::logic_error(msg.str());
-		//return 0x0F;
+		//std::stringstream msg;
+		std::cout << "Trying to access invalid keypad column: " << requested_column << std::endl;
+		//throw std::logic_error(msg.str());
+		return 0x0F;
 	}
 }
 

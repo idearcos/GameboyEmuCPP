@@ -10,7 +10,7 @@ GameBoy::GameBoy() :
 	mmu_.AddObserver(&z80_);
 	mmu_.AddObserver(&gpu_);
 	mmu_.AddObserver(&keypad_);
-	mmu_.LoadRom("ttt.gb");
+	mmu_.LoadRom("tetris.gb");
 
 	glfwSetWindowUserPointer(window_, this);
 	glfwSetKeyCallback(window_, GameBoy::OnKeyEvent);

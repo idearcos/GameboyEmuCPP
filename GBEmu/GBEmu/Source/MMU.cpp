@@ -1,5 +1,6 @@
 #include "MMU.h"
 #include <fstream>
+#include <iostream>
 
 MMU::MMU()
 {
@@ -86,7 +87,8 @@ void MMU::Write8bitToMemory(uint16_t absolute_address, uint8_t value)
 	}
 	catch (std::out_of_range &)
 	{
-		throw std::logic_error("Trying to write to non-implemented memory region, or out of memory region range");
+		std::cout << "Trying to write out of memory region range: " <<
+			"Address: 0x" << std::hex << absolute_address << ", value: " << static_cast<size_t>(value) << std::endl;
 	}
 
 	Notify(&MMUObserver::OnMemoryWrite, region, local_address, value);
@@ -154,7 +156,7 @@ std::tuple<Region, uint16_t> MMU::AbsoluteToLocalAddress(uint16_t absolute_addre
 				return std::make_tuple(pair.first, absolute_address - pair.second);
 			}
 		}
-		throw std::logic_error("Trying to convert an absolute address not found in any memory region");
+		std::cout << "Trying to convert an absolute address not found in any memory region" << std::endl;
 	}
 	catch (std::out_of_range &)
 	{

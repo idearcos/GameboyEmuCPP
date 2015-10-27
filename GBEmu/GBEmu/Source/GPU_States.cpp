@@ -39,9 +39,8 @@ Mode HBlank::Transition(GPU &gpu) const
 
 Mode VBlank::Transition(GPU &gpu) const
 {
-	if (gpu.IncrementCurrentLine() >= 154)
+	if (gpu.IncrementCurrentLine() == 0)
 	{
-		gpu.ResetCurrentLine();
 		return Mode::ReadingOAM;
 	}
 	else

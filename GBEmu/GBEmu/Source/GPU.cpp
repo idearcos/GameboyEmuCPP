@@ -2,6 +2,7 @@
 
 #include <list>
 #include <bitset>
+#include <iostream>
 
 GPU::GPU(GLFWwindow* &window, IMMU &mmu) :
 	states_(InitStateMap()),
@@ -170,7 +171,7 @@ void GPU::OnMemoryWrite(Region region, uint16_t address, uint8_t value)
 		}
 		else if (current_line_register == address)
 		{
-			throw std::runtime_error("Trying to write current scanline (read-only register)");
+			std::cout << "Trying to write current scanline (read-only register)" << std::endl;
 		}
 		else if (y_compare_register == address)
 		{
@@ -223,14 +224,20 @@ void GPU::RefreshScreen()
 	renderer_.RefreshScreen();
 }
 
-void GPU::ResetCurrentLine()
-{
-	current_line_ = 0;
-}
-
 uint8_t GPU::IncrementCurrentLine()
 {
-	WriteToMmu(Region::IO, current_line_register, ++current_line_);
+	current_line_ += 1;
+	if (current_line_ == 144)
+	{
+		auto interrupt_flags = mmu_.Read8bitFromMemory(Region::IO, interrupt_flags_register);
+		interrupt_flags |= 0x01;
+		WriteToMmu(Region::IO, interrupt_flags_register, interrupt_flags);
+	}
+	else if (current_line_ == 154)
+	{
+		current_line_ = 0;
+	}
+	WriteToMmu(Region::IO, current_line_register, current_line_);
 	CompareLineAndUpdateRegister();
 	return current_line_;
 }

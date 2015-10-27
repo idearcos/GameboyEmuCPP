@@ -78,25 +78,23 @@ void Z80::Execute(Instruction instruction)
 
 void Z80::CheckAndHandleInterrupts()
 {
-	for (auto &pair : interrupts_signaled_)
+	if (interrupt_master_enable_)
 	{
-		if (pair.second && interrupts_enabled_[pair.first])
+		for (auto &pair : interrupts_signaled_)
 		{
-			interrupt_master_enable_ = false;
-			pair.second = false;
+			if (pair.second && interrupts_enabled_[pair.first])
+			{
+				interrupt_master_enable_ = false;
+				pair.second = false;
 
-			Execute(pair.first);
+				Execute(pair.first);
+			}
 		}
 	}
 }
 
 void Z80::OnMemoryWrite(Region region, uint16_t address, uint8_t value)
 {
-	if (writing_to_mmu_)
-	{
-		return;
-	}
-
 	if (Region::IO == region)
 	{
 		if (interrupt_flags_register == address)
@@ -121,16 +119,12 @@ void Z80::OnMemoryWrite(Region region, uint16_t address, uint8_t value)
 
 void Z80::WriteToMmu(uint16_t address, uint8_t value) const
 {
-	writing_to_mmu_ = true;
 	mmu_.Write8bitToMemory(address, value);
-	writing_to_mmu_ = false;
 }
 
 void Z80::WriteToMmu(uint16_t address, uint16_t value) const
 {
-	writing_to_mmu_ = true;
 	mmu_.Write16bitToMemory(address, value);
-	writing_to_mmu_ = false;
 }
 
 Clock Z80::WrongOpCode(uint8_t opcode)

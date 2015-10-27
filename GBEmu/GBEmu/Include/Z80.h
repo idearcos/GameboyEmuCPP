@@ -312,8 +312,6 @@ private:
 	std::map<Interrupt, bool> interrupts_signaled_;
 	std::map<Interrupt, Instruction> interrupt_instructions_;
 
-	mutable bool writing_to_mmu_{ false };
-
 private:
 	Z80& operator=(const Z80&) = delete;
 	Z80& operator=(Z80&&) = delete;

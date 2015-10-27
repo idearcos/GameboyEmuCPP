@@ -24,7 +24,6 @@ public:
 	void RenderScanLine();
 	void RefreshScreen();
 
-	void ResetCurrentLine();
 	uint8_t IncrementCurrentLine();
 	void SetCurrentMode(Mode new_mode);
 	void SetLineCompare(uint8_t line);
@@ -59,6 +58,7 @@ private:
 	static const size_t tile_size_{ tile_width_ * tile_height_ };
 	static const size_t num_tiles_in_set_{ 384 };
 
+	static const uint16_t interrupt_flags_register{ 0x000F };
 	static const uint16_t lcd_control_register{ 0x0040 };
 	static const uint16_t lcd_status_register{ 0x0041 };
 	static const uint16_t scroll_y_register{ 0x0042 };
