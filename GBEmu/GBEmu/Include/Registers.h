@@ -5,13 +5,13 @@
 
 enum class Register8bit : uint8_t
 {	
-	B = 0,
-	C = 1,
-	D = 2,
-	E = 3,
-	H = 4,
-	L = 5,
-	A = 7,
+	B,
+	C,
+	D,
+	E,
+	H,
+	L,
+	A,
 	F
 };
 
@@ -58,14 +58,42 @@ public:
 	bool IsFlagSet(Flags flag) const;
 
 private:
-	uint8_t a_{ 0 };
-	uint8_t f_{ 0 };
-	uint8_t b_{ 0 };
-	uint8_t c_{ 0 };
-	uint8_t d_{ 0 };
-	uint8_t e_{ 0 };
-	uint8_t h_{ 0 };
-	uint8_t l_{ 0 };
+	union
+	{
+		struct
+		{
+			uint8_t f_;
+			uint8_t a_;
+		};
+		uint16_t af_{ 0 };
+	};
+	union
+	{
+		struct
+		{
+			uint8_t c_;
+			uint8_t b_;
+		};
+		uint16_t bc_{ 0 };
+	};
+	union
+	{
+		struct
+		{
+			uint8_t e_;
+			uint8_t d_;
+		};
+		uint16_t de_{ 0 };
+	};
+	union
+	{
+		struct
+		{
+			uint8_t l_;
+			uint8_t h_;
+		};
+		uint16_t hl_{ 0 };
+	};
 
 	uint16_t sp_{ 0 };
 	uint16_t pc_{ 0 };

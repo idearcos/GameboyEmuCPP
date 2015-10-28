@@ -7,39 +7,29 @@
 
 uint8_t Registers::Read(Register8bit reg) const
 {
-	uint8_t value{ 0 };
 	switch (reg)
 	{
 	case Register8bit::A:
-		value = a_;
-		break;
+		return a_;
 	case Register8bit::F:
-		value = f_;
-		break;
+		return f_;
 	case Register8bit::B:
-		value = b_;
-		break;
+		return b_;
 	case Register8bit::C:
-		value = c_;
-		break;
+		return c_;
 	case Register8bit::D:
-		value = d_;
-		break;
+		return d_;
 	case Register8bit::E:
-		value = e_;
-		break;
+		return e_;
 	case Register8bit::H:
-		value = h_;
-		break;
+		return h_;
 	case Register8bit::L:
-		value = l_;
-		break;
+		return l_;
 	default:
 		std::stringstream msg;
 		msg << "Trying to read invalid register: " << reg;
 		throw std::logic_error(msg.str());
 	}
-	return value;
 }
 
 void Registers::Write(Register8bit reg, uint8_t value)
@@ -76,33 +66,25 @@ void Registers::Write(Register8bit reg, uint8_t value)
 
 uint16_t Registers::Read(Register16bit reg) const
 {
-	uint16_t value{ 0 };
 	switch (reg)
 	{
 	case Register16bit::AF:
-		value = (a_ << 8) + f_;
-		break;
+		return af_;
 	case Register16bit::BC:
-		value = (b_ << 8) + c_;
-		break;
+		return bc_;
 	case Register16bit::DE:
-		value = (d_ << 8) + e_;
-		break;
+		return de_;
 	case Register16bit::HL:
-		value = (h_ << 8) + l_;
-		break;
+		return hl_;
 	case Register16bit::PC:
-		value = pc_;
-		break;
+		return pc_;
 	case Register16bit::SP:
-		value = sp_;
-		break;
+		return sp_;
 	default:
 		std::stringstream msg;
 		msg << "Trying to read invalid register: " << reg;
 		throw std::logic_error(msg.str());
 	}
-	return value;
 }
 
 void Registers::Write(Register16bit reg, uint16_t value)
@@ -110,20 +92,16 @@ void Registers::Write(Register16bit reg, uint16_t value)
 	switch (reg)
 	{
 	case Register16bit::AF:
-		a_ = (value & 0xFF00) >> 8;
-		f_ = value & 0x00FF;
+		af_ = value;
 		break;
 	case Register16bit::BC:
-		b_ = (value & 0xFF00) >> 8;
-		c_ = value & 0x00FF;
+		bc_ = value;
 		break;
 	case Register16bit::DE:
-		d_ = (value & 0xFF00) >> 8;
-		e_ = value & 0x00FF;
+		de_ = value;
 		break;
 	case Register16bit::HL:
-		h_ = (value & 0xFF00) >> 8;
-		l_ = value & 0x00FF;
+		hl_ = value;
 		break;
 	case Register16bit::PC:
 		pc_ = value;
