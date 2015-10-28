@@ -1,10 +1,10 @@
 #pragma once
 
 #include <cstdint>
-#include "MemoryMap.h"
+#include "Memory.h"
 
 class MMUObserver
 {
 public:
-	virtual void OnMemoryWrite(Region region, uint16_t address, uint8_t value) = 0;
+	virtual void OnMemoryWrite(const Memory::Address &address, uint8_t value) = 0;
 };

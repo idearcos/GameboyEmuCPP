@@ -84,10 +84,10 @@
     <ClInclude Include="Include\MMUObserver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\MemoryMap.h">
+    <ClInclude Include="Include\Z80Observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Z80Observer.h">
+    <ClInclude Include="Include\Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -168,6 +168,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Clock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

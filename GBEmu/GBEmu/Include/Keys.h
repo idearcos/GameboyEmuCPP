@@ -37,13 +37,13 @@ public:
 
 	uint8_t KeyStatusToByte(KeyColumn requested_column) const;
 
-	void OnMemoryWrite(Region region, uint16_t address, uint8_t value) override;
+	void OnMemoryWrite(const Memory::Address &address, uint8_t value) override;
 
 private:
-	void WriteToMmu(Region region, uint16_t address, uint8_t value) const;
+	void WriteToMmu(const Memory::Address &address, uint8_t value) const;
 
 private:
-	static const uint16_t keypad_control_register{ 0x0000 };
+	const Memory::Address keypad_control_register_{ 0xFF00 };
 
 	using KeyStatus = std::map<Keys, bool>;
 	std::map<KeyColumn, KeyStatus> keys_pressed_;

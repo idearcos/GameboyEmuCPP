@@ -42,7 +42,7 @@ public:
 	void Execute(uint8_t opcode);
 	void CheckAndHandleInterrupts();
 
-	void OnMemoryWrite(Region region, uint16_t address, uint8_t value) override;
+	void OnMemoryWrite(const Memory::Address &address, uint8_t value) override;
 	void WriteToMmu(uint16_t address, uint8_t value) const;
 	void WriteToMmu(uint16_t address, uint16_t value) const;
 
@@ -295,8 +295,8 @@ private:
 #pragma endregion
 
 private:
-	static const uint16_t interrupts_enable_register{ 0x007F };
-	static const uint16_t interrupt_flags_register{ 0x000F };
+	const Memory::Address interrupts_enable_register_{ 0xFFFF };
+	const Memory::Address interrupt_flags_register_{ 0xFF0F };
 
 	Registers registers_;
 	Clock clock_;

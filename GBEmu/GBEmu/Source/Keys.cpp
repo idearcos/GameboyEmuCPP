@@ -74,28 +74,23 @@ uint8_t KeyPad::KeyStatusToByte(KeyColumn requested_column) const
 	}
 }
 
-void KeyPad::OnMemoryWrite(Region region, uint16_t address, uint8_t value)
+void KeyPad::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 {
 	if (writing_to_mmu_)
 	{
 		return;
 	}
 
-	if (Region::IO == region)
+	if (keypad_control_register_ == address)
 	{
-		if (keypad_control_register == address)
-		{
-			const auto new_value = KeyStatusToByte(static_cast<KeyColumn>(value & 0x30));
-			
-			WriteToMmu(Region::IO, keypad_control_register, new_value);
-		}
+		WriteToMmu(keypad_control_register_, KeyStatusToByte(static_cast<KeyColumn>(value & 0x30)));
 	}
 }
 
-void KeyPad::WriteToMmu(Region region, uint16_t address, uint8_t value) const
+void KeyPad::WriteToMmu(const Memory::Address &address, uint8_t value) const
 {
 	writing_to_mmu_ = true;
-	mmu_.Write8bitToMemory(region, address, value);
+	mmu_.Write8bitToMemory(address, value);
 	writing_to_mmu_ = false;
 }
 

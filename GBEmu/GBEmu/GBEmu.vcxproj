@@ -178,7 +178,7 @@
     <ClInclude Include="Include\GPU_TileSet.h" />
     <ClInclude Include="Include\IMMU.h" />
     <ClInclude Include="Include\Keys.h" />
-    <ClInclude Include="Include\MemoryMap.h" />
+    <ClInclude Include="Include\Memory.h" />
     <ClInclude Include="Include\MMU.h" />
     <ClInclude Include="Include\MMUObserver.h" />
     <ClInclude Include="Include\Registers.h" />
@@ -199,6 +199,7 @@
     <ClCompile Include="Source\GPU_TileMap.cpp" />
     <ClCompile Include="Source\GPU_TileSet.cpp" />
     <ClCompile Include="Source\Keys.cpp" />
+    <ClCompile Include="Source\Memory.cpp" />
     <ClCompile Include="Source\Z80_CallAndReturn.cpp" />
     <ClCompile Include="Source\Z80_FillBitInstructionMap.cpp" />
     <ClCompile Include="Source\Z80_FillInstructionMap.cpp" />

@@ -93,26 +93,20 @@ void Z80::CheckAndHandleInterrupts()
 	}
 }
 
-void Z80::OnMemoryWrite(Region region, uint16_t address, uint8_t value)
+void Z80::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 {
-	if (Region::IO == region)
+	if (interrupt_flags_register_ == address)
 	{
-		if (interrupt_flags_register == address)
+		for (auto& pair : interrupts_signaled_)
 		{
-			for (auto& pair : interrupts_signaled_)
-			{
-				pair.second = (value & static_cast<std::underlying_type_t<Interrupt>>(pair.first)) != 0;
-			}
+			pair.second = (value & static_cast<std::underlying_type_t<Interrupt>>(pair.first)) != 0;
 		}
 	}
-	else if (Region::ZeroPage == region)
+	else if (interrupts_enable_register_ == address)
 	{
-		if (interrupts_enable_register == address)
+		for (auto& pair : interrupts_enabled_)
 		{
-			for (auto& pair : interrupts_enabled_)
-			{
-				pair.second = (value & static_cast<std::underlying_type_t<Interrupt>>(pair.first)) != 0;
-			}
+			pair.second = (value & static_cast<std::underlying_type_t<Interrupt>>(pair.first)) != 0;
 		}
 	}
 }

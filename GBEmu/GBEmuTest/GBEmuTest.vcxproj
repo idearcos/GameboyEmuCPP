@@ -163,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\GBEmu\Source\Clock.cpp" />
+    <ClCompile Include="..\GBEmu\Source\Memory.cpp" />
     <ClCompile Include="..\GBEmu\Source\Registers.cpp" />
     <ClCompile Include="..\GBEmu\Source\Z80.cpp" />
     <ClCompile Include="..\GBEmu\Source\Z80_16bitArithmetic.cpp" />

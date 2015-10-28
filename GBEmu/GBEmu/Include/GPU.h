@@ -28,16 +28,16 @@ public:
 	void SetCurrentMode(Mode new_mode);
 	void SetLineCompare(uint8_t line);
 
-	void OnMemoryWrite(Region region, uint16_t address, uint8_t value) override;
+	void OnMemoryWrite(const Memory::Address &address, uint8_t value) override;
 
 private:
 	static std::map<Mode, std::unique_ptr<State>> InitStateMap();
-	inline bool IsAddressInTileSet(uint16_t address) const;
-	inline bool IsAddressInTileMap(uint16_t address, TileMap::Number tilemap_number) const;
+	inline bool IsAddressInTileSet(uint16_t relative_address) const;
+	inline bool IsAddressInTileMap(uint16_t relative_address, TileMap::Number tilemap_number) const;
 	size_t GetAbsoluteTileNumber(TileMap::TileNumber tile_number, TileSet::Number tileset_number) const;
 
 	void CompareLineAndUpdateRegister();
-	void WriteToMmu(Region region, uint16_t address, uint8_t value) const;
+	void WriteToMmu(const Memory::Address &address, uint8_t value) const;
 
 private:
 	// All addresses are relative to the beginning of VRAM
@@ -58,18 +58,18 @@ private:
 	static const size_t tile_size_{ tile_width_ * tile_height_ };
 	static const size_t num_tiles_in_set_{ 384 };
 
-	static const uint16_t interrupt_flags_register{ 0x000F };
-	static const uint16_t lcd_control_register{ 0x0040 };
-	static const uint16_t lcd_status_register{ 0x0041 };
-	static const uint16_t scroll_y_register{ 0x0042 };
-	static const uint16_t scroll_x_register{ 0x0043 };
-	static const uint16_t current_line_register{ 0x0044 };
-	static const uint16_t y_compare_register{ 0x0045 };
-	static const uint16_t bg_palette_register{ 0x0047 };
-	static const uint16_t obj_palette_0_register{ 0x0048 };
-	static const uint16_t obj_palette_1_register{ 0x0049 };
-	static const uint16_t window_y_position_register{ 0x004A };
-	static const uint16_t window_x_position_plus_7_register{ 0x004B };
+	const Memory::Address interrupt_flags_register_{ Memory::Region::IO, 0x000F };
+	const Memory::Address lcd_control_register_{ Memory::Region::IO, 0x0040 };
+	const Memory::Address lcd_status_register_{ Memory::Region::IO, 0x0041 };
+	const Memory::Address scroll_y_register_{ Memory::Region::IO, 0x0042 };
+	const Memory::Address scroll_x_register_{ Memory::Region::IO, 0x0043 };
+	const Memory::Address current_line_register_{ Memory::Region::IO, 0x0044 };
+	const Memory::Address y_compare_register_{ Memory::Region::IO, 0x0045 };
+	const Memory::Address bg_palette_register_{ Memory::Region::IO, 0x0047 };
+	const Memory::Address obj_palette_0_register_{ Memory::Region::IO, 0x0048 };
+	const Memory::Address obj_palette_1_register_{ Memory::Region::IO, 0x0049 };
+	const Memory::Address window_y_position_register_{ Memory::Region::IO, 0x004A };
+	const Memory::Address window_x_position_plus_7_register_{ Memory::Region::IO, 0x004B };
 
 	TileSet tileset_;
 	std::map<TileMap::Number, TileMap> tilemaps_;

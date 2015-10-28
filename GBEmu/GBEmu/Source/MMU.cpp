@@ -2,26 +2,8 @@
 #include <fstream>
 #include <iostream>
 
-MMU::MMU()
-{
-	region_start_addresses_[Region::BIOS] = start_rom_bank0_;
-	region_start_addresses_[Region::ROM] = start_rom_bank0_;
-	region_start_addresses_[Region::VRAM] = start_vram_;
-	region_start_addresses_[Region::ERAM] = start_eram_;
-	region_start_addresses_[Region::WRAM] = start_wram_;
-	region_start_addresses_[Region::OAM] = start_oam_;
-	region_start_addresses_[Region::IO] = start_io_;
-	region_start_addresses_[Region::ZeroPage] = start_zero_page_;
-
-	//memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ROM), std::forward_as_tuple(0x10000, 0));
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::VRAM), std::forward_as_tuple(0x2000, 0));
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ERAM), std::forward_as_tuple(0x2000, 0));
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::WRAM), std::forward_as_tuple(0x3E00, 0));
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::OAM), std::forward_as_tuple(0x00A0, 0));
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::IO), std::forward_as_tuple(0x0080, 0));
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ZeroPage), std::forward_as_tuple(0x0080, 0));
-
-	memory_regions_.emplace(Region::BIOS, std::initializer_list<uint8_t>{
+MMU::MMU() :
+	bios_({
 		0x31, 0xFE, 0xFF, 0xAF, 0x21, 0xFF, 0x9F, 0x32, 0xCB, 0x7C, 0x20, 0xFB, 0x21, 0x26, 0xFF, 0x0E,
 		0x11, 0x3E, 0x80, 0x32, 0xE2, 0x0C, 0x3E, 0xF3, 0xE2, 0x32, 0x3E, 0x77, 0x77, 0x3E, 0xFC, 0xE0,
 		0x47, 0x11, 0x04, 0x01, 0x21, 0x10, 0x80, 0x1A, 0xCD, 0x95, 0x00, 0xCD, 0x96, 0x00, 0x13, 0x7B,
@@ -37,72 +19,72 @@ MMU::MMU()
 		0xDC, 0xCC, 0x6E, 0xE6, 0xDD, 0xDD, 0xD9, 0x99, 0xBB, 0xBB, 0x67, 0x63, 0x6E, 0x0E, 0xEC, 0xCC,
 		0xDD, 0xDC, 0x99, 0x9F, 0xBB, 0xB9, 0x33, 0x3E, 0x3c, 0x42, 0xB9, 0xA5, 0xB9, 0xA5, 0x42, 0x4C,
 		0x21, 0x04, 0x01, 0x11, 0xA8, 0x00, 0x1A, 0x13, 0xBE, 0x20, 0xFE, 0x23, 0x7D, 0xFE, 0x34, 0x20,
-		0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50 });
-}
-
-uint8_t MMU::Read8bitFromMemory(uint16_t absolute_address) const
+		0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50 })
 {
-	Region region{ Region::ROM };
-	uint16_t local_address(0);
-	std::tie(region, local_address) = AbsoluteToLocalAddress(absolute_address);
-
-	return Read8bitFromMemory(region, local_address);
+	//memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ROM), std::forward_as_tuple(0x10000, 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::VRAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::VRAM), 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::ERAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::ERAM), 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::WRAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::WRAM), 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::WRAM_ECHO), std::forward_as_tuple(SizeOfRegion(Memory::Region::WRAM_ECHO), 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::OAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::OAM), 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::IO), std::forward_as_tuple(SizeOfRegion(Memory::Region::IO), 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::ZRAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::ZRAM), 0));
 }
 
-uint16_t MMU::Read16bitFromMemory(uint16_t absolute_address) const
-{
-	uint16_t value{ Read8bitFromMemory(absolute_address) };
-	value += static_cast<uint16_t>(Read8bitFromMemory(absolute_address + 1)) << 8;
-	return value;
-}
-
-uint8_t MMU::Read8bitFromMemory(Region region, uint16_t local_address) const
+uint8_t MMU::Read8bitFromMemory(const Memory::Address &address) const
 {
 	try
 	{
-		if (Region::BIOS == region)
+		Memory::Region region{ Memory::Region::ROM };
+		uint16_t relative_address{ 0 };
+		std::tie(region, relative_address) = address.GetRelativeAddress();
+		if (bios_loaded_ && relative_address < bios_.size())
 		{
-			if (local_address == memory_regions_.at(Region::BIOS).size() - 1)
+			if (relative_address == bios_.size() - 1)
 			{
 				bios_loaded_ = false;
 			}
+			return bios_.at(relative_address);
 		}
-		return memory_regions_.at(region).at(local_address);
+		return memory_regions_.at(region).at(relative_address);
 	}
 	catch (std::out_of_range &)
 	{
-		throw std::logic_error("Trying to read from non-implemented memory region, or out of memory region range");
+		std::cout << "Trying to read out of memory region range: " <<
+			"Address: 0x" << std::hex << address.GetAbsoluteAddress() << std::endl;
 	}
 }
 
-void MMU::Write8bitToMemory(uint16_t absolute_address, uint8_t value)
+uint16_t MMU::Read16bitFromMemory(const Memory::Address &address) const
 {
-	Region region{ Region::VRAM };
-	uint16_t local_address(absolute_address);
-	std::tie(region, local_address) = AbsoluteToLocalAddress(absolute_address);
+	uint16_t value{ Read8bitFromMemory(address) };
+	value += static_cast<uint16_t>(Read8bitFromMemory(address + 1)) << 8;
+	return value;
+}
+
+void MMU::Write8bitToMemory(const Memory::Address &address, uint8_t value)
+{
+	Memory::Region region{ Memory::Region::ROM };
+	uint16_t relative_address{ 0 };
+	std::tie(region, relative_address) = address.GetRelativeAddress();
 
 	try
 	{
-		memory_regions_.at(region).at(local_address) = value;
+		memory_regions_.at(region).at(relative_address) = value;
 	}
 	catch (std::out_of_range &)
 	{
 		std::cout << "Trying to write out of memory region range: " <<
-			"Address: 0x" << std::hex << absolute_address << ", value: " << static_cast<size_t>(value) << std::endl;
+			"Address: 0x" << std::hex << address.GetAbsoluteAddress() << ", value: " << static_cast<size_t>(value) << std::endl;
 	}
 
-	Notify(&MMUObserver::OnMemoryWrite, region, local_address, value);
+	Notify(&MMUObserver::OnMemoryWrite, address, value);
 }
 
-void MMU::Write16bitToMemory(uint16_t absolute_address, uint16_t value)
+void MMU::Write16bitToMemory(const Memory::Address &address, uint16_t value)
 {
-	Write8bitToMemory(absolute_address, static_cast<uint8_t>(value & 0xFF));
-	Write8bitToMemory(absolute_address + 1, static_cast<uint8_t>(value >> 8));
-}
-
-void MMU::Write8bitToMemory(Region region, uint16_t local_address, uint8_t value)
-{
-	Write8bitToMemory(LocalToAbsoluteAddress(region, local_address), value);
+	Write8bitToMemory(address, static_cast<uint8_t>(value & 0xFF));
+	Write8bitToMemory(address + 1, static_cast<uint8_t>(value >> 8));
 }
 
 void MMU::LoadRom(std::string rom_file_path)
@@ -116,14 +98,14 @@ void MMU::LoadRom(std::string rom_file_path)
 			auto file_size = rom_file.tellg();
 			rom_file.seekg(0, rom_file.beg);
 
-			memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ROM), std::forward_as_tuple(file_size, 0));
+			memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::ROM), std::forward_as_tuple(file_size, 0));
 
-			if (file_size > memory_regions_.at(Region::ROM).size())
+			if (file_size > memory_regions_.at(Memory::Region::ROM).size())
 			{
 				throw std::runtime_error("ROM file is bigger than ROM memory region");
 			}
 
-			rom_file.read(reinterpret_cast<char*>(memory_regions_.at(Region::ROM).data()), file_size);
+			rom_file.read(reinterpret_cast<char*>(memory_regions_.at(Memory::Region::ROM).data()), file_size);
 			if (!rom_file)
 			{
 				throw std::runtime_error("ROM file could not be completely read");
@@ -137,41 +119,5 @@ void MMU::LoadRom(std::string rom_file_path)
 	catch (std::out_of_range &)
 	{
 		throw std::runtime_error("Tried to anccess invalid memory region or out of range data when loading ROM");
-	}
-}
-
-std::tuple<Region, uint16_t> MMU::AbsoluteToLocalAddress(uint16_t absolute_address) const
-{
-	try
-	{
-		for (const auto& pair : region_start_addresses_)
-		{
-			if ((absolute_address >= pair.second)
-				&& (absolute_address < (pair.second + memory_regions_.at(pair.first).size())))
-			{
-				if ((pair.first == Region::BIOS) && (!bios_loaded_))
-				{
-					continue;
-				}
-				return std::make_tuple(pair.first, absolute_address - pair.second);
-			}
-		}
-		std::cout << "Trying to convert an absolute address not found in any memory region" << std::endl;
-	}
-	catch (std::out_of_range &)
-	{
-		throw std::logic_error("Trying to convert an absolute address of a non-implemented memory region");
-	}
-}
-
-uint16_t MMU::LocalToAbsoluteAddress(Region region, uint16_t local_address) const
-{
-	try
-	{
-		return region_start_addresses_.at(region) + local_address;
-	}
-	catch (std::out_of_range &)
-	{
-		throw std::logic_error("Trying to convert a local address of a non-implemented memory region");
 	}
 }

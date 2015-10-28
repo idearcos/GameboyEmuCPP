@@ -105,6 +105,9 @@
     <ClCompile Include="Source\Z80_GeneralArithmeticAndCpuControlTest.cpp">
       <Filter>Source Files\Z80 Instructions</Filter>
     </ClCompile>
+    <ClCompile Include="..\GBEmu\Source\Memory.cpp">
+      <Filter>Source Under Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\TesterMMU.h">
