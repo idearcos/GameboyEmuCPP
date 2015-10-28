@@ -5,10 +5,10 @@
 
 enum class Mode : uint8_t
 {
-	ReadingOAM = 2,
-	ReadingVRAM = 3,
 	HBlank = 0,
-	VBlank = 1
+	VBlank = 1,
+	ReadingOAM = 2,
+	ReadingVRAM = 3
 };
 
 class GPU;

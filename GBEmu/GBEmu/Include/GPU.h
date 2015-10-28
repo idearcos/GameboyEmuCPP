@@ -99,11 +99,10 @@ private:
 	Sprite::Size sprites_size_{ Sprite::Size::Pixels8x8 };
 
 	// LCD Status
-	bool enable_line_compare_interrupt_{ false };
-	bool enable_oam_interrupt_{ false };
-	bool enable_vblank_interrupt_{ false };
 	bool enable_hblank_interrupt_{ false };
-	bool line_coincidence_{ false };
+	bool enable_vblank_interrupt_{ false };
+	bool enable_oam_interrupt_{ false };
+	bool enable_line_compare_interrupt_{ false };	
 
 private:
 	GPU(const GPU&) = delete;

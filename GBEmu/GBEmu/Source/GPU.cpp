@@ -162,7 +162,10 @@ void GPU::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 		}
 		else if (lcd_status_register_ == address)
 		{
-			//TODO which bits are Write?
+			enable_hblank_interrupt_ = (value & 0x08) != 0;
+			enable_vblank_interrupt_ = (value & 0x10) != 0;
+			enable_oam_interrupt_ = (value & 0x20) != 0;
+			enable_line_compare_interrupt_ = (value & 0x40) != 0;
 		}
 		else if (scroll_y_register_ == address)
 		{
@@ -229,14 +232,7 @@ void GPU::RefreshScreen()
 
 uint8_t GPU::IncrementCurrentLine()
 {
-	current_line_ += 1;
-	if (current_line_ == 144)
-	{
-		auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
-		interrupt_flags |= 0x01;
-		WriteToMmu(interrupt_flags_register_, interrupt_flags);
-	}
-	else if (current_line_ == 154)
+	if (++current_line_ == 154)
 	{
 		current_line_ = 0;
 	}
@@ -253,6 +249,40 @@ void GPU::SetCurrentMode(Mode new_mode)
 		lcd_status &= ~(0x03);
 		lcd_status |= static_cast<std::underlying_type_t<Mode>>(new_mode);
 		WriteToMmu(lcd_status_register_, lcd_status);
+
+		switch (new_mode)
+		{
+		case Mode::HBlank:
+			if (enable_hblank_interrupt_)
+			{
+				{ auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
+				interrupt_flags |= 0x02;
+				WriteToMmu(interrupt_flags_register_, interrupt_flags); }
+			}
+			break;
+		case Mode::VBlank:
+			// Always request VBlank interrupt
+		{auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
+		interrupt_flags |= 0x01;
+		WriteToMmu(interrupt_flags_register_, interrupt_flags); }
+
+			// Request LCD status interrupt only if enabled
+			if (enable_vblank_interrupt_)
+			{
+				{ auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
+				interrupt_flags |= 0x02;
+				WriteToMmu(interrupt_flags_register_, interrupt_flags); }
+			}
+			break;
+		case Mode::ReadingOAM:
+			if (enable_oam_interrupt_)
+			{
+				{ auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
+				interrupt_flags |= 0x02;
+				WriteToMmu(interrupt_flags_register_, interrupt_flags); }
+			}
+			break;
+		}
 	}
 	current_mode_ = new_mode;
 	//TODO LCD status interrupt
@@ -268,8 +298,8 @@ void GPU::CompareLineAndUpdateRegister()
 {
 	auto lcd_status = mmu_.Read8bitFromMemory(lcd_status_register_);
 	lcd_status &= ~(0x04);
-	line_coincidence_ = (current_line_ == line_compare_);
-	if (line_coincidence_)
+	const auto line_coincidence = (current_line_ == line_compare_);
+	if (line_coincidence)
 	{
 		lcd_status |= 1 << 2;
 	}
@@ -279,9 +309,11 @@ void GPU::CompareLineAndUpdateRegister()
 	}
 	WriteToMmu(lcd_status_register_, lcd_status);
 
-	if (enable_line_compare_interrupt_)
+	if (enable_line_compare_interrupt_ && line_coincidence)
 	{
-		//TODO implement interrupt
+		auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
+		interrupt_flags |= 0x02;
+		WriteToMmu(interrupt_flags_register_, interrupt_flags);
 	}
 }
 
