@@ -7,25 +7,29 @@
 #include "IMMU.h"
 #include "MMUObserver.h"
 
-enum class Keys : uint8_t
+enum class DirectionKeys : uint8_t
 {
+	Right = 0x01,
+	Left = 0x02,
 	Up = 0x04,
 	Down = 0x08,
-	Left = 0x02,
-	Right = 0x01,
+};
+
+enum class ButtonKeys : uint8_t
+{
 	A = 0x01,
 	B = 0x02,
-	Start = 0x08,
-	Select = 0x04
+	Select = 0x04,
+	Start = 0x08
 };
 
-enum class KeyColumn : uint8_t
+enum class KeyGroups : uint8_t
 {
-	Bit4 = 0x10,
-	Bit5 = 0x20
+	Directions = 0x10,
+	Buttons = 0x20
 };
 
-std::ostream& operator << (std::ostream& os, const KeyColumn& key_column);
+std::ostream& operator << (std::ostream& os, const KeyGroups& key_column);
 
 class KeyPad : public MMUObserver
 {
@@ -35,7 +39,7 @@ public:
 
 	void HandleKeys(int key, int action);
 
-	uint8_t KeyStatusToByte(KeyColumn requested_column) const;
+	uint8_t KeyStatusToByte(KeyGroups requested_key_group) const;
 
 	void OnMemoryWrite(const Memory::Address &address, uint8_t value) override;
 
@@ -45,8 +49,8 @@ private:
 private:
 	const Memory::Address keypad_control_register_{ 0xFF00 };
 
-	using KeyStatus = std::map<Keys, bool>;
-	std::map<KeyColumn, KeyStatus> keys_pressed_;
+	std::map<DirectionKeys, bool> direction_keys_pressed_;
+	std::map<ButtonKeys, bool> button_keys_pressed_;
 	IMMU &mmu_;
 
 	mutable bool writing_to_mmu_{ false };

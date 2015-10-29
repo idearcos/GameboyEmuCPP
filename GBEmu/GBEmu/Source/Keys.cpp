@@ -2,18 +2,19 @@
 #include <type_traits>
 #include <iostream>
 #include <sstream>
+#include <list>
 
 KeyPad::KeyPad(IMMU &mmu) :
 	mmu_(mmu)
 {
-	keys_pressed_[KeyColumn::Bit5][Keys::Up] = false;
-	keys_pressed_[KeyColumn::Bit5][Keys::Down] = false;
-	keys_pressed_[KeyColumn::Bit5][Keys::Left] = false;
-	keys_pressed_[KeyColumn::Bit5][Keys::Right] = false;
-	keys_pressed_[KeyColumn::Bit4][Keys::A] = false;
-	keys_pressed_[KeyColumn::Bit4][Keys::B] = false;
-	keys_pressed_[KeyColumn::Bit4][Keys::Start] = false;
-	keys_pressed_[KeyColumn::Bit4][Keys::Select] = false;
+	direction_keys_pressed_[DirectionKeys::Up] = false;
+	direction_keys_pressed_[DirectionKeys::Down] = false;
+	direction_keys_pressed_[DirectionKeys::Left] = false;
+	direction_keys_pressed_[DirectionKeys::Right] = false;
+	button_keys_pressed_[ButtonKeys::A] = false;
+	button_keys_pressed_[ButtonKeys::B] = false;
+	button_keys_pressed_[ButtonKeys::Start] = false;
+	button_keys_pressed_[ButtonKeys::Select] = false;
 }
 
 void KeyPad::HandleKeys(int key, int action)
@@ -23,54 +24,63 @@ void KeyPad::HandleKeys(int key, int action)
 	switch (key)
 	{
 	case GLFW_KEY_W:
-		keys_pressed_[KeyColumn::Bit5][Keys::Up] = key_pressed;
+		direction_keys_pressed_[DirectionKeys::Up] = key_pressed;
 		break;
 	case GLFW_KEY_A:
-		keys_pressed_[KeyColumn::Bit5][Keys::Left] = key_pressed;
+		direction_keys_pressed_[DirectionKeys::Left] = key_pressed;
 		break;
 	case GLFW_KEY_S:
-		keys_pressed_[KeyColumn::Bit5][Keys::Down] = key_pressed;
+		direction_keys_pressed_[DirectionKeys::Down] = key_pressed;
 		break;
 	case GLFW_KEY_D:
-		keys_pressed_[KeyColumn::Bit5][Keys::Right] = key_pressed;
+		direction_keys_pressed_[DirectionKeys::Right] = key_pressed;
 		break;
 	case GLFW_KEY_J:
-		keys_pressed_[KeyColumn::Bit4][Keys::B] = key_pressed;
+		button_keys_pressed_[ButtonKeys::B] = key_pressed;
 		break;
 	case GLFW_KEY_K:
-		keys_pressed_[KeyColumn::Bit4][Keys::A] = key_pressed;
+		button_keys_pressed_[ButtonKeys::A] = key_pressed;
 		break;
 	case GLFW_KEY_SPACE:
-		keys_pressed_[KeyColumn::Bit4][Keys::Start] = key_pressed;
+		button_keys_pressed_[ButtonKeys::Start] = key_pressed;
 		break;
 	case GLFW_KEY_LEFT_CONTROL:
-		keys_pressed_[KeyColumn::Bit4][Keys::Select] = key_pressed;
+		button_keys_pressed_[ButtonKeys::Select] = key_pressed;
 		break;
 	default:
 		return;
 	}
 }
 
-uint8_t KeyPad::KeyStatusToByte(KeyColumn requested_column) const
+uint8_t KeyPad::KeyStatusToByte(KeyGroups requested_key_group) const
 {
-	try
+	switch (requested_key_group)
 	{
-		uint8_t value{ 0x0F };
-		for (const auto& pair : keys_pressed_.at(requested_column))
+	case KeyGroups::Directions:
+		{uint8_t value{ 0x3F };
+		for (const auto& pair : direction_keys_pressed_)
 		{
 			if (pair.second)
 			{
-				value &= ~(static_cast<std::underlying_type_t<Keys>>(pair.first));
+				value &= ~(static_cast<std::underlying_type_t<DirectionKeys>>(pair.first));
 			}
 		}
-		return value;
-	}
-	catch (std::out_of_range &)
-	{
+		return value; }
+	case KeyGroups::Buttons:
+		{uint8_t value{ 0x3F };
+		for (const auto& pair : direction_keys_pressed_)
+		{
+			if (pair.second)
+			{
+				value &= ~(static_cast<std::underlying_type_t<DirectionKeys>>(pair.first));
+			}
+		}
+		return value; }
+	default:
 		//std::stringstream msg;
-		std::cout << "Trying to access invalid keypad column: " << requested_column << std::endl;
+		std::cout << "Trying to access invalid key group: " << requested_key_group << std::endl;
 		//throw std::logic_error(msg.str());
-		return 0x0F;
+		return 0x3F;
 	}
 }
 
@@ -83,7 +93,26 @@ void KeyPad::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 
 	if (keypad_control_register_ == address)
 	{
-		WriteToMmu(keypad_control_register_, KeyStatusToByte(static_cast<KeyColumn>(value & 0x30)));
+		std::list<KeyGroups> requested_key_groups;
+		// All keypad-related bits are active-low
+		if (((value & 0x30) & static_cast<std::underlying_type_t<KeyGroups>>(KeyGroups::Directions)) == 0)
+		{
+			requested_key_groups.push_back(KeyGroups::Directions);
+		}
+		if (((value & 0x30) & static_cast<std::underlying_type_t<KeyGroups>>(KeyGroups::Buttons)) == 0)
+		{
+			requested_key_groups.push_back(KeyGroups::Buttons);
+		}
+		
+		if (requested_key_groups.size() == 1)
+		{
+			WriteToMmu(keypad_control_register_, KeyStatusToByte(requested_key_groups.front()));
+		}
+		else
+		{
+			// If none or both key groups are requested, just return no keys pressed
+			WriteToMmu(keypad_control_register_, 0x3F);
+		}
 	}
 }
 
@@ -94,15 +123,15 @@ void KeyPad::WriteToMmu(const Memory::Address &address, uint8_t value) const
 	writing_to_mmu_ = false;
 }
 
-std::ostream& operator << (std::ostream& os, const KeyColumn& key_column)
+std::ostream& operator << (std::ostream& os, const KeyGroups& key_column)
 {
 	switch (key_column)
 	{
-	case KeyColumn::Bit4:
-		os << "Bit4";
+	case KeyGroups::Directions:
+		os << "Directions";
 		break;
-	case KeyColumn::Bit5:
-		os << "Bit5";
+	case KeyGroups::Buttons:
+		os << "Buttons";
 		break;
 	default:
 		os << static_cast<size_t>(key_column);
