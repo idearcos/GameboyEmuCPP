@@ -78,31 +78,33 @@ void Z80::Execute(Instruction instruction)
 
 void Z80::CheckAndHandleInterrupts()
 {
-	if (interrupt_master_enable_ || (State::Halted == state_) || (State::Stopped == state_)) // STOP under test
+	if ((State::Stopped == state_) && (interrupts_signaled_[Interrupt::Joypad]))
 	{
-		for (auto &pair : interrupts_signaled_)
+		std::cout << "STOP mode cancelled" << std::endl;
+		state_ = State::Running;
+		return;
+	}
+	if ((State::Running == state_) && (!interrupt_master_enable_))
+	{
+		return;
+	}
+
+	for (auto &pair : interrupts_signaled_)
+	{
+		if (pair.second && interrupts_enabled_[pair.first])
 		{
-			if (pair.second && interrupts_enabled_[pair.first])
+			// The interrupt master enable is not needed to cancel Halt mode (ref: Game Boy Programming Manual p.112)
+			if (State::Halted == state_)
 			{
-				// The interrupt master enable is not needed to cancel Halt mode (ref: Game Boy Programming Manual p.112)
-				if (State::Halted == state_)
-				{
-					state_ = State::Running;
-				}
+				state_ = State::Running;
+			}
 
-				// STOP under test
-				if (State::Stopped == state_)
-				{
-					state_ = State::Running;
-				}
+			if (interrupt_master_enable_)
+			{
+				interrupt_master_enable_ = false;
+				pair.second = false;
 
-				if (interrupt_master_enable_)
-				{
-					interrupt_master_enable_ = false;
-					pair.second = false;
-
-					Execute(pair.first);
-				}
+				Execute(pair.first);
 			}
 		}
 	}

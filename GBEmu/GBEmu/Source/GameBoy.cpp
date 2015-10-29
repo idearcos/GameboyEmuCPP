@@ -10,7 +10,7 @@ GameBoy::GameBoy() :
 	mmu_.AddObserver(&z80_);
 	mmu_.AddObserver(&gpu_);
 	mmu_.AddObserver(&keypad_);
-	mmu_.LoadRom("ttt.gb");
+	mmu_.LoadRom("cpu_instrs.gb");
 
 	glfwSetWindowUserPointer(window_, this);
 	glfwSetKeyCallback(window_, GameBoy::OnKeyEvent);
@@ -25,12 +25,13 @@ void GameBoy::Run()
 			switch (z80_.GetState())
 			{
 			case Z80::State::Running:
-				// STOP under test
-			case Z80::State::Stopped:
 				z80_.Execute(z80_.FetchByte());
 				break;
 			case Z80::State::Halted:
 				z80_.Execute(0x00);
+				break;
+			case Z80::State::Stopped:
+				glfwWaitEvents();
 				break;
 			}
 

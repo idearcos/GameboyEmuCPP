@@ -50,6 +50,14 @@ void KeyPad::HandleKeys(int key, int action)
 	default:
 		return;
 	}
+
+	// Only request interrupt during the initial press, not while repeating that same press
+	if (GLFW_PRESS == action)
+	{
+		auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
+		interrupt_flags |= 0x10;
+		WriteToMmu(interrupt_flags_register_, interrupt_flags);
+	}
 }
 
 uint8_t KeyPad::KeyStatusToByte(KeyGroups requested_key_group) const

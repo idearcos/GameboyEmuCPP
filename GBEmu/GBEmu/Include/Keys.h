@@ -48,6 +48,7 @@ private:
 
 private:
 	const Memory::Address keypad_control_register_{ 0xFF00 };
+	const Memory::Address interrupt_flags_register_{ Memory::Region::IO, 0x000F };
 
 	std::map<DirectionKeys, bool> direction_keys_pressed_;
 	std::map<ButtonKeys, bool> button_keys_pressed_;
