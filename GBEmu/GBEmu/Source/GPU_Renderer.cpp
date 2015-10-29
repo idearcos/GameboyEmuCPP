@@ -19,7 +19,7 @@ Renderer::Renderer(GLFWwindow* &window, size_t screen_width, size_t screen_heigh
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window_ = glfwCreateWindow(screen_width_, screen_height_, "GameBoy :)", NULL, NULL);
+	window_ = glfwCreateWindow(static_cast<int>(screen_width_), static_cast<int>(screen_height_), "GameBoy :)", NULL, NULL);
 	if (nullptr == window_)
 	{
 		glfwTerminate();

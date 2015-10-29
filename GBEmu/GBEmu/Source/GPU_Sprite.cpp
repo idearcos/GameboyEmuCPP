@@ -66,7 +66,7 @@ void Sprite::RenderSprite(Renderer &renderer, const TileSet &tileset, const std:
 				// Check if current sprite is inside the screen
 				if (((x_position_ + x) >= 0) && ((x_position_ + x) < 160))
 				{
-					if (is_above_background_ || (Color::Transparent == renderer.GetPixel(x_position_ + x, current_line)))
+					if (is_above_background_ && (Color::Transparent != renderer.GetPixel(x_position_ + x, current_line)))
 					{
 						renderer.RenderPixel(x_position_ + x, current_line, obj_palettes.at(obj_palette_).GetColor(tile.ReadPixel(x, line_in_tile)));
 					}
