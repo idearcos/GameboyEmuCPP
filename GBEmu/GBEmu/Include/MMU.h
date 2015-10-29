@@ -8,6 +8,7 @@
 #include "Subject.h"
 #include "MMUObserver.h"
 #include "Memory.h"
+#include "RomInfo.h"
 
 class MMUObserver;
 
@@ -28,7 +29,10 @@ private:
 	std::map<Memory::Region, std::vector<uint8_t>> memory_regions_;
 
 	const std::vector<uint8_t> bios_;
-	mutable bool bios_loaded_{ true };
+	mutable bool bios_loaded_{ false };
+
+	size_t currently_loaded_rom_bank_{ 1 };
+	size_t current_rom_bank_set{ 0 };
 
 private:
 	MMU(const MMU&) = delete;

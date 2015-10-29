@@ -38,7 +38,7 @@ uint8_t MMU::Read8bitFromMemory(const Memory::Address &address) const
 		Memory::Region region{ Memory::Region::ROM };
 		uint16_t relative_address{ 0 };
 		std::tie(region, relative_address) = address.GetRelativeAddress();
-		if (bios_loaded_ && relative_address < bios_.size())
+		if (bios_loaded_ && (Memory::Region::ROM == region) && (relative_address < bios_.size()))
 		{
 			if (relative_address == bios_.size() - 1)
 			{
@@ -52,6 +52,7 @@ uint8_t MMU::Read8bitFromMemory(const Memory::Address &address) const
 	{
 		std::cout << "Trying to read out of memory region range: " <<
 			"Address: 0x" << std::hex << address.GetAbsoluteAddress() << std::endl;
+		return 0;
 	}
 }
 
@@ -95,20 +96,39 @@ void MMU::LoadRom(std::string rom_file_path)
 		if (rom_file)
 		{
 			rom_file.seekg(0, rom_file.end);
-			auto file_size = rom_file.tellg();
+			auto file_size = static_cast<size_t>(rom_file.tellg());
 			rom_file.seekg(0, rom_file.beg);
 
 			memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::ROM), std::forward_as_tuple(file_size, 0));
-
-			if (file_size > memory_regions_.at(Memory::Region::ROM).size())
-			{
-				throw std::runtime_error("ROM file is bigger than ROM memory region");
-			}
 
 			rom_file.read(reinterpret_cast<char*>(memory_regions_.at(Memory::Region::ROM).data()), file_size);
 			if (!rom_file)
 			{
 				throw std::runtime_error("ROM file could not be completely read");
+			}
+
+			RomInfo rom_info{ memory_regions_.at(Memory::Region::ROM) };
+			uint8_t header_checksum{ 0 };
+			for (auto i = 0x0134; i <= 0x014C; i++)
+			{
+				header_checksum -= memory_regions_.at(Memory::Region::ROM).at(i) + 1;
+			}
+			if (header_checksum != rom_info.header_checksum_)
+			{
+				throw std::runtime_error("Header checksum of cartridge failed");
+			}
+			uint16_t global_checksum{ 0 };
+			for (auto i = 0; i < memory_regions_.at(Memory::Region::ROM).size(); i++)
+			{
+				if ((i == 0x14E) || (i == 0x14F))
+				{
+					continue;
+				}
+				global_checksum -= memory_regions_.at(Memory::Region::ROM).at(i) + 1;
+			}
+			if (global_checksum != rom_info.global_checksum_)
+			{
+				std::cout << "Global checksum of cartridge failed" << std::endl;
 			}
 		}
 		else
