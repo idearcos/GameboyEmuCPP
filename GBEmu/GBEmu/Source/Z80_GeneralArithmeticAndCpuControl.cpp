@@ -77,6 +77,8 @@ Clock Z80::NoOperation()
 // (Z80 p.179)
 Clock Z80::Halt()
 {
+	std::cout << "Z80 entering HALT mode" << std::endl;
+
 	state_ = State::Halted;
 
 	return Clock(1, 4);

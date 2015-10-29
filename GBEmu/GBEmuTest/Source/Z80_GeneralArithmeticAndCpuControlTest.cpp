@@ -177,19 +177,19 @@ TEST(Z80_GeneralArithmeticAndCpuControlTest, EnableInterrupts)
 	TestEnableOrDisableInterrupts(0xFB, true, true);
 }
 
-void TestNopHaltOrStop(uint8_t opcode, Z80::State expected_state)
+void TestNopHaltOrStop(uint8_t opcode, Z80::State expected_state, uint16_t expected_pc = 0, uint8_t next_opcode = 0x00)
 {
 	std::list<Flags> all_flags{ Flags::Zero, Flags::Subtract, Flags::HalfCarry, Flags::Carry };
 
 	TesterMMU mmu;
 	Z80 z80(mmu);
 
-	z80.SetInterruptMasterEnable(false);
+	mmu.Write8bitToMemory(0, next_opcode);
 	z80.Execute(opcode);
 
 	ASSERT_EQ(expected_state, z80.GetState()) << "Z80 state unexpected value: "
 		<< std::boolalpha << z80.GetState();
-	ASSERT_EQ(0, z80.GetRegisters().Read(Register16bit::PC)) << "PC read unexpected value: "
+	ASSERT_EQ(expected_pc, z80.GetRegisters().Read(Register16bit::PC)) << "PC read unexpected value: "
 		<< static_cast<size_t>(z80.GetRegisters().Read(Register16bit::PC));
 	ASSERT_EQ(Clock(1, 4), z80.GetClock()) << "Unexpected operation duration: "
 		<< static_cast<size_t>(z80.GetClock().GetTicks());
@@ -211,5 +211,6 @@ TEST(Z80_GeneralArithmeticAndCpuControlTest, Halt)
 
 TEST(Z80_GeneralArithmeticAndCpuControlTest, Stop)
 {
-	ASSERT_THROW(TestNopHaltOrStop(0x10, Z80::State::Stopped), std::runtime_error);
+	TestNopHaltOrStop(0x10, Z80::State::Stopped, 1, 0x00);
+	ASSERT_THROW(TestNopHaltOrStop(0x10, Z80::State::Stopped, 1, 0x11), std::runtime_error);
 }

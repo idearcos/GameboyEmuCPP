@@ -78,16 +78,31 @@ void Z80::Execute(Instruction instruction)
 
 void Z80::CheckAndHandleInterrupts()
 {
-	if (interrupt_master_enable_)
+	if (interrupt_master_enable_ || (State::Halted == state_) || (State::Stopped == state_)) // STOP under test
 	{
 		for (auto &pair : interrupts_signaled_)
 		{
 			if (pair.second && interrupts_enabled_[pair.first])
 			{
-				interrupt_master_enable_ = false;
-				pair.second = false;
+				// The interrupt master enable is not needed to cancel Halt mode (ref: Game Boy Programming Manual p.112)
+				if (State::Halted == state_)
+				{
+					state_ = State::Running;
+				}
 
-				Execute(pair.first);
+				// STOP under test
+				if (State::Stopped == state_)
+				{
+					state_ = State::Running;
+				}
+
+				if (interrupt_master_enable_)
+				{
+					interrupt_master_enable_ = false;
+					pair.second = false;
+
+					Execute(pair.first);
+				}
 			}
 		}
 	}

@@ -291,6 +291,8 @@ private:
 	Clock LoadRegisterFromRegisterPlusDisplacement(Register16bit dest, Register16bit source, int8_t displacement);
 	// ADD rr, n
 	Clock Add(Register16bit dest, int8_t value);
+	// STOP
+	Clock Stop(uint8_t next_fetched_byte);
 #pragma endregion
 #pragma endregion
 

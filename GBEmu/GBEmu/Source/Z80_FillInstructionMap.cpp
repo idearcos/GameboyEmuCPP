@@ -47,8 +47,8 @@ Z80::InstructionMap Z80::FillInstructionMap()
 #pragma endregion
 
 #pragma region Instructions 0x10 - 0x1F
-	//TODO STOP
-	instructions[0x10] = [this](){ return this->WrongOpCode(0x10); };
+	// STOP
+	instructions[0x10] = [this](){ return this->Stop(this->FetchByte()); };
 	// LD DE, nn
 	instructions[0x11] = [this](){
 		uint16_t value{ this->FetchByte() };

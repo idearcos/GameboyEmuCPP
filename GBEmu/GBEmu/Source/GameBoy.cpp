@@ -10,7 +10,7 @@ GameBoy::GameBoy() :
 	mmu_.AddObserver(&z80_);
 	mmu_.AddObserver(&gpu_);
 	mmu_.AddObserver(&keypad_);
-	mmu_.LoadRom("tetris.gb");
+	mmu_.LoadRom("ttt.gb");
 
 	glfwSetWindowUserPointer(window_, this);
 	glfwSetKeyCallback(window_, GameBoy::OnKeyEvent);
@@ -20,10 +20,20 @@ void GameBoy::Run()
 {
 	while (!glfwWindowShouldClose(window_))
 	{
-		const auto opcode = z80_.FetchByte();
 		try
 		{
-			z80_.Execute(opcode);
+			switch (z80_.GetState())
+			{
+			case Z80::State::Running:
+				// STOP under test
+			case Z80::State::Stopped:
+				z80_.Execute(z80_.FetchByte());
+				break;
+			case Z80::State::Halted:
+				z80_.Execute(0x00);
+				break;
+			}
+
 			z80_.CheckAndHandleInterrupts();
 		}
 		catch (std::exception &exc)

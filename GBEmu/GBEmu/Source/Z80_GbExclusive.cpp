@@ -1,4 +1,5 @@
 #include "Z80.h"
+#include <sstream>
 
 // LDI (rr), r'
 Clock Z80::LoadAddressAndIncrement(Register16bit dest_addr, Register8bit source)
@@ -123,4 +124,21 @@ Clock Z80::Add(Register16bit dest, int8_t value)
 	registers_.Write(dest, static_cast<uint16_t>(result & 0xFFFF));
 
 	return Clock(4, 16);
+}
+
+// STOP
+Clock Z80::Stop(uint8_t next_fetched_byte)
+{
+	if (0x00 != next_fetched_byte)
+	{
+		std::stringstream msg;
+		msg << "Byte fetched right after STOP instruction is != 0x00 (" << static_cast<size_t>(next_fetched_byte) << ")";
+		throw std::runtime_error(msg.str());
+	}
+
+	std::cout << "Z80 entering STOP mode" << std::endl;
+
+	state_ = State::Stopped;
+
+	return Clock(1, 4);
 }
