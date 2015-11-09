@@ -4,9 +4,9 @@
 // (Z80 p.203)
 Clock Z80::Rlca()
 {
-	registers_.SetFlag(Flags::HalfCarry, false);
+	registers_.SetFlag(Flags::Zero, false);
 	registers_.SetFlag(Flags::Subtract, false);
-	// Z not affected
+	registers_.SetFlag(Flags::HalfCarry, false);
 
 	const bool bit_7_set = (registers_.Read(Register8bit::A) & 0x80) != 0;
 	const uint8_t rotated_acc = (registers_.Read(Register8bit::A) << 1) | (bit_7_set ? 1 : 0);
@@ -21,9 +21,9 @@ Clock Z80::Rlca()
 // (Z80 p.205)
 Clock Z80::Rla()
 {
-	registers_.SetFlag(Flags::HalfCarry, false);
+	registers_.SetFlag(Flags::Zero, false);
 	registers_.SetFlag(Flags::Subtract, false);
-	// Z not affected
+	registers_.SetFlag(Flags::HalfCarry, false);
 
 	const bool bit_7_set = (registers_.Read(Register8bit::A) & 0x80) != 0;
 	const uint8_t rotated_acc = (registers_.Read(Register8bit::A) << 1) | (registers_.IsFlagSet(Flags::Carry) ? 1 : 0);
@@ -38,9 +38,9 @@ Clock Z80::Rla()
 // (Z80 p.207)
 Clock Z80::Rrca()
 {
-	registers_.SetFlag(Flags::HalfCarry, false);
+	registers_.SetFlag(Flags::Zero, false);
 	registers_.SetFlag(Flags::Subtract, false);
-	// Z not affected
+	registers_.SetFlag(Flags::HalfCarry, false);
 
 	const bool bit_0_set = (registers_.Read(Register8bit::A) & 1) != 0;
 	const uint8_t rotated_acc = (registers_.Read(Register8bit::A) >> 1) | (bit_0_set ? 0x80 : 0);
@@ -55,9 +55,9 @@ Clock Z80::Rrca()
 // (Z80 p.209)
 Clock Z80::Rra()
 {
-	registers_.SetFlag(Flags::HalfCarry, false);
+	registers_.SetFlag(Flags::Zero, false);
 	registers_.SetFlag(Flags::Subtract, false);
-	// Z not affected
+	registers_.SetFlag(Flags::HalfCarry, false);
 
 	const bool bit_0_set = (registers_.Read(Register8bit::A) & 1) != 0;
 	const uint8_t rotated_acc = (registers_.Read(Register8bit::A) >> 1) | (registers_.IsFlagSet(Flags::Carry) ? 0x80 : 0);

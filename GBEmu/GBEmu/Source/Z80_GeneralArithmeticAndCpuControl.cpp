@@ -9,18 +9,18 @@ Clock Z80::DAA()
 	const uint8_t original_value{ registers_.Read(Register8bit::A) };
 
 	// Correct the high nibble first
-	if ((original_value > 0x99) || registers_.IsFlagSet(Flags::Carry))
+	if (((original_value > 0x99) && (!registers_.IsFlagSet(Flags::Subtract))) || registers_.IsFlagSet(Flags::Carry))
 	{
 		correction_factor |= 0x60;
 	}
 	registers_.SetFlag(Flags::Carry, correction_factor != 0);
 
 	// Correct the low nibble
-	if (((original_value & 0x0F) > 9) || registers_.IsFlagSet(Flags::HalfCarry))
+	if ((((original_value & 0x0F) > 9) && (!registers_.IsFlagSet(Flags::Subtract))) || registers_.IsFlagSet(Flags::HalfCarry))
 	{
 		correction_factor |= 0x06;
 	}
-	registers_.SetFlag(Flags::HalfCarry, (correction_factor & 0x0F) != 0);
+	registers_.SetFlag(Flags::HalfCarry, false);
 
 	{const uint8_t result = registers_.IsFlagSet(Flags::Subtract) ? original_value - correction_factor :
 		original_value + correction_factor;
@@ -49,7 +49,7 @@ Clock Z80::InvertAccumulator()
 Clock Z80::InvertCarryFlag()
 {
 	registers_.SetFlag(Flags::Subtract, false);
-	registers_.SetFlag(Flags::HalfCarry, registers_.IsFlagSet(Flags::Carry));
+	registers_.SetFlag(Flags::HalfCarry, false);
 	registers_.SetFlag(Flags::Carry, !registers_.IsFlagSet(Flags::Carry));
 
 	return Clock(1, 4);

@@ -98,13 +98,16 @@ Clock Z80::LoadRegisterFromRegisterPlusDisplacement(Register16bit dest, Register
 	registers_.SetFlag(Flags::Zero, false);
 	registers_.SetFlag(Flags::Subtract, false);
 	
-	{const uint16_t low_12_bits_result = (registers_.Read(source) & 0x0FFF) + displacement;
-	registers_.SetFlag(Flags::HalfCarry, (low_12_bits_result & 0x1000) != 0); }
+	// Flags are calculated with unsigned value on lower byte of SP
+	{const uint16_t low_4_bits_result = (registers_.Read(source) & 0x000F) + (static_cast<uint8_t>(displacement) & 0x000F);
+	registers_.SetFlag(Flags::HalfCarry, (low_4_bits_result & 0x0010) != 0); }
 
-	const uint32_t result = registers_.Read(source) + displacement;
-	registers_.SetFlag(Flags::Carry, (result & 0x10000) != 0);
+	{const uint16_t low_8_bits_result = (registers_.Read(source) & 0x00FF) + static_cast<uint8_t>(displacement);
+	registers_.SetFlag(Flags::Carry, (low_8_bits_result & 0x0100) != 0); }
 
-	registers_.Write(dest, static_cast<uint16_t>(result & 0xFFFF));
+	const uint16_t result = registers_.Read(source) + displacement;
+
+	registers_.Write(dest, result);
 
 	return Clock(3, 12);
 }
@@ -115,13 +118,16 @@ Clock Z80::Add(Register16bit dest, int8_t value)
 	registers_.SetFlag(Flags::Zero, false);
 	registers_.SetFlag(Flags::Subtract, false);
 
-	{const uint16_t low_12_bits_result = (registers_.Read(dest) & 0x0FFF) + value;
-	registers_.SetFlag(Flags::HalfCarry, (low_12_bits_result & 0x1000) != 0); }
+	// Flags are calculated with unsigned value on lower byte of SP
+	{const uint16_t low_4_bits_result = (registers_.Read(dest) & 0x000F) + (static_cast<uint8_t>(value) & 0x000F);
+	registers_.SetFlag(Flags::HalfCarry, (low_4_bits_result & 0x0010) != 0); }
 
-	const uint32_t result = registers_.Read(dest) + value;
-	registers_.SetFlag(Flags::Carry, (result & 0x10000) != 0);
+	{const uint16_t low_8_bits_result = (registers_.Read(dest) & 0x00FF) + static_cast<uint8_t>(value);
+	registers_.SetFlag(Flags::Carry, (low_8_bits_result & 0x0100) != 0); }
 
-	registers_.Write(dest, static_cast<uint16_t>(result & 0xFFFF));
+	const uint16_t result = registers_.Read(dest) + value;
+
+	registers_.Write(dest, result);
 
 	return Clock(4, 16);
 }

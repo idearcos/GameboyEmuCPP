@@ -92,7 +92,8 @@ void Registers::Write(Register16bit reg, uint16_t value)
 	switch (reg)
 	{
 	case Register16bit::AF:
-		af_ = value;
+		// The lower 4 bits of register F are unusable
+		af_ = value & 0xFFF0;
 		break;
 	case Register16bit::BC:
 		bc_ = value;

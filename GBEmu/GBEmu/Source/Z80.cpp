@@ -102,7 +102,10 @@ void Z80::CheckAndHandleInterrupts()
 			if (interrupt_master_enable_)
 			{
 				interrupt_master_enable_ = false;
-				pair.second = false;
+				// Write into the IF register to disable the interrupt
+				auto interrupt_flags = mmu_.Read8bitFromMemory(0xFF0F);
+				interrupt_flags &= ~(static_cast<std::underlying_type_t<Interrupt>>(pair.first));
+				WriteToMmu(0xFF0F, interrupt_flags);
 
 				Execute(pair.first);
 			}
