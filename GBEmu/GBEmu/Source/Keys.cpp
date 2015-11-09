@@ -76,11 +76,11 @@ uint8_t KeyPad::KeyStatusToByte(KeyGroups requested_key_group) const
 		return value; }
 	case KeyGroups::Buttons:
 		{uint8_t value{ 0x3F };
-		for (const auto& pair : direction_keys_pressed_)
+		for (const auto& pair : button_keys_pressed_)
 		{
 			if (pair.second)
 			{
-				value &= ~(static_cast<std::underlying_type_t<DirectionKeys>>(pair.first));
+				value &= ~(static_cast<std::underlying_type_t<ButtonKeys>>(pair.first));
 			}
 		}
 		return value; }

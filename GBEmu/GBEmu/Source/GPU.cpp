@@ -16,7 +16,7 @@ GPU::GPU(GLFWwindow* &window, IMMU &mmu) :
 
 	for (auto i = 0; i < 4; i++)
 	{
-		bg_palette_.SetColor(i, Color::Transparent);
+		bg_and_window_palette_.SetColor(i, Color::Transparent);
 		obj_palettes_[ObjPalette::Zero].SetColor(i, Color::Transparent);
 		obj_palettes_[ObjPalette::One].SetColor(i, Color::Transparent);
 	}
@@ -151,14 +151,14 @@ void GPU::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 	{
 		if (lcd_control_register_ == address)
 		{
-			background_.EnableBackground((value & 0x01) != 0);
+			background_.Enable((value & 0x01) != 0);
 			sprites_on_ = (value & 0x02) != 0;
 			sprites_size_ = ((value & 0x04) != 0) ? Sprite::Size::Pixels8x16 : Sprite::Size::Pixels8x8;
 			current_bg_tilemap_ = ((value & 0x08) != 0) ? TileMap::Number::One : TileMap::Number::Zero;
-			current_bg_tileset_ = ((value & 0x10) != 0) ? TileSet::Number::One : TileSet::Number::Zero;
-			window_on_ = (value & 0x20) != 0;
+			current_bg_and_window_tileset_ = ((value & 0x10) != 0) ? TileSet::Number::One : TileSet::Number::Zero;
+			//window_.Enable((value & 0x20) != 0);
 			current_window_tilemap_ = ((value & 0x40) != 0) ? TileMap::Number::One : TileMap::Number::Zero;
-			lcd_on_ = (value & 0x80) != 0;
+			LcdOperation((value & 0x80) != 0);
 		}
 		else if (lcd_status_register_ == address)
 		{
@@ -185,7 +185,7 @@ void GPU::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 		}
 		else if (bg_palette_register_ == address)
 		{
-			bg_palette_.SetPaletteData(value);
+			bg_and_window_palette_.SetPaletteData(value);
 		}
 		else if (obj_palette_0_register_ == address)
 		{
@@ -197,11 +197,11 @@ void GPU::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 		}
 		else if (window_y_position_register_ == address)
 		{
-			//TODO implement Window
+			//window_.SetPositionY(value);
 		}
 		else if (window_x_position_plus_7_register_ == address)
 		{
-			//TODO implement Window
+			//window_.SetPositionX(value - 7);
 		}
 	}
 }
@@ -210,7 +210,9 @@ void GPU::RenderScanLine()
 {
 	if (lcd_on_)
 	{
-		background_.RenderBackground(renderer_, tileset_, tilemaps_.at(current_bg_tilemap_), bg_palette_, current_line_);
+		background_.RenderLine(renderer_, tileset_, current_bg_and_window_tileset_, tilemaps_.at(current_bg_tilemap_), bg_and_window_palette_, current_line_);
+
+		//window_.RenderLine(renderer_, tileset_, current_bg_and_window_tileset_, tilemaps_.at(current_window_tilemap_), bg_and_window_palette_, current_line_);
 
 		if (sprites_on_)
 		{
@@ -232,12 +234,8 @@ void GPU::RefreshScreen()
 
 uint8_t GPU::IncrementCurrentLine()
 {
-	if (++current_line_ == 154)
-	{
-		current_line_ = 0;
-	}
-	WriteToMmu(current_line_register_, current_line_);
-	CompareLineAndUpdateRegister();
+	SetCurrentLine(current_line_ + 1);
+
 	return current_line_;
 }
 
@@ -291,6 +289,26 @@ void GPU::SetCurrentMode(Mode new_mode)
 void GPU::SetLineCompare(uint8_t line)
 {
 	line_compare_ = line;
+	CompareLineAndUpdateRegister();
+}
+
+void GPU::LcdOperation(bool enable)
+{
+	lcd_on_ = enable;
+	if (!lcd_on_)
+	{
+		SetCurrentLine(0);
+	}
+}
+
+void GPU::SetCurrentLine(uint8_t line)
+{
+	current_line_ = line;
+	if (current_line_ >= 154)
+	{
+		current_line_ = 0;
+	}
+	WriteToMmu(current_line_register_, current_line_);
 	CompareLineAndUpdateRegister();
 }
 

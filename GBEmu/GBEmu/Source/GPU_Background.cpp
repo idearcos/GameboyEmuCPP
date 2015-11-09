@@ -11,7 +11,7 @@ Background::Background(size_t screen_width, size_t screen_height) :
 
 }
 
-void Background::EnableBackground(bool background_on)
+void Background::Enable(bool background_on)
 {
 	background_on_ = background_on;
 }
@@ -26,8 +26,8 @@ void Background::SetScrollY(uint8_t bg_scroll_y)
 	bg_scroll_y_ = bg_scroll_y;
 }
 
-void Background::RenderBackground(Renderer &renderer, const TileSet &tileset, const TileMap &tilemap,
-	const Palette &bg_palette, uint8_t current_line) const
+void Background::RenderLine(Renderer &renderer, const TileSet &tileset, TileSet::Number tileset_number,
+	const TileMap &tilemap, const Palette &bg_palette, uint8_t current_line) const
 {
 	if (background_on_)
 	{
@@ -42,7 +42,7 @@ void Background::RenderBackground(Renderer &renderer, const TileSet &tileset, co
 		{
 			const auto tile_number = tilemap.GetTileNumber(current_line + bg_scroll_y_, pixels_drawn + bg_scroll_x_);
 
-			const auto tile = tileset.GetTile(tile_number);
+			const auto tile = tileset.GetTile(tileset_number, tile_number);
 
 			for (auto x_in_tile = x_offset_in_tile; (x_in_tile < tile.GetWidth()) && (pixels_drawn < screen_width_); x_in_tile++)
 			{

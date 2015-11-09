@@ -23,14 +23,10 @@ Tile& TileSet::GetTile(size_t tile_number)
 	}
 }
 
-const Tile& TileSet::GetTile(size_t tile_number) const
+const Tile& TileSet::GetTile(Number tileset_number, uint8_t tile_number) const
 {
-	return const_cast<const Tile&>(const_cast<TileSet*>(this)->GetTile(tile_number));
-}
-
-uint8_t TileSet::ReadPixel(size_t tile_number, size_t x, size_t y) const
-{
-	return GetTile(tile_number).ReadPixel(x, y);
+	auto real_tile_number = (tileset_number == Number::One) ? tile_number : 256 + static_cast<int8_t>(tile_number);
+	return const_cast<const Tile&>(const_cast<TileSet*>(this)->GetTile(real_tile_number));
 }
 
 void TileSet::WritePixel(size_t tile_number, size_t x, size_t y, uint8_t value)

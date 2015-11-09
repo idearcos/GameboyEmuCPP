@@ -27,6 +27,7 @@ public:
 	uint8_t IncrementCurrentLine();
 	void SetCurrentMode(Mode new_mode);
 	void SetLineCompare(uint8_t line);
+	void LcdOperation(bool enable);
 
 	void OnMemoryWrite(const Memory::Address &address, uint8_t value) override;
 
@@ -36,6 +37,7 @@ private:
 	inline bool IsAddressInTileMap(uint16_t relative_address, TileMap::Number tilemap_number) const;
 	size_t GetAbsoluteTileNumber(TileMap::TileNumber tile_number, TileSet::Number tileset_number) const;
 
+	void SetCurrentLine(uint8_t line);
 	void CompareLineAndUpdateRegister();
 	void WriteToMmu(const Memory::Address &address, uint8_t value) const;
 
@@ -76,7 +78,7 @@ private:
 	Renderer renderer_;
 	Background background_;
 	std::array<Sprite, 40> sprites_;
-	Palette bg_palette_;
+	Palette bg_and_window_palette_;
 	std::map<ObjPalette, Palette> obj_palettes_;
 
 	IMMU &mmu_;
@@ -90,11 +92,10 @@ private:
 	uint8_t line_compare_{ 0 };
 
 	// LCD Control
-	bool lcd_on_{ true };
-	bool sprites_on_{ true };
-	bool window_on_{ true };
+	bool lcd_on_{ false };
+	bool sprites_on_{ false };
 	TileMap::Number current_bg_tilemap_{ TileMap::Number::Zero };
-	TileSet::Number current_bg_tileset_{ TileSet::Number::Zero };
+	TileSet::Number current_bg_and_window_tileset_{ TileSet::Number::Zero };
 	TileMap::Number current_window_tilemap_{ TileMap::Number::Zero };
 	Sprite::Size sprites_size_{ Sprite::Size::Pixels8x8 };
 

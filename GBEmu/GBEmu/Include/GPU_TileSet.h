@@ -17,10 +17,11 @@ public:
 	TileSet(size_t num_tiles, size_t tile_width, size_t tile_height);
 	~TileSet() = default;
 
-	Tile& GetTile(size_t tile_number);
-	const Tile& GetTile(size_t tile_number) const;
-	uint8_t ReadPixel(size_t tile_number, size_t x, size_t y) const;
+	const Tile& GetTile(Number tileset_number, uint8_t tile_number) const;
 	void WritePixel(size_t tile_number, size_t x, size_t y, uint8_t value);
+
+private:
+	Tile& GetTile(size_t tile_number);
 
 private:
 	const size_t num_tiles_;

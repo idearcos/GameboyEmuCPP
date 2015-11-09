@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include <vector>
+#include "GPU_TileSet.h"
 
 class Renderer;
-class TileSet;
 class TileMap;
 class Palette;
 
@@ -14,15 +14,15 @@ public:
 	Background(size_t screen_width, size_t screen_height);
 	~Background() = default;
 
-	void EnableBackground(bool background_on);
+	void Enable(bool background_on);
 	void SetScrollX(uint8_t bg_scroll_x);
 	void SetScrollY(uint8_t bg_scroll_y);
 
-	void RenderBackground(Renderer &renderer, const TileSet &tileset, const TileMap &tilemap,
-		const Palette &bg_palette, uint8_t current_line) const;
+	void RenderLine(Renderer &renderer, const TileSet &tileset, TileSet::Number tileset_number,
+		const TileMap &tilemap, const Palette &bg_palette, uint8_t current_line) const;
 
 private:
-	bool background_on_{ true };
+	bool background_on_{ false };
 	uint8_t bg_scroll_x_{ 0 };
 	uint8_t bg_scroll_y_{ 0 };
 

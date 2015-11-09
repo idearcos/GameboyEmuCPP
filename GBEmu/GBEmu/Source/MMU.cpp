@@ -21,7 +21,6 @@ MMU::MMU() :
 		0x21, 0x04, 0x01, 0x11, 0xA8, 0x00, 0x1A, 0x13, 0xBE, 0x20, 0xFE, 0x23, 0x7D, 0xFE, 0x34, 0x20,
 		0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50 })
 {
-	//memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Region::ROM), std::forward_as_tuple(0x10000, 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::VRAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::VRAM), 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::ERAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::ERAM), 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::WRAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::WRAM), 0));
@@ -69,9 +68,22 @@ void MMU::Write8bitToMemory(const Memory::Address &address, uint8_t value)
 	uint16_t relative_address{ 0 };
 	std::tie(region, relative_address) = address.GetRelativeAddress();
 
+	if (Memory::Region::ROM == region)
+	{
+		std::cout << "Trying to write into ROM" << std::endl;
+	}
+
 	try
 	{
 		memory_regions_.at(region).at(relative_address) = value;
+		if (Memory::Region::WRAM_ECHO == region)
+		{
+			memory_regions_.at(Memory::Region::WRAM).at(relative_address) = value;
+		}
+		else if ((Memory::Region::WRAM == region) && (relative_address < memory_regions_.at(Memory::Region::WRAM_ECHO).size()))
+		{
+			memory_regions_.at(Memory::Region::WRAM_ECHO).at(relative_address) = value;
+		}
 	}
 	catch (std::out_of_range &)
 	{
