@@ -12,6 +12,11 @@ size_t Clock::GetTicks() const
 	return t_;
 }
 
+size_t Clock::GetMachineCycles() const
+{
+	return m_;
+}
+
 Clock& Clock::operator += (const Clock& rhs)
 {
 	this->m_ += rhs.m_;

@@ -4,12 +4,15 @@
 GameBoy::GameBoy() :
 	z80_(mmu_),
 	gpu_(window_, mmu_),
-	keypad_(mmu_)
+	keypad_(mmu_),
+	timer_(mmu_)
 {
 	z80_.AddObserver(&gpu_);
+	z80_.AddObserver(&timer_);
 	mmu_.AddObserver(&z80_);
 	mmu_.AddObserver(&gpu_);
 	mmu_.AddObserver(&keypad_);
+	mmu_.AddObserver(&timer_);
 	mmu_.LoadRom("cpu_instrs.gb");
 
 	glfwSetWindowUserPointer(window_, this);

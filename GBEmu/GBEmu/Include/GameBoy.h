@@ -5,6 +5,7 @@
 #include "MMU.h"
 #include "GPU.h"
 #include "Keys.h"
+#include "Timer.h"
 #include "GLFW/glfw3.h"
 
 class GameBoy
@@ -23,4 +24,5 @@ private:
 	MMU mmu_;
 	GPU gpu_;
 	KeyPad keypad_;
+	Timer timer_;
 };

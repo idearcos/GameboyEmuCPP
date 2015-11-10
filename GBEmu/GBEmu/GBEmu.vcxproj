@@ -184,6 +184,7 @@
     <ClInclude Include="Include\Registers.h" />
     <ClInclude Include="Include\RomInfo.h" />
     <ClInclude Include="Include\Subject.h" />
+    <ClInclude Include="Include\Timer.h" />
     <ClInclude Include="Include\Z80.h" />
     <ClInclude Include="Include\Z80Observer.h" />
   </ItemGroup>
@@ -202,6 +203,7 @@
     <ClCompile Include="Source\Keys.cpp" />
     <ClCompile Include="Source\Memory.cpp" />
     <ClCompile Include="Source\RomInfo.cpp" />
+    <ClCompile Include="Source\Timer.cpp" />
     <ClCompile Include="Source\Z80_CallAndReturn.cpp" />
     <ClCompile Include="Source\Z80_FillBitInstructionMap.cpp" />
     <ClCompile Include="Source\Z80_FillInstructionMap.cpp" />

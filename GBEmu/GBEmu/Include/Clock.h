@@ -10,6 +10,7 @@ public:
 	~Clock() = default;
 
 	size_t GetTicks() const;
+	size_t GetMachineCycles() const;
 
 	Clock& operator+=(const Clock& rhs);
 
