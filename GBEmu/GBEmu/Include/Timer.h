@@ -25,9 +25,9 @@ private:
 	const Memory::Address interrupt_flags_register_{ Memory::Region::IO, 0x000F };
 
 	uint8_t divider_{ 0 };
-	uint8_t divider_machine_cycles_{ 0 };
+	size_t divider_machine_cycles_{ 0 };
 	uint8_t counter_{ 0 };
-	uint8_t counter_machine_cycles_{ 0 };
+	size_t counter_machine_cycles_{ 0 };
 	uint8_t modulo_{ 0 };
 
 	const size_t machine_cycles_per_divider_update_{ 4 * 16 };
@@ -37,4 +37,10 @@ private:
 
 	IMMU &mmu_;
 	mutable bool writing_to_mmu_{ false };
+
+private:
+	Timer(const Timer&) = delete;
+	Timer(Timer&&) = delete;
+	Timer& operator=(const Timer&) = delete;
+	Timer& operator=(Timer&&) = delete;
 };
