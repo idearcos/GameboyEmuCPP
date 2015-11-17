@@ -56,6 +56,8 @@ void KeyPad::HandleKeys(int key, int action)
 	{
 		auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
 		interrupt_flags |= 0x10;
+		// Bits 5-7 are unused, leave them set to 1
+		interrupt_flags |= 0xE0;
 		WriteToMmu(interrupt_flags_register_, interrupt_flags);
 	}
 }

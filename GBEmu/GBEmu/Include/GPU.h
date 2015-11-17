@@ -67,6 +67,7 @@ private:
 	const Memory::Address scroll_x_register_{ Memory::Region::IO, 0x0043 };
 	const Memory::Address current_line_register_{ Memory::Region::IO, 0x0044 };
 	const Memory::Address y_compare_register_{ Memory::Region::IO, 0x0045 };
+	const Memory::Address dma_transfer_address_register_{ Memory::Region::IO, 0x0046 };
 	const Memory::Address bg_palette_register_{ Memory::Region::IO, 0x0047 };
 	const Memory::Address obj_palette_0_register_{ Memory::Region::IO, 0x0048 };
 	const Memory::Address obj_palette_1_register_{ Memory::Region::IO, 0x0049 };

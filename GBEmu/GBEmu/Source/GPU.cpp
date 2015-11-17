@@ -67,12 +67,15 @@ size_t GPU::GetAbsoluteTileNumber(uint8_t tile_number, TileSet::Number tileset_n
 
 void GPU::OnClockLapse(const Clock &clock)
 {
-	ticks_current_period_ += clock.GetTicks();
+	if (lcd_on_)
+	{
+		ticks_current_period_ += clock.GetTicks();
 
-	Mode new_mode{Mode::ReadingOAM};
-	std::tie(new_mode, ticks_current_period_) = states_.at(current_mode_)->Lapse(ticks_current_period_, *this);
-	// We need the IO memory write side-effect when updating the current mode
-	SetCurrentMode(new_mode);
+		Mode new_mode{ Mode::ReadingOAM };
+		std::tie(new_mode, ticks_current_period_) = states_.at(current_mode_)->Lapse(ticks_current_period_, *this);
+		// We need the IO memory write side-effect when updating the current mode
+		SetCurrentMode(new_mode);
+	}
 }
 
 void GPU::OnMemoryWrite(const Memory::Address &address, uint8_t value)
@@ -183,6 +186,17 @@ void GPU::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 		{
 			SetLineCompare(value);
 		}
+		else if (dma_transfer_address_register_ == address)
+		{
+			// Copy all memory from the starting DMA address in either ROM or RAM, to OAM
+			// (The sprites will be updated when listening to the changes in MMU)
+			const Memory::Address dma_start_address{ static_cast<uint16_t>(value << 8) };
+			for (size_t i = 0; i < 160; i++)
+			{
+				// Do not use WriteToMmu, as we need to be notified
+				mmu_.Write8bitToMemory(Memory::Address(Memory::Region::OAM, i), mmu_.Read8bitFromMemory(Memory::Address{ dma_start_address  + i}));
+			}
+		}
 		else if (bg_palette_register_ == address)
 		{
 			bg_and_window_palette_.SetPaletteData(value);
@@ -241,13 +255,16 @@ uint8_t GPU::IncrementCurrentLine()
 
 void GPU::SetCurrentMode(Mode new_mode)
 {
+	auto lcd_status = mmu_.Read8bitFromMemory(lcd_status_register_);
+	lcd_status &= ~(0x03);
+	lcd_status |= static_cast<std::underlying_type_t<Mode>>(new_mode);
+	// Bit 7 is unused, leave it set to 1
+	lcd_status |= 0x80;
+	WriteToMmu(lcd_status_register_, lcd_status);
+
+	// If the mode has changed, signal interrupts of VBLANK and/or LCDSTAT (if enabled)
 	if (new_mode != current_mode_)
 	{
-		auto lcd_status = mmu_.Read8bitFromMemory(lcd_status_register_);
-		lcd_status &= ~(0x03);
-		lcd_status |= static_cast<std::underlying_type_t<Mode>>(new_mode);
-		WriteToMmu(lcd_status_register_, lcd_status);
-
 		switch (new_mode)
 		{
 		case Mode::HBlank:
@@ -255,35 +272,42 @@ void GPU::SetCurrentMode(Mode new_mode)
 			{
 				{ auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
 				interrupt_flags |= 0x02;
+				// Bits 5-7 are unused, leave them set to 1
+				interrupt_flags |= 0xE0;
 				WriteToMmu(interrupt_flags_register_, interrupt_flags); }
 			}
 			break;
+
 		case Mode::VBlank:
 			// Always request VBlank interrupt
-		{auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
-		interrupt_flags |= 0x01;
-		WriteToMmu(interrupt_flags_register_, interrupt_flags); }
+			{auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
+			interrupt_flags |= 0x01;
 
 			// Request LCD status interrupt only if enabled
 			if (enable_vblank_interrupt_)
 			{
-				{ auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
 				interrupt_flags |= 0x02;
-				WriteToMmu(interrupt_flags_register_, interrupt_flags); }
 			}
+
+			// Bits 5-7 are unused, leave them set to 1
+			interrupt_flags |= 0xE0;
+			WriteToMmu(interrupt_flags_register_, interrupt_flags); }
 			break;
+
 		case Mode::ReadingOAM:
 			if (enable_oam_interrupt_)
 			{
 				{ auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
 				interrupt_flags |= 0x02;
+				// Bits 5-7 are unused, leave them set to 1
+				interrupt_flags |= 0xE0;
 				WriteToMmu(interrupt_flags_register_, interrupt_flags); }
 			}
 			break;
 		}
 	}
+
 	current_mode_ = new_mode;
-	//TODO LCD status interrupt
 }
 
 void GPU::SetLineCompare(uint8_t line)
@@ -294,10 +318,21 @@ void GPU::SetLineCompare(uint8_t line)
 
 void GPU::LcdOperation(bool enable)
 {
+	const bool did_change{ lcd_on_ != enable };
 	lcd_on_ = enable;
-	if (!lcd_on_)
+	if (did_change)
 	{
 		SetCurrentLine(0);
+		ticks_current_period_ = 0;
+		if (lcd_on_)
+		{
+			// The LCD probably doesnt turn on immediately... adjustments might be necessary regarding its initial status
+			SetCurrentMode(Mode::ReadingOAM);
+		}
+		else
+		{
+			SetCurrentMode(Mode::HBlank);
+		}
 	}
 }
 
@@ -314,23 +349,26 @@ void GPU::SetCurrentLine(uint8_t line)
 
 void GPU::CompareLineAndUpdateRegister()
 {
-	auto lcd_status = mmu_.Read8bitFromMemory(lcd_status_register_);
-	lcd_status &= ~(0x04);
 	const auto line_coincidence = (current_line_ == line_compare_);
+	{auto lcd_status = mmu_.Read8bitFromMemory(lcd_status_register_);
 	if (line_coincidence)
 	{
-		lcd_status |= 1 << 2;
+		lcd_status |= 0x04;
 	}
 	else
 	{
-		lcd_status &= ~(1 << 2);
+		lcd_status &= ~(0x04);
 	}
-	WriteToMmu(lcd_status_register_, lcd_status);
+	// Bit 7 is unused, leave it set to 1
+	lcd_status |= 0x80;
+	WriteToMmu(lcd_status_register_, lcd_status); }
 
 	if (enable_line_compare_interrupt_ && line_coincidence)
 	{
 		auto interrupt_flags = mmu_.Read8bitFromMemory(interrupt_flags_register_);
 		interrupt_flags |= 0x02;
+		// Bits 5-7 are unused, leave them set to 1
+		interrupt_flags |= 0xE0;
 		WriteToMmu(interrupt_flags_register_, interrupt_flags);
 	}
 }

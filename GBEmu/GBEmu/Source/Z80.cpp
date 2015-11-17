@@ -78,38 +78,57 @@ void Z80::Execute(Instruction instruction)
 
 void Z80::CheckAndHandleInterrupts()
 {
-	if ((State::Stopped == state_) && (interrupts_signaled_[Interrupt::Joypad]))
+	switch (state_)
 	{
-		std::cout << "STOP mode cancelled" << std::endl;
-		state_ = State::Running;
-		return;
-	}
-	if ((State::Running == state_) && (!interrupt_master_enable_))
-	{
-		return;
-	}
-
-	for (auto &pair : interrupts_signaled_)
-	{
-		if (pair.second && interrupts_enabled_[pair.first])
+	case State::Stopped:
+		// Only joypad press (or reset) cancels Stopped mode.
+		// Goes back to Running, but does not check interrupts.
+		if (interrupts_signaled_[Interrupt::Joypad])
 		{
-			// The interrupt master enable is not needed to cancel Halt mode (ref: Game Boy Programming Manual p.112)
-			if (State::Halted == state_)
+			std::cout << "STOP mode cancelled" << std::endl;
+			state_ = State::Running;
+		}
+		break;
+	case State::Running:
+		// In Running mode, there is no need to check the interrupts if IME is disabled.
+		if (!interrupt_master_enable_)
+		{
+			break;
+		}
+	case State::Halted:
+		// In Halted mode, check interrupts even if IME is disabled, as an interrupt will cause a return to Running mode.
+		for (auto &pair : interrupts_signaled_)
+		{
+			if (pair.second && interrupts_enabled_[pair.first])
 			{
-				state_ = State::Running;
-			}
+				// The interrupt master enable is not needed to cancel Halt mode (ref: Game Boy Programming Manual p.112)
+				// However if IME is enabled, it will handle the interrupts immediately.
+				if (State::Halted == state_)
+				{
+					state_ = State::Running;
+				}
 
-			if (interrupt_master_enable_)
-			{
-				interrupt_master_enable_ = false;
-				// Write into the IF register to disable the interrupt
-				auto interrupt_flags = mmu_.Read8bitFromMemory(0xFF0F);
-				interrupt_flags &= ~(static_cast<std::underlying_type_t<Interrupt>>(pair.first));
-				WriteToMmu(0xFF0F, interrupt_flags);
+				// Now handles interrupts if IME is enabled, for Running and Halted states.
+				if (interrupt_master_enable_)
+				{
+					interrupt_master_enable_ = false;
+					// Write into the IF register to unflag the interrupt being handled
+					auto interrupt_flags = mmu_.Read8bitFromMemory(0xFF0F);
+					interrupt_flags &= ~(static_cast<std::underlying_type_t<Interrupt>>(pair.first));
+					WriteToMmu(0xFF0F, interrupt_flags);
 
-				Execute(pair.first);
+					Execute(pair.first);
+				}
 			}
 		}
+		break;
+	}
+
+	// EI enables the interrupts for the instruction AFTER itself
+	if (enable_interrupts_next_instruction_)
+	{
+		interrupt_master_enable_ = true;
+		enable_interrupts_next_instruction_ = false;
 	}
 }
 

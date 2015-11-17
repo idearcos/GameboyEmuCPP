@@ -88,7 +88,9 @@ Clock Z80::Halt()
 // (Z80 p.180)
 Clock Z80::DisableInterrupts()
 {
+	// DI enables the interrupts IMMEDIATELY
 	interrupt_master_enable_ = false;
+	enable_interrupts_next_instruction_ = false;
 
 	return Clock(1, 4);
 }
@@ -97,7 +99,8 @@ Clock Z80::DisableInterrupts()
 // (Z80 p.181)
 Clock Z80::EnableInterrupts()
 {
-	interrupt_master_enable_ = true;
+	// EI enables the interrupts for the instruction AFTER itself
+	enable_interrupts_next_instruction_ = true;
 
 	return Clock(1, 4);
 }

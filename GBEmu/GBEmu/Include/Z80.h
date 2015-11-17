@@ -43,8 +43,6 @@ public:
 	void CheckAndHandleInterrupts();
 
 	void OnMemoryWrite(const Memory::Address &address, uint8_t value) override;
-	void WriteToMmu(uint16_t address, uint8_t value) const;
-	void WriteToMmu(uint16_t address, uint16_t value) const;
 
 	Registers& GetRegisters() { return registers_; }
 	Clock& GetClock() { return clock_; }
@@ -53,6 +51,9 @@ public:
 	State GetState() { return state_; }
 
 private:
+	void WriteToMmu(uint16_t address, uint8_t value) const;
+	void WriteToMmu(uint16_t address, uint16_t value) const;
+
 	InstructionMap FillInstructionMap();
 	InstructionMap FillBitInstructionMap();
 	std::map<Interrupt, Instruction> FillInterruptInstructionMap();
@@ -310,6 +311,7 @@ private:
 	State state_{ State::Running };
 
 	bool interrupt_master_enable_{ true };
+	bool enable_interrupts_next_instruction_{ false };
 	std::map<Interrupt, bool> interrupts_enabled_;
 	std::map<Interrupt, bool> interrupts_signaled_;
 	std::map<Interrupt, Instruction> interrupt_instructions_;
