@@ -10,21 +10,21 @@ uint8_t Registers::Read(Register8bit reg) const
 	switch (reg)
 	{
 	case Register8bit::A:
-		return a_;
+		return a_or_f_.a_;
 	case Register8bit::F:
-		return f_;
+		return a_or_f_.f_;
 	case Register8bit::B:
-		return b_;
+		return b_or_c_.b_;
 	case Register8bit::C:
-		return c_;
+		return b_or_c_.c_;
 	case Register8bit::D:
-		return d_;
+		return d_or_e_.d_;
 	case Register8bit::E:
-		return e_;
+		return d_or_e_.e_;
 	case Register8bit::H:
-		return h_;
+		return h_or_l_.h_;
 	case Register8bit::L:
-		return l_;
+		return h_or_l_.l_;
 	default:
 		std::stringstream msg;
 		msg << "Trying to read invalid register: " << reg;
@@ -37,25 +37,25 @@ void Registers::Write(Register8bit reg, uint8_t value)
 	switch (reg)
 	{
 	case Register8bit::A:
-		a_ = value;
+		a_or_f_.a_ = value;
 		break;
 	case Register8bit::B:
-		b_ = value;
+		b_or_c_.b_ = value;
 		break;
 	case Register8bit::C:
-		c_ = value;
+		b_or_c_.c_ = value;
 		break;
 	case Register8bit::D:
-		d_ = value;
+		d_or_e_.d_ = value;
 		break;
 	case Register8bit::E:
-		e_ = value;
+		d_or_e_.e_ = value;
 		break;
 	case Register8bit::H:
-		h_ = value;
+		h_or_l_.h_ = value;
 		break;
 	case Register8bit::L:
-		l_ = value;
+		h_or_l_.l_ = value;
 		break;
 	default:
 		std::stringstream msg;
@@ -131,18 +131,18 @@ void Registers::SetFlag(Flags flag, bool bSet)
 {
 	if (bSet)
 	{
-		f_ |= static_cast<std::underlying_type_t<Flags>>(flag);
+		a_or_f_.f_ |= static_cast<std::underlying_type_t<Flags>>(flag);
 	}
 	else
 	{
-		f_ &= ~(static_cast<std::underlying_type_t<Flags>>(flag));
+		a_or_f_.f_ &= ~(static_cast<std::underlying_type_t<Flags>>(flag));
 	}
 	
 }
 
 bool Registers::IsFlagSet(Flags flag) const
 {
-	return (f_ & static_cast<std::underlying_type_t<Flags>>(flag)) != 0;
+	return (a_or_f_.f_ & static_cast<std::underlying_type_t<Flags>>(flag)) != 0;
 }
 
 std::ostream& operator << (std::ostream& os, const Flags& flag)

@@ -36,11 +36,9 @@ namespace Memory
 	{
 		switch (region)
 		{
-		//case Region::ROM_BANK0:
-		//case Region::ROM_OTHER_BANKS:
-		//	return 0x4000;
-		case Region::ROM:
-			return 0x8000;
+		case Region::ROM_BANK0:
+		case Region::ROM_OTHER_BANKS:
+			return 0x4000;
 		case Region::VRAM:
 		case Region::ERAM:
 		case Region::WRAM:
@@ -63,17 +61,13 @@ namespace Memory
 
 	std::tuple<Region, uint16_t> AbsoluteToRelativeAddress(uint16_t absolute_address)
 	{
-		/*if ((absolute_address >= static_cast<uint16_t>(Region::ROM_BANK0)) && (absolute_address < static_cast<uint16_t>(Region::ROM_OTHER_BANKS)))
+		if ((absolute_address >= static_cast<uint16_t>(Region::ROM_BANK0)) && (absolute_address < static_cast<uint16_t>(Region::ROM_OTHER_BANKS)))
 		{
 			return std::make_tuple(Region::ROM_BANK0, absolute_address - static_cast<uint16_t>(Region::ROM_BANK0));
 		}
 		else if ((absolute_address >= static_cast<uint16_t>(Region::ROM_OTHER_BANKS)) && (absolute_address < static_cast<uint16_t>(Region::VRAM)))
 		{
 			return std::make_tuple(Region::ROM_OTHER_BANKS, absolute_address - static_cast<uint16_t>(Region::ROM_OTHER_BANKS));
-		}*/
-		if ((absolute_address >= static_cast<uint16_t>(Region::ROM)) && (absolute_address < static_cast<uint16_t>(Region::VRAM)))
-		{
-			return std::make_tuple(Region::ROM, absolute_address - static_cast<uint16_t>(Region::ROM));
 		}
 		else if ((absolute_address >= static_cast<uint16_t>(Region::VRAM)) && (absolute_address < static_cast<uint16_t>(Region::ERAM)))
 		{

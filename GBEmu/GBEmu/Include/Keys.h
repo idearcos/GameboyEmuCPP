@@ -5,7 +5,7 @@
 #include <map>
 #include "GLFW/glfw3.h"
 #include "IMMU.h"
-#include "MMUObserver.h"
+#include "IMMUObserver.h"
 
 enum class DirectionKeys : uint8_t
 {
@@ -31,7 +31,7 @@ enum class KeyGroups : uint8_t
 
 std::ostream& operator << (std::ostream& os, const KeyGroups& key_column);
 
-class KeyPad : public MMUObserver
+class KeyPad : public IMMUObserver
 {
 public:
 	KeyPad(IMMU &mmu);

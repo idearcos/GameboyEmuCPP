@@ -1,6 +1,9 @@
 #include "MMU.h"
 #include <fstream>
 #include <iostream>
+#include <cassert>
+#include <sstream>
+#include "MbcControllerFactory.h"
 
 MMU::MMU() :
 	bios_({
@@ -34,10 +37,10 @@ uint8_t MMU::Read8bitFromMemory(const Memory::Address &address) const
 {
 	try
 	{
-		Memory::Region region{ Memory::Region::ROM };
+		Memory::Region region{ Memory::Region::ROM_BANK0 };
 		uint16_t relative_address{ 0 };
 		std::tie(region, relative_address) = address.GetRelativeAddress();
-		if (bios_loaded_ && (Memory::Region::ROM == region) && (relative_address < bios_.size()))
+		if (bios_loaded_ && (Memory::Region::ROM_BANK0 == region) && (relative_address < bios_.size()))
 		{
 			if (relative_address == bios_.size() - 1)
 			{
@@ -64,11 +67,11 @@ uint16_t MMU::Read16bitFromMemory(const Memory::Address &address) const
 
 void MMU::Write8bitToMemory(const Memory::Address &address, uint8_t value)
 {
-	Memory::Region region{ Memory::Region::ROM };
+	Memory::Region region{ Memory::Region::ROM_BANK0 };
 	uint16_t relative_address{ 0 };
 	std::tie(region, relative_address) = address.GetRelativeAddress();
 
-	if (Memory::Region::ROM == region)
+	if ((Memory::Region::ROM_BANK0 == region) || (Memory::Region::ROM_OTHER_BANKS == region))
 	{
 		std::cout << "Trying to write into ROM" << std::endl;
 	}
@@ -91,13 +94,34 @@ void MMU::Write8bitToMemory(const Memory::Address &address, uint8_t value)
 			"Address: 0x" << std::hex << address.GetAbsoluteAddress() << ", value: " << static_cast<size_t>(value) << std::endl;
 	}
 
-	Notify(&MMUObserver::OnMemoryWrite, address, value);
+	Notify(&IMMUObserver::OnMemoryWrite, address, value);
 }
 
 void MMU::Write16bitToMemory(const Memory::Address &address, uint16_t value)
 {
 	Write8bitToMemory(address, static_cast<uint8_t>(value & 0xFF));
 	Write8bitToMemory(address + 1, static_cast<uint8_t>(value >> 8));
+}
+
+void MMU::OnRomBankSwitchRequested(uint8_t requested_rom_bank_number)
+{
+	try
+	{
+		if (requested_rom_bank_number != currently_loaded_rom_bank_)
+		{
+			// First return the currently loaded content to its original ROM bank
+			memory_regions_.at(Memory::Region::ROM_OTHER_BANKS).swap(rom_banks_.at(currently_loaded_rom_bank_));
+			// Then load the new content, leaving the ROM bank empty
+			memory_regions_.at(Memory::Region::ROM_OTHER_BANKS).swap(rom_banks_.at(requested_rom_bank_number));
+			currently_loaded_rom_bank_ = requested_rom_bank_number;
+		}
+	}
+	catch (std::out_of_range &)
+	{
+		std::stringstream msg;
+		msg << "Trying to access invalid memory regions upon request to switch to ROM bank " << requested_rom_bank_number;
+		throw std::runtime_error(msg.str());
+	}
 }
 
 void MMU::LoadRom(std::string rom_file_path)
@@ -111,36 +135,50 @@ void MMU::LoadRom(std::string rom_file_path)
 			auto file_size = static_cast<size_t>(rom_file.tellg());
 			rom_file.seekg(0, rom_file.beg);
 
-			memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::ROM), std::forward_as_tuple(file_size, 0));
-
-			rom_file.read(reinterpret_cast<char*>(memory_regions_.at(Memory::Region::ROM).data()), file_size);
+			// Allocate memory for the first memory bank and read 16 kB from the cartridge.
+			// The cartridge header info will be needed to know how many additional ROM banks to allocate.
+			rom_banks_.emplace_back(Memory::SizeOfRegion(Memory::Region::ROM_BANK0), 0);
+			rom_file.read(reinterpret_cast<char*>(rom_banks_.at(0).data()), Memory::SizeOfRegion(Memory::Region::ROM_BANK0));
+			assert(rom_file.gcount() == Memory::SizeOfRegion(Memory::Region::ROM_BANK0));
 			if (!rom_file)
 			{
 				throw std::runtime_error("ROM file could not be completely read");
 			}
 
-			RomInfo rom_info{ memory_regions_.at(Memory::Region::ROM) };
+			// Build the cartridge information
+			RomInfo cartridge_info{ rom_banks_.at(0) };
+			assert(file_size == cartridge_info.num_rom_banks_ * 16 * 1024);
+
+			// Allocate the rest of the ROM banks according to the cartridge info, and keep reading the ROM file into them
+			for (size_t i = 1; i < cartridge_info.num_rom_banks_; i++)
+			{
+				rom_banks_.emplace_back(Memory::SizeOfRegion(Memory::Region::ROM_OTHER_BANKS), 0);
+				rom_file.read(reinterpret_cast<char*>(rom_banks_.at(i).data()), Memory::SizeOfRegion(Memory::Region::ROM_OTHER_BANKS));
+				assert(rom_file.gcount() == Memory::SizeOfRegion(Memory::Region::ROM_OTHER_BANKS));
+			}
+
+			// ROM banks #0 and #1 are loaded by default. Swap the contents into memory_regions_
+			memory_regions_[Memory::Region::ROM_BANK0].swap(rom_banks_.at(0));
+			memory_regions_[Memory::Region::ROM_OTHER_BANKS].swap(rom_banks_.at(1));
+			currently_loaded_rom_bank_ = 1;
+
+			// Create the appropriate MBC controller type
+			mbc_controller_ = MbcControllerFactory::Create(cartridge_info.cartridge_type_);
+			if (mbc_controller_)
+			{
+				this->AddObserver(mbc_controller_.get());
+				mbc_controller_->AddObserver(this);
+			}
+
+			// Verify header checksum
 			uint8_t header_checksum{ 0 };
 			for (auto i = 0x0134; i <= 0x014C; i++)
 			{
-				header_checksum -= memory_regions_.at(Memory::Region::ROM).at(i) + 1;
+				header_checksum -= memory_regions_.at(Memory::Region::ROM_BANK0).at(i) + 1;
 			}
-			if (header_checksum != rom_info.header_checksum_)
+			if (header_checksum != cartridge_info.header_checksum_)
 			{
 				throw std::runtime_error("Header checksum of cartridge failed");
-			}
-			uint16_t global_checksum{ 0 };
-			for (auto i = 0; i < memory_regions_.at(Memory::Region::ROM).size(); i++)
-			{
-				if ((i == 0x14E) || (i == 0x14F))
-				{
-					continue;
-				}
-				global_checksum -= memory_regions_.at(Memory::Region::ROM).at(i) + 1;
-			}
-			if (global_checksum != rom_info.global_checksum_)
-			{
-				std::cout << "Global checksum of cartridge failed" << std::endl;
 			}
 		}
 		else

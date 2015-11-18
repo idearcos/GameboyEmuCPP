@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Z80Observer.h"
+#include "IZ80Observer.h"
 #include "Memory.h"
 #include "IMMU.h"
-#include "MMUObserver.h"
+#include "IMMUObserver.h"
 
-class Timer final : public Z80Observer, public MMUObserver
+class Timer final : public IZ80Observer, public IMMUObserver
 {
 public:
 	Timer(IMMU &mmu);

@@ -176,17 +176,21 @@
     <ClInclude Include="Include\GPU_Tile.h" />
     <ClInclude Include="Include\GPU_TileMap.h" />
     <ClInclude Include="Include\GPU_TileSet.h" />
+    <ClInclude Include="Include\IMbcController.h" />
+    <ClInclude Include="Include\IMbcControllerObserver.h" />
     <ClInclude Include="Include\IMMU.h" />
     <ClInclude Include="Include\Keys.h" />
+    <ClInclude Include="Include\Mbc1Controller.h" />
+    <ClInclude Include="Include\MbcControllerFactory.h" />
     <ClInclude Include="Include\Memory.h" />
     <ClInclude Include="Include\MMU.h" />
-    <ClInclude Include="Include\MMUObserver.h" />
+    <ClInclude Include="Include\IMMUObserver.h" />
     <ClInclude Include="Include\Registers.h" />
     <ClInclude Include="Include\RomInfo.h" />
     <ClInclude Include="Include\Subject.h" />
     <ClInclude Include="Include\Timer.h" />
     <ClInclude Include="Include\Z80.h" />
-    <ClInclude Include="Include\Z80Observer.h" />
+    <ClInclude Include="Include\IZ80Observer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Clock.cpp" />
@@ -201,6 +205,8 @@
     <ClCompile Include="Source\GPU_TileMap.cpp" />
     <ClCompile Include="Source\GPU_TileSet.cpp" />
     <ClCompile Include="Source\Keys.cpp" />
+    <ClCompile Include="Source\Mbc1Controller.cpp" />
+    <ClCompile Include="Source\MbcControllerFactory.cpp" />
     <ClCompile Include="Source\Memory.cpp" />
     <ClCompile Include="Source\RomInfo.cpp" />
     <ClCompile Include="Source\Timer.cpp" />

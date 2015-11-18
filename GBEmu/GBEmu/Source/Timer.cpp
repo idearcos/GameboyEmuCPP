@@ -43,7 +43,7 @@ void Timer::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 		return;
 	}
 
-	Memory::Region region{ Memory::Region::ROM };
+	Memory::Region region{ Memory::Region::IO };
 	uint16_t relative_address{ 0 };
 	std::tie(region, relative_address) = address.GetRelativeAddress();
 

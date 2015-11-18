@@ -2,7 +2,7 @@
 
 #include "Clock.h"
 
-class Z80Observer
+class IZ80Observer
 {
 public:
 	virtual void OnClockLapse(const Clock &op_duration) = 0;

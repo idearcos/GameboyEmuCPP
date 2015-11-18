@@ -85,7 +85,7 @@ void GPU::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 		return;
 	}
 
-	Memory::Region region{ Memory::Region::ROM };
+	Memory::Region region{ Memory::Region::VRAM };
 	uint16_t relative_address{ 0 };
 	std::tie(region, relative_address) = address.GetRelativeAddress();
 	if (Memory::Region::VRAM == region)
@@ -191,10 +191,10 @@ void GPU::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 			// Copy all memory from the starting DMA address in either ROM or RAM, to OAM
 			// (The sprites will be updated when listening to the changes in MMU)
 			const Memory::Address dma_start_address{ static_cast<uint16_t>(value << 8) };
-			for (size_t i = 0; i < 160; i++)
+			for (uint16_t i = 0; i < 160; i++)
 			{
 				// Do not use WriteToMmu, as we need to be notified
-				mmu_.Write8bitToMemory(Memory::Address(Memory::Region::OAM, i), mmu_.Read8bitFromMemory(Memory::Address{ dma_start_address  + i}));
+				mmu_.Write8bitToMemory(Memory::Address(Memory::Region::OAM, i), mmu_.Read8bitFromMemory(Memory::Address{ dma_start_address + i }));
 			}
 		}
 		else if (bg_palette_register_ == address)

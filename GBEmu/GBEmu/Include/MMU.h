@@ -4,15 +4,18 @@
 #include <array>
 #include <vector>
 #include <map>
+#include <memory>
 #include "IMMU.h"
 #include "Subject.h"
-#include "MMUObserver.h"
+#include "IMMUObserver.h"
 #include "Memory.h"
 #include "RomInfo.h"
+#include "IMbcController.h"
+#include "IMbcControllerObserver.h"
 
-class MMUObserver;
+class IMMUObserver;
 
-class MMU final : public IMMU, public Subject<MMUObserver>
+class MMU final : public IMMU, public Subject<IMMUObserver>, public IMbcControllerObserver
 {
 public:
 	MMU();
@@ -25,14 +28,17 @@ public:
 
 	void LoadRom(std::string rom_file_path);
 
+	void OnRomBankSwitchRequested(uint8_t requested_rom_bank_number) override;
+
 private:
 	std::map<Memory::Region, std::vector<uint8_t>> memory_regions_;
 
 	const std::vector<uint8_t> bios_;
 	mutable bool bios_loaded_{ true };
 
+	std::vector<std::vector<uint8_t>> rom_banks_;
 	size_t currently_loaded_rom_bank_{ 1 };
-	size_t current_rom_bank_set{ 0 };
+	std::unique_ptr<IMbcController> mbc_controller_;
 
 private:
 	MMU(const MMU&) = delete;

@@ -9,11 +9,11 @@
 #include "Registers.h"
 #include "Clock.h"
 #include "Subject.h"
-#include "Z80Observer.h"
+#include "IZ80Observer.h"
 #include "IMMU.h"
-#include "MMUObserver.h"
+#include "IMMUObserver.h"
 
-class Z80 : public Subject<Z80Observer>, public MMUObserver
+class Z80 : public Subject<IZ80Observer>, public IMMUObserver
 {
 public:
 	using Instruction = std::function<Clock()>;

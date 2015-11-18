@@ -73,7 +73,7 @@ void Z80::Execute(Instruction instruction)
 {
 	const auto op_duration = instruction();
 	clock_ += op_duration;
-	Notify(&Z80Observer::OnClockLapse, op_duration);
+	Notify(&IZ80Observer::OnClockLapse, op_duration);
 }
 
 void Z80::CheckAndHandleInterrupts()

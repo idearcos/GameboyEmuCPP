@@ -64,7 +64,7 @@ private:
 		{
 			uint8_t f_;
 			uint8_t a_;
-		};
+		} a_or_f_;
 		uint16_t af_{ 0 };
 	};
 	union
@@ -73,7 +73,7 @@ private:
 		{
 			uint8_t c_;
 			uint8_t b_;
-		};
+		} b_or_c_;
 		uint16_t bc_{ 0 };
 	};
 	union
@@ -82,7 +82,7 @@ private:
 		{
 			uint8_t e_;
 			uint8_t d_;
-		};
+		} d_or_e_;
 		uint16_t de_{ 0 };
 	};
 	union
@@ -91,7 +91,7 @@ private:
 		{
 			uint8_t l_;
 			uint8_t h_;
-		};
+		} h_or_l_;
 		uint16_t hl_{ 0 };
 	};
 

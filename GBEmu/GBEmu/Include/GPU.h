@@ -4,8 +4,8 @@
 #include <memory>
 #include <array>
 #include "IMMU.h"
-#include "MMUObserver.h"
-#include "Z80Observer.h"
+#include "IMMUObserver.h"
+#include "IZ80Observer.h"
 #include "GPU_States.h"
 #include "GPU_TileSet.h"
 #include "GPU_TileMap.h"
@@ -14,7 +14,7 @@
 #include "GPU_Background.h"
 #include "GPU_Sprite.h"
 
-class GPU : public MMUObserver, public Z80Observer
+class GPU : public IMMUObserver, public IZ80Observer
 {
 public:
 	GPU(GLFWwindow* &window, IMMU &mmu);

@@ -7,9 +7,8 @@ namespace Memory
 {
 	enum class Region : uint16_t
 	{
-		ROM = 0x0000,
-		//ROM_BANK0 = 0x0000,
-		//ROM_OTHER_BANKS = 0x4000,
+		ROM_BANK0 = 0x0000,
+		ROM_OTHER_BANKS = 0x4000,
 		VRAM = 0x8000,
 		ERAM = 0xA000,
 		WRAM = 0xC000,
@@ -36,7 +35,7 @@ namespace Memory
 
 	private:
 		uint16_t absolute_address_{ 0 };
-		Region region_{ Region::ROM };
+		Region region_{ Region::ROM_BANK0 };
 		uint16_t relative_address_{ 0 };
 	};
 }
