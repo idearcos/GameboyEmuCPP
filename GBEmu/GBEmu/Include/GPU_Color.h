@@ -2,10 +2,10 @@
 
 #include <cstdint>
 
-enum class Color : uint8_t
+enum class Color
 {
-	Transparent = 0,
-	LightGrey = 96,
-	DarkGrey = 192,
-	Black = 255
+	Transparent,
+	LightGrey,
+	DarkGrey,
+	Black
 };

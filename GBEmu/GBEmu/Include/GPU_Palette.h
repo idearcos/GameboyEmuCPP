@@ -16,16 +16,16 @@ public:
 			switch ((value >> (i * 2)) & 3)
 			{
 			case 0:
-				SetColor(i, Color::Black);
+				SetColor(i, Color::Transparent);
 				break;
 			case 1:
-				SetColor(i, Color::DarkGrey);
-				break;
-			case 2:
 				SetColor(i, Color::LightGrey);
 				break;
+			case 2:
+				SetColor(i, Color::DarkGrey);
+				break;
 			case 3:
-				SetColor(i, Color::Transparent);
+				SetColor(i, Color::Black);
 				break;
 			}
 		}

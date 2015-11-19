@@ -37,29 +37,29 @@ void Background::RenderLine(Renderer &renderer, const TileSet &tileset, TileSet:
 		// The line (of the tiles) to be drawn, depending on the vertical scroll of the background and the current line being drawn (last 3 bits, 0-7)
 		const uint8_t line_in_tile{ static_cast<uint8_t>((current_line + bg_scroll_y_) & 0x07) };
 
-		size_t pixels_drawn = 0;
-		while (pixels_drawn < screen_width_)
+		size_t pixels_rendered = 0;
+		while (pixels_rendered < screen_width_)
 		{
-			const auto tile_number = tilemap.GetTileNumber(current_line + bg_scroll_y_, pixels_drawn + bg_scroll_x_);
+			const auto tile_number = tilemap.GetTileNumber(current_line + bg_scroll_y_, pixels_rendered + bg_scroll_x_);
 
 			const auto tile = tileset.GetTile(tileset_number, tile_number);
 
-			for (auto x_in_tile = x_offset_in_tile; (x_in_tile < tile.GetWidth()) && (pixels_drawn < screen_width_); x_in_tile++)
+			for (auto x_in_tile = x_offset_in_tile; (x_in_tile < tile.GetWidth()) && (pixels_rendered < screen_width_); x_in_tile++)
 			{
 				try
 				{
 					const auto color = bg_palette.GetColor(tile.ReadPixel(x_in_tile, line_in_tile));
-					renderer.RenderPixel(pixels_drawn, current_line, color);
+					renderer.RenderPixel(pixels_rendered, current_line, color);
 				}
 				catch (std::out_of_range &)
 				{
 					throw std::runtime_error("Trying to access invalid palette");
 				}
-				pixels_drawn += 1;
+				pixels_rendered += 1;
 			}
 
-			x_offset_in_tile += pixels_drawn;
-			x_offset_in_tile &= 0x07;
+			// For all tiles except the first one, the whole tile is to be rendered, so there is no offset whatsoever
+			x_offset_in_tile = 0;
 		}
 	}
 }

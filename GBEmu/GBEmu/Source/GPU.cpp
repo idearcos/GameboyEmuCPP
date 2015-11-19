@@ -7,7 +7,7 @@
 GPU::GPU(GLFWwindow* &window, IMMU &mmu) :
 	states_(InitStateMap()),
 	tileset_(num_tiles_in_set_, tile_width_, tile_height_),
-	renderer_(window, screen_width_, screen_height_),
+	renderer_(window, screen_width_, screen_height_, Renderer::Zoom::x25),
 	background_(screen_width_, screen_width_),
 	mmu_(mmu)
 {
