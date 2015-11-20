@@ -34,8 +34,8 @@ public:
 		Sprite::Size sprite_size, size_t current_line) const;
 
 private:
-	uint8_t y_position_{ 0 };
-	uint8_t x_position_{ 0 };
+	int16_t y_position_{ 0 };
+	int16_t x_position_{ 0 };
 	uint8_t tile_number_{ 0 };
 	bool is_above_background_{ true };
 	bool is_vertically_flipped_{ false };
