@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cassert>
 #include <sstream>
+//#include <iomanip>
 #include "MbcControllerFactory.h"
 
 MMU::MMU() :
@@ -71,10 +72,11 @@ void MMU::Write8bitToMemory(const Memory::Address &address, uint8_t value)
 	uint16_t relative_address{ 0 };
 	std::tie(region, relative_address) = address.GetRelativeAddress();
 
-	if ((Memory::Region::ROM_BANK0 == region) || (Memory::Region::ROM_OTHER_BANKS == region))
+	/*if ((Memory::Region::ROM_BANK0 == region) || (Memory::Region::ROM_OTHER_BANKS == region))
 	{
-		std::cout << "Trying to write into ROM" << std::endl;
-	}
+		std::cout << "Trying to write into ROM address: 0x" << std::hex << std::setfill('0') << std::setw(4) << address.GetAbsoluteAddress()
+			<< ", value: " << static_cast<size_t>(value) << std::endl;
+	}*/
 
 	try
 	{

@@ -1,5 +1,6 @@
 #include "Mbc1Controller.h"
 #include <sstream>
+#include <iostream>
 
 void Mbc1Controller::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 {
@@ -9,7 +10,7 @@ void Mbc1Controller::OnMemoryWrite(const Memory::Address &address, uint8_t value
 	{
 		if ((address.GetAbsoluteAddress() >= 0x0000) && (address.GetAbsoluteAddress() <= 0x1FFF))
 		{
-			throw std::logic_error("Enabling/disabling RAM banks is still not implemented");
+			std::cout << "Enabling/disabling RAM banks is still not implemented" << std::endl;
 		}
 		else if ((address.GetAbsoluteAddress() >= 0x2000) && (address.GetAbsoluteAddress() <= 0x3FFF))
 		{

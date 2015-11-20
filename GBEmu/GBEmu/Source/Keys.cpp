@@ -67,7 +67,7 @@ uint8_t KeyPad::KeyStatusToByte(KeyGroups requested_key_group) const
 	switch (requested_key_group)
 	{
 	case KeyGroups::Directions:
-		{uint8_t value{ 0x3F };
+		{uint8_t value{ 0x0F };
 		for (const auto& pair : direction_keys_pressed_)
 		{
 			if (pair.second)
@@ -77,7 +77,7 @@ uint8_t KeyPad::KeyStatusToByte(KeyGroups requested_key_group) const
 		}
 		return value; }
 	case KeyGroups::Buttons:
-		{uint8_t value{ 0x3F };
+		{uint8_t value{ 0x0F };
 		for (const auto& pair : button_keys_pressed_)
 		{
 			if (pair.second)
@@ -90,7 +90,7 @@ uint8_t KeyPad::KeyStatusToByte(KeyGroups requested_key_group) const
 		//std::stringstream msg;
 		std::cout << "Trying to access invalid key group: " << requested_key_group << std::endl;
 		//throw std::logic_error(msg.str());
-		return 0x3F;
+		return 0x0F;
 	}
 }
 
@@ -105,23 +105,23 @@ void KeyPad::OnMemoryWrite(const Memory::Address &address, uint8_t value)
 	{
 		std::list<KeyGroups> requested_key_groups;
 		// All keypad-related bits are active-low
-		if (((value & 0x30) & static_cast<std::underlying_type_t<KeyGroups>>(KeyGroups::Directions)) == 0)
+		if ((value & static_cast<std::underlying_type_t<KeyGroups>>(KeyGroups::Directions)) == 0)
 		{
 			requested_key_groups.push_back(KeyGroups::Directions);
 		}
-		if (((value & 0x30) & static_cast<std::underlying_type_t<KeyGroups>>(KeyGroups::Buttons)) == 0)
+		if ((value & static_cast<std::underlying_type_t<KeyGroups>>(KeyGroups::Buttons)) == 0)
 		{
 			requested_key_groups.push_back(KeyGroups::Buttons);
 		}
 		
 		if (requested_key_groups.size() == 1)
 		{
-			WriteToMmu(keypad_control_register_, KeyStatusToByte(requested_key_groups.front()));
+			WriteToMmu(keypad_control_register_, value | 0xC0 | KeyStatusToByte(requested_key_groups.front()));
 		}
 		else
 		{
 			// If none or both key groups are requested, just return no keys pressed
-			WriteToMmu(keypad_control_register_, 0x3F);
+			WriteToMmu(keypad_control_register_, value | 0xCF);
 		}
 	}
 }

@@ -12,6 +12,7 @@
 #include "GPU_Renderer.h"
 #include "GPU_Palette.h"
 #include "GPU_Background.h"
+#include "GPU_Window.h"
 #include "GPU_Sprite.h"
 
 class GPU : public IMMUObserver, public IZ80Observer
@@ -78,6 +79,7 @@ private:
 	std::map<TileMap::Number, TileMap> tilemaps_;
 	Renderer renderer_;
 	Background background_;
+	Window window_;
 	std::array<Sprite, 40> sprites_;
 	Palette bg_and_window_palette_;
 	std::map<ObjPalette, Palette> obj_palettes_;
@@ -91,6 +93,7 @@ private:
 
 	uint8_t current_line_{ 0 };
 	uint8_t line_compare_{ 0 };
+	bool line_coincidence_{ false };
 
 	// LCD Control
 	bool lcd_on_{ false };

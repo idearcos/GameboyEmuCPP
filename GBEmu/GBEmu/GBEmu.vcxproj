@@ -176,6 +176,7 @@
     <ClInclude Include="Include\GPU_Tile.h" />
     <ClInclude Include="Include\GPU_TileMap.h" />
     <ClInclude Include="Include\GPU_TileSet.h" />
+    <ClInclude Include="Include\GPU_Window.h" />
     <ClInclude Include="Include\IMbcController.h" />
     <ClInclude Include="Include\IMbcControllerObserver.h" />
     <ClInclude Include="Include\IMMU.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="Source\GPU_Tile.cpp" />
     <ClCompile Include="Source\GPU_TileMap.cpp" />
     <ClCompile Include="Source\GPU_TileSet.cpp" />
+    <ClCompile Include="Source\GPU_Window.cpp" />
     <ClCompile Include="Source\Keys.cpp" />
     <ClCompile Include="Source\Mbc1Controller.cpp" />
     <ClCompile Include="Source\MbcControllerFactory.cpp" />

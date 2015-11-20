@@ -114,6 +114,9 @@
     <ClInclude Include="Include\MbcControllerFactory.h">
       <Filter>Header Files\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="Include\GPU_Window.h">
+      <Filter>Header Files\GPU</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GBEmu.cpp">
@@ -207,7 +210,10 @@
       <Filter>Source Files\Memory</Filter>
     </ClCompile>
     <ClCompile Include="Source\MbcControllerFactory.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GPU_Window.cpp">
+      <Filter>Source Files\GPU</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
