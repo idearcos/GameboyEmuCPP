@@ -28,7 +28,10 @@ Mode HBlank::Transition(GPU &gpu) const
 {
 	if (gpu.IncrementCurrentLine() >= 144)
 	{
-		gpu.RefreshScreen();
+		if (gpu.IncrementCurrentLine() == 144)
+		{
+			gpu.RefreshScreen();
+		}
 		return Mode::VBlank;
 	}
 	else

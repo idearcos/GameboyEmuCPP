@@ -23,8 +23,8 @@ public:
 
 	static void GlfwErrorCallback(int error, const char* description);
 
-	void RenderPixel(size_t x, size_t y, Color color_code);
-	uint8_t GetPixel(size_t x, size_t y) const;
+	void RenderPixel(size_t x, size_t y, Color color);
+	Color GetPixel(size_t x, size_t y) const;
 	void RefreshScreen();
 
 private:
@@ -33,11 +33,14 @@ private:
 private:
 	GLFWwindow*& window_;
 
+	const size_t original_screen_width_;
+	const size_t original_screen_height_;
 	const size_t screen_side_zoom_;
 	const size_t zoomed_screen_width_;
 	const size_t zoomed_screen_height_;
 
-	std::vector<uint8_t> framebuffer_;
+	std::vector<Color> framebuffer_;
+	std::vector<uint8_t> converted_framebuffer_;
 
 	std::chrono::high_resolution_clock::time_point time_after_last_buffer_swap_;
 

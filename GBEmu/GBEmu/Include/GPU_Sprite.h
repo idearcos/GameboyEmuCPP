@@ -6,6 +6,7 @@
 class Renderer;
 class TileSet;
 class Palette;
+enum class Color;
 
 enum class ObjPalette : uint8_t
 {
@@ -31,7 +32,7 @@ public:
 	void SetFlags(uint8_t flags);
 
 	void RenderSprite(Renderer &renderer, const TileSet &tileset, const std::map<ObjPalette, Palette> &obj_palettes,
-		Sprite::Size sprite_size, size_t current_line) const;
+		Sprite::Size sprite_size, size_t current_line, Color color_0_in_background) const;
 
 private:
 	int16_t y_position_{ 0 };

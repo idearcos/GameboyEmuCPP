@@ -47,7 +47,7 @@ void Sprite::SetFlags(uint8_t flags)
 }
 
 void Sprite::RenderSprite(Renderer &renderer, const TileSet &tileset, const std::map<ObjPalette, Palette> &obj_palettes,
-	Sprite::Size sprite_size, size_t current_line) const
+	Sprite::Size sprite_size, size_t current_line, Color color_0_in_background) const
 {
 	try
 	{
@@ -87,7 +87,7 @@ void Sprite::RenderSprite(Renderer &renderer, const TileSet &tileset, const std:
 					if (Color::Transparent != sprite_pixel_color)
 					{
 						// Only render if the sprite is above the background OR if the background color value is 0 for this pixel (regardless of the bg palette)
-						if (is_above_background_ || (0 == renderer.GetPixel(x_position_ + x, current_line)))
+						if (is_above_background_ || (color_0_in_background == renderer.GetPixel(x_position_ + x, current_line)))
 						{
 							renderer.RenderPixel(x_position_ + x, current_line, sprite_pixel_color);
 						}

@@ -80,14 +80,17 @@ void MMU::Write8bitToMemory(const Memory::Address &address, uint8_t value)
 
 	try
 	{
-		memory_regions_.at(region).at(relative_address) = value;
-		if (Memory::Region::WRAM_ECHO == region)
+		if ((Memory::Region::ROM_BANK0 != region) && (Memory::Region::ROM_OTHER_BANKS != region))
 		{
-			memory_regions_.at(Memory::Region::WRAM).at(relative_address) = value;
-		}
-		else if ((Memory::Region::WRAM == region) && (relative_address < memory_regions_.at(Memory::Region::WRAM_ECHO).size()))
-		{
-			memory_regions_.at(Memory::Region::WRAM_ECHO).at(relative_address) = value;
+			memory_regions_.at(region).at(relative_address) = value;
+			if (Memory::Region::WRAM_ECHO == region)
+			{
+				memory_regions_.at(Memory::Region::WRAM).at(relative_address) = value;
+			}
+			else if ((Memory::Region::WRAM == region) && (relative_address < memory_regions_.at(Memory::Region::WRAM_ECHO).size()))
+			{
+				memory_regions_.at(Memory::Region::WRAM_ECHO).at(relative_address) = value;
+			}
 		}
 	}
 	catch (std::out_of_range &)
@@ -107,7 +110,7 @@ void MMU::Write16bitToMemory(const Memory::Address &address, uint16_t value)
 
 void MMU::OnRomBankSwitchRequested(uint8_t requested_rom_bank_number)
 {
-	try
+	if (requested_rom_bank_number < rom_banks_.size())
 	{
 		if (requested_rom_bank_number != currently_loaded_rom_bank_)
 		{
@@ -118,11 +121,9 @@ void MMU::OnRomBankSwitchRequested(uint8_t requested_rom_bank_number)
 			currently_loaded_rom_bank_ = requested_rom_bank_number;
 		}
 	}
-	catch (std::out_of_range &)
+	else
 	{
-		std::stringstream msg;
-		msg << "Trying to access invalid memory regions upon request to switch to ROM bank " << requested_rom_bank_number;
-		throw std::runtime_error(msg.str());
+		std::cout << "Switch to invalid ROM bank requested: " << static_cast<size_t>(requested_rom_bank_number);
 	}
 }
 

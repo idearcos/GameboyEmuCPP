@@ -244,7 +244,7 @@ void GPU::RenderScanLine()
 			{
 				for (const auto &sprite : sprites_)
 				{
-					sprite.RenderSprite(renderer_, tileset_, obj_palettes_, sprites_size_, current_line_);
+					sprite.RenderSprite(renderer_, tileset_, obj_palettes_, sprites_size_, current_line_, bg_and_window_palette_.GetColor(0));
 				}
 			}
 		}
