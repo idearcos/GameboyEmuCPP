@@ -260,6 +260,11 @@ uint8_t GPU::IncrementCurrentLine()
 {
 	SetCurrentLine(current_line_ + 1);
 
+	if (144 == current_line_)
+	{
+		RefreshScreen();
+	}
+
 	return current_line_;
 }
 

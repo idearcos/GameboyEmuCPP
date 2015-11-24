@@ -21,15 +21,10 @@ public:
 	GPU(GLFWwindow* &window, IMMU &mmu);
 	~GPU() = default;
 
-	void OnClockLapse(const Clock &clock) override;
 	void RenderScanLine();
-	void RefreshScreen();
-
 	uint8_t IncrementCurrentLine();
-	void SetCurrentMode(Mode new_mode);
-	void SetLineCompare(uint8_t line);
-	void LcdOperation(bool enable);
 
+	void OnClockLapse(const Clock &clock) override;
 	void OnMemoryWrite(const Memory::Address &address, uint8_t value) override;
 
 private:
@@ -38,8 +33,15 @@ private:
 	inline bool IsAddressInTileMap(uint16_t relative_address, TileMap::Number tilemap_number) const;
 	size_t GetAbsoluteTileNumber(TileMap::TileNumber tile_number, TileSet::Number tileset_number) const;
 
+	void RefreshScreen();
+
+	void SetCurrentMode(Mode new_mode);
 	void SetCurrentLine(uint8_t line);
+	void SetLineCompare(uint8_t line);
 	void CompareLineAndUpdateRegister();
+
+	void LcdOperation(bool enable);
+
 	void WriteToMmu(const Memory::Address &address, uint8_t value) const;
 
 private:
