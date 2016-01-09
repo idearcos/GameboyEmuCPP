@@ -42,7 +42,7 @@ void Background::RenderLine(Renderer &renderer, const TileSet &tileset, TileSet:
 		{
 			const auto tile_number = tilemap.GetTileNumber(current_line + bg_scroll_y_, pixels_rendered + bg_scroll_x_);
 
-			const auto tile = tileset.GetTile(tileset_number, tile_number);
+			const auto& tile = tileset.GetTile(tileset_number, tile_number);
 
 			for (auto x_in_tile = x_offset_in_tile; (x_in_tile < tile.GetWidth()) && (pixels_rendered < screen_width_); x_in_tile++)
 			{

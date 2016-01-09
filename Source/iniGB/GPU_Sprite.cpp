@@ -67,7 +67,7 @@ void Sprite::RenderSprite(Renderer &renderer, const TileSet &tileset, const std:
 			const uint8_t affected_tile_number = (Sprite::Size::Pixels8x8 == sprite_size) ? tile_number_ :
 				(tile_number_ & (~0x01)) + (line_in_sprite / 8);
 			
-			const auto tile = tileset.GetTile(TileSet::Number::One, affected_tile_number);
+			const auto& tile = tileset.GetTile(TileSet::Number::One, affected_tile_number);
 
 			// Get the line of the tile to be rendered
 			const auto line_in_tile = line_in_sprite % 8;

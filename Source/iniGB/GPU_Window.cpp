@@ -52,7 +52,7 @@ void Window::RenderLine(Renderer &renderer, const TileSet &tileset, TileSet::Num
 		{
 			const auto tile_number = tilemap.GetTileNumber(line_to_be_rendered_, pixels_drawn);
 
-			const auto tile = tileset.GetTile(tileset_number, tile_number);
+			const auto& tile = tileset.GetTile(tileset_number, tile_number);
 
 			for (auto x_in_tile = 0; (x_in_tile < tile.GetWidth()) && (pixels_drawn < screen_width_); x_in_tile++)
 			{
