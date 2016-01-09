@@ -8,16 +8,17 @@ Timer::Timer(IMMU &mmu) :
 
 void Timer::OnClockLapse(const Clock &op_duration)
 {
+	// The "Timer Enable" bit of Timer Control only affects the timer, the divider is ALWAYS counting.
+	divider_machine_cycles_ += op_duration.GetMachineCycles();
+	if (divider_machine_cycles_ >= machine_cycles_per_divider_update_)
+	{
+		divider_machine_cycles_ -= machine_cycles_per_divider_update_;
+		divider_ += 1;
+		WriteToMmu(divider_register_, divider_);
+	}
+
 	if (running_)
 	{
-		divider_machine_cycles_ += op_duration.GetMachineCycles();
-		if (divider_machine_cycles_ >= machine_cycles_per_divider_update_)
-		{
-			divider_machine_cycles_ -= machine_cycles_per_divider_update_;
-			divider_ += 1;
-			WriteToMmu(divider_register_, divider_);
-		}
-
 		counter_machine_cycles_ += op_duration.GetMachineCycles();
 		if (counter_machine_cycles_ >= machine_cycles_per_counter_update_)
 		{
