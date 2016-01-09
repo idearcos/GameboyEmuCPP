@@ -9,7 +9,7 @@
 class Renderer
 {
 public:
-	enum class Zoom
+	enum class Scale
 	{
 		x1 = 1,
 		x4 = 2,
@@ -18,7 +18,7 @@ public:
 		x25 = 5
 	};
 
-	Renderer(GLFWwindow* &window, size_t screen_width, size_t screen_height, Zoom zoom);
+	Renderer(GLFWwindow* &window, size_t screen_width, size_t screen_height, Scale scale);
 	~Renderer();
 
 	static void GlfwErrorCallback(int error, const char* description);
@@ -33,11 +33,8 @@ private:
 private:
 	GLFWwindow*& window_;
 
-	const size_t original_screen_width_;
-	const size_t original_screen_height_;
-	const size_t screen_side_zoom_;
-	const size_t zoomed_screen_width_;
-	const size_t zoomed_screen_height_;
+	const size_t screen_width_;
+	const size_t screen_height_;
 
 	std::vector<Color> framebuffer_;
 	std::vector<uint8_t> converted_framebuffer_;
