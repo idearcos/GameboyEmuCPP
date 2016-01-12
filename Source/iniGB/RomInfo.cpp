@@ -53,22 +53,22 @@ RomInfo::RomInfo(const std::vector<uint8_t> &rom) :
 	switch (rom[0x0149])
 	{
 	case 0x00:
-		external_ram_size_ = 0;
+		external_ram_size_ = RamSize::None;
 		break;
 	case 0x01:
-		external_ram_size_ = 2 * 1024;
+		external_ram_size_ = RamSize::kByte2;
 		break;
 	case 0x02:
-		external_ram_size_ = 8 * 1024;
+		external_ram_size_ = RamSize::kByte8;
 		break;
 	case 0x03:
-		external_ram_size_ = 32 * 1024;
+		external_ram_size_ = RamSize::kByte32;
 		break;
 	case 0x04:
-		external_ram_size_ = 128 * 1024;
+		external_ram_size_ = RamSize::kByte128;
 		break;
 	case 0x05:
-		external_ram_size_ = 64 * 1024;
+		external_ram_size_ = RamSize::kByte64;
 		break;
 	default:
 		std::stringstream msg;

@@ -29,6 +29,8 @@ public:
 	void LoadRom(std::string rom_file_path);
 
 	void OnRomBankSwitchRequested(uint8_t requested_rom_bank_number) override;
+	void OnRamBankSwitchRequested(uint8_t requested_ram_bank_number) override;
+	void OnExternalRamEnabled(bool enabled) override;
 
 private:
 	std::map<Memory::Region, std::vector<uint8_t>> memory_regions_;
@@ -37,7 +39,10 @@ private:
 	mutable bool bios_loaded_{ true };
 
 	std::vector<std::vector<uint8_t>> rom_banks_;
+	std::vector<std::vector<uint8_t>> ram_banks_;
 	size_t currently_loaded_rom_bank_{ 1 };
+	size_t currently_loaded_ram_bank_{ 0 };
+	bool external_ram_enabled_{ false };
 	std::unique_ptr<IMbcController> mbc_controller_;
 
 private:

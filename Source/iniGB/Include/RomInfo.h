@@ -45,6 +45,16 @@ enum class CartridgeType : uint8_t
 	HuC1_RAM_Battery = 0xFF
 };
 
+enum class RamSize
+{
+	None,
+	kByte2,
+	kByte8,
+	kByte32,
+	kByte128,
+	kByte64
+};
+
 struct RomInfo
 {
 	RomInfo(const std::vector<uint8_t> &rom);
@@ -57,7 +67,7 @@ struct RomInfo
 	bool super_gb_functions_{ false };
 	CartridgeType cartridge_type_{ CartridgeType::ROM_Only };
 	size_t num_rom_banks_{ 0 };
-	size_t external_ram_size_{ 0 };
+	RamSize external_ram_size_{ RamSize::None };
 	bool destination_japanese_{ 0 };
 	uint8_t old_licensee_code_{ 0 };
 	uint8_t version_number_{ 0 };

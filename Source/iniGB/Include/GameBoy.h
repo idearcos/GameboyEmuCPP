@@ -6,6 +6,7 @@
 #include "GPU.h"
 #include "Keys.h"
 #include "Timer.h"
+#include <GL/glew.h>
 #include "GLFW/glfw3.h"
 
 class GameBoy

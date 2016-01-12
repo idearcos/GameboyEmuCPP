@@ -17,6 +17,10 @@ include_directories(${HDR_DIR})
 link_directories(${GLEW_LIB_DIR})
 link_directories(${GLFW_LIB_DIR})
 
+if (${GLEW_IS_STATIC})
+	add_definitions(-DGLEW_STATIC)
+endif()
+
 add_executable(iniGB ${SRC_FILES} ${HDR_FILES})
 target_link_libraries(iniGB opengl32)
 target_link_libraries(iniGB ${GLEW_LIB_NAME})

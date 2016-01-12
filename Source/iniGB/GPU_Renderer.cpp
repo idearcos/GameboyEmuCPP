@@ -28,14 +28,20 @@ Renderer::Renderer(GLFWwindow* &window, size_t screen_width, size_t screen_heigh
 		glfwTerminate();
 		throw std::runtime_error("Failed to open GLFW window. If you have an Intel GPU, it is not 3.3 compatible.");
 	}
-	glfwMakeContextCurrent(window_);
 
+	glfwMakeContextCurrent(window_);
 	glfwSwapInterval(1);
 
 	int width, height;
 	glfwGetFramebufferSize(window_, &width, &height);
-	glViewport(0, 0, width, height);
 
+	glewExperimental = true; // Needed in core profile
+	if (glewInit() != GLEW_OK)
+	{
+		throw std::runtime_error("Failed to initialize GLEW");
+	}
+
+	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 

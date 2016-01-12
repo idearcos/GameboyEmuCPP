@@ -26,7 +26,7 @@ MMU::MMU() :
 		0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50 })
 {
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::VRAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::VRAM), 0));
-	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::ERAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::ERAM), 0));
+	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::ERAM), std::forward_as_tuple());
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::WRAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::WRAM), 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::WRAM_ECHO), std::forward_as_tuple(SizeOfRegion(Memory::Region::WRAM_ECHO), 0));
 	memory_regions_.emplace(std::piecewise_construct, std::forward_as_tuple(Memory::Region::OAM), std::forward_as_tuple(SizeOfRegion(Memory::Region::OAM), 0));
@@ -110,7 +110,7 @@ void MMU::Write16bitToMemory(const Memory::Address &address, uint16_t value)
 
 void MMU::OnRomBankSwitchRequested(uint8_t requested_rom_bank_number)
 {
-	if (requested_rom_bank_number < rom_banks_.size())
+	try
 	{
 		if (requested_rom_bank_number != currently_loaded_rom_bank_)
 		{
@@ -121,9 +121,44 @@ void MMU::OnRomBankSwitchRequested(uint8_t requested_rom_bank_number)
 			currently_loaded_rom_bank_ = requested_rom_bank_number;
 		}
 	}
-	else
+	catch (std::out_of_range&)
 	{
 		std::cout << "Switch to invalid ROM bank requested: " << static_cast<size_t>(requested_rom_bank_number);
+	}
+}
+
+void MMU::OnRamBankSwitchRequested(uint8_t requested_ram_bank_number)
+{
+	try
+	{
+		if (requested_ram_bank_number != currently_loaded_ram_bank_)
+		{
+			// First return the currently loaded content to its original RAM bank
+			memory_regions_.at(Memory::Region::ERAM).swap(ram_banks_.at(currently_loaded_ram_bank_));
+			// Then load the new content, leaving the RAM bank empty
+			memory_regions_.at(Memory::Region::ERAM).swap(ram_banks_.at(requested_ram_bank_number));
+			currently_loaded_ram_bank_ = requested_ram_bank_number;
+		}
+	}
+	catch (std::out_of_range&)
+	{
+		std::cout << "Switch to invalid RAM bank requested: " << static_cast<size_t>(requested_ram_bank_number);
+	}
+}
+
+void MMU::OnExternalRamEnabled(bool enabled)
+{
+	try
+	{
+		if (external_ram_enabled_ != enabled)
+		{
+			memory_regions_.at(Memory::Region::ERAM).swap(ram_banks_.at(currently_loaded_ram_bank_));
+			external_ram_enabled_ = enabled;
+		}
+	}
+	catch (std::out_of_range&)
+	{
+		std::cout << "Tried to enable invalid RAM bank: " << static_cast<size_t>(currently_loaded_ram_bank_);
 	}
 }
 
@@ -164,6 +199,36 @@ void MMU::LoadRom(std::string rom_file_path)
 			memory_regions_[Memory::Region::ROM_BANK0].swap(rom_banks_.at(0));
 			memory_regions_[Memory::Region::ROM_OTHER_BANKS].swap(rom_banks_.at(1));
 			currently_loaded_rom_bank_ = 1;
+
+			// Allocate the necessary number of external RAM banks
+			size_t num_full_ram_banks{ 0 };
+			switch (cartridge_info.external_ram_size_)
+			{
+			case RamSize::None:
+				break;
+			case RamSize::kByte2:
+				ram_banks_.emplace_back(Memory::SizeOfRegion(Memory::Region::ERAM) / 4, 0);
+				break;
+			case RamSize::kByte8:
+				num_full_ram_banks = 1;
+				break;
+			case RamSize::kByte32:
+				num_full_ram_banks = 4;
+				break;
+			case RamSize::kByte128:
+				num_full_ram_banks = 16;
+				break;
+			case RamSize::kByte64:
+				num_full_ram_banks = 8;
+				break;
+			default:
+				throw std::runtime_error("Unsupported external RAM size");
+				break;
+			}
+			for (size_t i = 0; i < num_full_ram_banks; ++i)
+			{
+				ram_banks_.emplace_back(Memory::SizeOfRegion(Memory::Region::ERAM), 0);
+			}
 
 			// Create the appropriate MBC controller type
 			mbc_controller_ = MbcControllerFactory::Create(cartridge_info.cartridge_type_);

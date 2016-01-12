@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <iostream>
 #include <map>
+#include <GL/glew.h>
 #include "GLFW/glfw3.h"
 #include "IMMU.h"
 #include "IMMUObserver.h"
